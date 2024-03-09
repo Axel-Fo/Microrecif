@@ -2,8 +2,8 @@
 
 CXX     = g++
 CXXFLAGS = -g -Wall -std=c++11
-CXXFILES = projet.cc
-OFILES = projet.o 
+CXXFILES = projet.cc message.cc
+OFILES = $(CXXFILES:.cc=.o)
 
 # Definition de la premiere regle
 
@@ -29,3 +29,4 @@ clean:
 #
 # DO NOT DELETE THIS LINE
 projet.o: projet.cc
+message.o: message.cc message.h
