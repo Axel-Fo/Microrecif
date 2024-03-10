@@ -1,5 +1,7 @@
 #include "shape.h"
 #include <cmath>
+#include <iostream>
+using namespace std;
 
 Segment::Segment(S2d point,double a, double l)
     :point(point)
@@ -92,7 +94,7 @@ double Segment::ecart_ang(Segment autre)
 {
     double ang1 = angle;
     double ang2 = autre.angle;
-    double ang_ecart = M_PI - abs(ang1 -ang2);
+    double ang_ecart = ang1 -ang2;// demander assi quel sense est positif
     
     // pour s'assurer que l'angle d'ecart est bien entre pi et -pi
     if(ang_ecart > M_PI) 
