@@ -20,9 +20,12 @@ private:
 public:
  
  Segment(S2d point,double a, double l);
+ 
  bool idoIntersect(Segment autre);
  double ecart_ang(Segment autre);
+ 
  S2d autre_pt(Segment seg);
+ 
  void setAngle(double a);
  void setLongeur(double l);
 };
@@ -39,4 +42,12 @@ public:
  //Cercle(S2d centre,double rayon);
 };
  
+class Carre
+{
+private:
+    
 
+public:
+ 
+ //Carre();
+};
