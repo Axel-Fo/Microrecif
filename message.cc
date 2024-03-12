@@ -7,7 +7,7 @@
 //        2) t12.txt est modifié pour enlever la seconde erreur (4 est remplacé par 12)
 //
 // public version V1.1: avec alignements corrects et message "length" corrigé
-//
+//est ce que ca marche
 
 #include "message.h"
 
