@@ -21,8 +21,9 @@ public:
  
  Segment(S2d point,double a, double l);
  
- bool idoIntersect(Segment autre);
+ bool intersect(Segment autre);
  double ecart_ang(Segment autre);
+ bool intersect_mm(Segment autre);
  
  S2d autre_pt(Segment seg);
  

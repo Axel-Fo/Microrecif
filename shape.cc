@@ -9,7 +9,7 @@ Segment::Segment(S2d point,double a, double l)
     setLongeur(l);
     setAngle(a);
 }
-
+// les fonctions set
 void Segment::setAngle(double a)
 {
     if(a <= M_PI and a > -M_PI)
@@ -28,6 +28,7 @@ void Segment::setLongeur(double l)
     }
 
 }
+//pour avoir le deuxième pt du segment
 S2d Segment::autre_pt(Segment seg)
 {
     S2d point;
@@ -60,7 +61,7 @@ int orientation(S2d p, S2d q, S2d r)
   
     return (val > 0)? 1: 2; // clock or counterclock wise 
 } 
-bool Segment ::idoIntersect(Segment autre)
+bool Segment ::intersect(Segment autre)
 {   S2d p1 = point;
     S2d p2 = autre_pt(*this);
     S2d q1 = autre.point;
@@ -107,4 +108,9 @@ double Segment::ecart_ang(Segment autre)
     }
 
     return ang_ecart;
+}
+ bool Segment:: intersect_mm()
+{
+    
+
 }
