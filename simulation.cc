@@ -1,7 +1,13 @@
 #include "simulation.h"
 
 
+using namespace std;
 //on traite le fichier ligne par ligne
+void decodage_ligne(string ligne)
+{
+
+}
+
 void lecture( char * fichier_entree)
 {
     string ligne;
@@ -13,7 +19,7 @@ void lecture( char * fichier_entree)
         while(getline(fichier >> ws,ligne)) 
         //ws =ignorer espaces blancs
 		{	
-			if(line[0]=='#')  continue;  
+			if(ligne[0]=='#')  continue;  
        
 			decodage_ligne(ligne);
         }
@@ -22,8 +28,5 @@ void lecture( char * fichier_entree)
 	else cout <<"erreur lgn 22 simu"<<endl;
 }
 
-void decodage_ligne(string ligne)
-{
 
-}
 

@@ -28,7 +28,7 @@ clean:
 # -- Regles de dependances generees automatiquement
 #
 # DO NOT DELETE THIS LINE
-projet.o: projet.cc message.h shape.h
+projet.o: projet.cc
 message.o: message.cc message.h
 shape.o: shape.cc shape.h
 simulation.o: simulation.cc simulation.h

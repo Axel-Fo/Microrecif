@@ -109,8 +109,9 @@ double Segment::ecart_ang(Segment autre)
 
     return ang_ecart;
 }
- bool Segment:: intersect_mm()
+ bool Segment:: intersect_mm(Segment autre)
 {
     
+    //a faire
 
 }
