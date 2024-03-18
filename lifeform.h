@@ -1,47 +1,49 @@
 #ifndef LIFEFORM_H_INCLUDED
 #define LIFEFORM_H_INCLUDED
 
+
 #include <string>
+#include <sstream>
+#include <iostream>
+#include "shape.h"
+#include "constantes.h"
 
-
-
-class Prop_entite {
+class Entite {
     private :
     S2d pos;
     unsigned int age;
 }
 
-enum Etat_vie{
-
-    DEAD, ALIVE
-
-};
-enum Etat_rot{
-
-    INVTRIGO, TRIGO
-
-};
-enum Etat_dev{
-
-    EXTEND, REPRO
-
-};
 class Scavenger{
-    Prop_entite proprietes;
+    private :
+    Entite proprietes;
     bool etat; //0 pour LIBRE et 1 pour MANGE(peut être à changer)
+    bool statut_sca
     double rayon;
+    int cor_id_cible;
+    public :
+    Scavenger(std::istringstream& data);
 };
 
 class Corail{
-    Prop_entite proprietes;
+    private :
+    Entite proprietes;
     int id;
+    bool statut_cor; //plutot que statut vie pour avoir noms diff entre les trucs
     bool sens_rota; //par ex 1 pour trigo, 0 pour inv trigo, eventuellement changer en string ou enum ?
     bool statut_dev;//0 pour extend, 1 pour repro
-    bool statut_vie; //0 pour dead et 1 pour alive
     unsigned int nb_seg;
+    
+    public :
+    //constructeur
+    Corail(std::istringstream& data);
+
 }
 
 class Algue{
-    Prop_entite proprietes;
+    private:
+    Entite proprietes;
+    public :
+    Algues(std::istringstream& data);
 }
 #endif // LIFEFORM_H_INCLUDED
