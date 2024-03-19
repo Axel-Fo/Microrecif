@@ -1,7 +1,8 @@
 #include "shape.h" // nécessaire pour utiliser epsil_zero et disposer des symboles de graphic.h
-enum Statut_cor {DEAD, ALIVE} ;
+enum Statut_cor  {DEAD, ALIVE} ;
 enum Dir_rot_cor {TRIGO, INVTRIGO} ;
-enum Statut_sca {LIBRE, MANGE} ;
+enum Statut_sca  {LIBRE, MANGE} ;
+enum Statut_dev  {EXTEND,REPRO};
 constexpr double max(256.) ;
 constexpr unsigned r_alg(1) ;
 constexpr unsigned d_cor(3) ;
