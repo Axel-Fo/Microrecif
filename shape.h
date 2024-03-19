@@ -1,5 +1,6 @@
 #ifndef SHAPE_H_INCLUDED
 #define SHAPE_H_INCLUDED
+
 constexpr double epsil_zero(0.5);
 
 struct S2d
