@@ -17,21 +17,21 @@ class Entite {
 class Scavenger{
     private :
     Entite proprietes;
-    bool etat; //0 pour LIBRE et 1 pour MANGE(peut être à changer)
-    bool statut_sca
+    bool etat; //0 pour LIBRE et 1 pour MANGE
+    bool vie_sca;
     double rayon;
     int cor_id_cible;
     public :
     Scavenger(std::istringstream& data);
 };
 
-class Corail{
+class Corail{//il faut ajouter un truc pour stocker tout les segments d'un corail
     private :
     Entite proprietes;
     int id;
-    bool statut_cor; //plutot que statut vie pour avoir noms diff entre les trucs
-    bool sens_rota; //par ex 1 pour trigo, 0 pour inv trigo, eventuellement changer en string ou enum ?
-    bool statut_dev;//0 pour extend, 1 pour repro
+    bool vie_cor; 
+    bool sens_rota; 
+    bool statut_dev;
     unsigned int nb_seg;
     
     public :
