@@ -8,7 +8,7 @@ void decodage_ligne(string ligne)
 
 }
 
-void lecture( char * fichier_entree)
+/*void lecture( char * fichier_entree)
 {
     string ligne;
     //la ligne du dessous appe
@@ -26,7 +26,7 @@ void lecture( char * fichier_entree)
         cout << "fin de la lecture" << endl;
 	}
 	else cout <<"erreur lgn 22 simu"<<endl;
-}
+}*/
 
 
 

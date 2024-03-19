@@ -9,5 +9,5 @@ int main(int argc, char *argv[])
     {
         cout << "il faut mettre un nom de fichier."<<endl;
     }
-    simulation.lecture(argv[1]);
+    //simulation.lecture(argv[1]); en commentaires pour que ca compile
 }

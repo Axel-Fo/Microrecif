@@ -13,18 +13,18 @@
 
 enum Etat_lecture
 {
-    NBA, ALGUE ,
-    NBC, CORAIL, 
-    NBS, SCAVENGER 
-}
+    NBA, ALG ,
+    NBC, COR, 
+    NBS, SCA 
+};
 
-Classe Donnees
+struct Donnees
 {
     std::vector<Corail> coraux;
     std::vector<Scavenger> scavengers;
     std::vector<Algue> algues;
 };
 
-void switch_lecture(istringstream& donnees)
+//void switch_lecture(istringstream& donnees)
 
 #endif // SIMULATION_H_INCLUDED
