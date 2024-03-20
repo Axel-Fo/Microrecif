@@ -18,13 +18,20 @@ enum Etat_lecture
     NBS, SCA 
 };
 
-struct Donnees
-{
+class Simulation {
+private: 
     std::vector<Corail> coraux;
     std::vector<Scavenger> scavengers;
     std::vector<Algue> algues;
+    unsigned int etat_lecture;
+    unsigned int compteur;
+    unsigned int nbAlg;
+    unsigned int nbCor;
+    unsigned int nbSca;
+    void switch_lecture(std::istringstream& data);
+public :
+    void lecture(std::string file);
 };
 
-//void switch_lecture(istringstream& donnees)
 
 #endif // SIMULATION_H_INCLUDED
