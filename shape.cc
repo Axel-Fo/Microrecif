@@ -57,7 +57,7 @@ int orientation(S2d p, S2d q, S2d r)
     double val = (q.y - p.y) * (r.x - q.x) - 
               (q.x - p.x) * (r.y - q.y); 
     val = val/normepq;
-    if (abs(val) < epsil_zero) return 0;  // collinear 
+    if (abs(val) < epsil_zero) return 0;  // collineaire 
   
     return (val > 0)? 1: 2; // clock or counterclock wise 
 } 
