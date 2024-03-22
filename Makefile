@@ -1,3 +1,4 @@
+
 # Definitions de macros
 
 CXX     = g++
@@ -5,31 +6,39 @@ CXXFLAGS = -g -Wall -std=c++11
 CXXFILES = projet.cc message.cc shape.cc simulation.cc lifeform.cc
 OFILES = $(CXXFILES:.cc=.o)
 
+TEST_CXXFILES = test.cc message.cc shape.cc simulation.cc
+TEST_OFILES = $(TEST_CXXFILES:.cc=.o)
+
 # Definition de la premiere regle
 
 projet: $(OFILES)
 	$(CXX) $(OFILES) -o projet
+
+# Pour creer un executable test.exe
+
+test: $(TEST_OFILES)
+	$(CXX) $(TEST_OFILES) -o test
 
 # Definitions de cibles particulieres
 
 depend:
 	@echo " *** MISE A JOUR DES DEPENDANCES ***"
 	@(sed '/^# DO NOT DELETE THIS LINE/q' Makefile && \
-	  $(CXX) -MM $(CXXFLAGS) $(CXXFILES) | \
+	  $(CXX) -MM $(CXXFLAGS) $(CXXFILES) test.cc | \
 	  egrep -v "/usr/include" \
 	 ) >Makefile.new
 	@mv Makefile.new Makefile
 
 clean:
 	@echo " *** EFFACE MODULES OBJET ET EXECUTABLE ***"
-	@/bin/rm -f *.o *.x *.cc~ *.h~ prog
+	@/bin/rm -f projet test *.o *.x *.cc~ *.h~ 
 
 #
 # -- Regles de dependances generees automatiquement
 #
 # DO NOT DELETE THIS LINE
-projet.o: projet.cc simulation.h lifeform.h shape.h constantes.h
+projet.o: projet.cc
 message.o: message.cc message.h
 shape.o: shape.cc shape.h
-simulation.o: simulation.cc simulation.h lifeform.h shape.h constantes.h
-lifeform.o: lifeform.cc lifeform.h shape.h constantes.h
+simulation.o: simulation.cc simulation.h
+test.o: test.cc shape.h
