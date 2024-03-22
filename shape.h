@@ -3,6 +3,11 @@
 
 constexpr double epsil_zero(0.5);
 
+enum Etat_epsil_zero
+{
+    NOT_EPSIL, IS_EPSIL
+};
+
 struct S2d
 {
     double x= 0.;
@@ -23,7 +28,7 @@ public:
  
  Segment(S2d point,double a, double l);
  
- bool intersect(Segment autre);
+ bool intersect(Segment autre, Etat_epsil_zero etat);
  double ecart_ang(Segment autre);
  bool intersect_mm(Segment autre);
  
