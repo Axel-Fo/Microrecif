@@ -85,9 +85,10 @@ void Simulation::switch_lecture(istringstream &data)
         {
             Scavenger new_sca(data);
             scavengers.push_back(new_sca);
-        //on a plus besoin du compteur car les lignes sont forcement des donnees de scavenger.
+            //plus besoin du compteur forcement des donnees de scavenger.
             break;
         }
-        default: cout<< "Erreur, on est arrivés dans le default du switch de lecture" << endl;
+        default: cout<< "Erreur, on est arrivés dans le default du switch de lecture" 
+                << endl;
     }   
 }
