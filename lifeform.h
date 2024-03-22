@@ -25,13 +25,15 @@ public:
 };
 
 class Scavenger{
-public :
+private :
     Entite proprietes;
     bool statut_sca; //0 pour LIBRE et 1 pour MANGE
     bool vie_sca;
     double rayon;
     int cor_id_cible;
+public :
     Scavenger(std::istringstream& data);
+    Entite getEntite() const;
 };
 
 class Corail{
@@ -47,13 +49,20 @@ private :
 public :
     //constructeur
     Corail(std::istringstream& data);
-
+    Entite getEntite() const;
+    int getId() const;
+    bool getVieCor() const;
+    bool getSensRota() const;
+    bool getStatutDev() const;
+    unsigned int getNbSeg() const;
+    std::vector<Segment> getSegments() const;
 };
 
 class Algue{
-public:
+private:
     Entite proprietes;
-    
+public:
     Algue(std::istringstream& data);
+    Entite getEntite() const;
 };
 #endif // LIFEFORM_H_INCLUDED

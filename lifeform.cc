@@ -68,4 +68,48 @@ Algue::Algue(istringstream &data)
     
     proprietes.setPosition(x, y);
     proprietes.setAge(age);
+
+}
+
+Entite Algue::getEntite()
+{
+    return proprietes;
+}
+
+Entite Scavenger::getEntite()
+{
+    return proprietes;
+}
+//.....................................................................................
+//definition des geteurs pour le corail
+
+Entite Corail::getEntite()
+{
+    return proprietes;
+}
+
+int Corail::getId() const 
+{ 
+    return id; 
+}
+
+bool Corail::getVieCor() const 
+{ 
+    return vie_cor; 
+}
+bool Corail::getSensRota() const 
+{ 
+    return sens_rota; 
+}
+bool Corail::getStatutDev() const 
+{ 
+    return statut_dev; 
+}
+unsigned int Corail::getNbSeg() const 
+{ 
+    return nb_seg; 
+}
+vector<Segment> Corail::getSegments() const 
+{ 
+    return segments; 
 }
