@@ -9,7 +9,7 @@ void Simulation::lecture(string fichier_entree)
     string line;
     
     ifstream fichier(fichier_entree); 
-    if(!fichier.fail()) 
+    if(fichier.fail()) 
     {
         etat_lecture = NBA;
         compteur = 0 ;

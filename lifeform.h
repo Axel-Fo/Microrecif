@@ -9,10 +9,19 @@
 #include "shape.h"
 #include "constantes.h"
 
-class Entite {
-public:
+class Entite
+{
+private:
     S2d pos;
     unsigned int age;
+public:
+    // Setters
+    void setPosition(double newX, double newY);
+    void setAge(unsigned int newAge);
+
+    // Getters
+    S2d getPosition() const;
+    unsigned int getAge() const; 
 };
 
 class Scavenger{
@@ -26,7 +35,7 @@ public :
 };
 
 class Corail{
-public :
+private :
     Entite proprietes;
     int id;
     bool vie_cor; 
@@ -35,7 +44,7 @@ public :
     unsigned int nb_seg;
     std::vector<Segment> segments;
     
-    
+public :
     //constructeur
     Corail(std::istringstream& data);
 
