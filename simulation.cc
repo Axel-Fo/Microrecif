@@ -45,6 +45,7 @@ void Simulation::switch_lecture(istringstream &data)
         case ALG:
         {
             Algue new_alg(data);
+            test_age();
             algues.push_back(new_alg);
             ++compteur;
             if (compteur == nbAlg)
@@ -91,4 +92,23 @@ void Simulation::switch_lecture(istringstream &data)
         default: cout<< "Erreur, on est arrivés dans le default du switch de lecture" 
                 << endl;
     }   
+}
+void test_age(Entite entite)
+{
+    int age = entite.getAge();
+    if(age==0)
+    {
+        cout <<message::lifeform_age(age);
+        std ::exit(EXIT_FAILURE);
+    }
+}
+
+void test_age(Entite entite)
+{
+    int age = entite.getAge();
+    if(age==0)
+    {
+        cout <<message::lifeform_age(age);
+        std ::exit(EXIT_FAILURE);
+    }
 }
