@@ -1,7 +1,6 @@
 #include "lifeform.h"
 
 using namespace std;
-
 S2d Entite::getPosition() const
 {
     return pos;
@@ -36,8 +35,8 @@ Corail::Corail(istringstream &data)
     for(unsigned i(0);i <= nb_seg; ++i)
     {
         double angle;
-        unsigned int longueur;
-        data >> angle >> longueur;
+        int longueur;
+        data >> angle >> longueur;//marche pas il faut lire d'autre lignes
         Segment new_segment(base,angle,longueur);
         segments.push_back(new_segment);
 
@@ -80,6 +79,10 @@ Entite Scavenger::getEntite() const
 {
     return proprietes;
 }
+int Scavenger::getcorIdCible() const
+{
+    return cor_id_cible;
+}
 //.....................................................................................
 //definition des geteurs pour le corail
 
@@ -112,4 +115,85 @@ unsigned int Corail::getNbSeg() const
 std::vector<Segment> Corail::getSegments() const 
 { 
     return segments; 
+}
+
+void testAge(unsigned int age)
+{
+    
+    //pas de test avec des valeurs negatives pour l'age
+    if(age==0)
+    {
+        cout <<message::lifeform_age(age);
+        std ::exit(EXIT_FAILURE);
+    }
+}
+void testSeg(Corail corail)
+{   
+    std::vector<Segment> segments = corail.getSegments();
+    for(long unsigned int i(0);i < segments.size();i++)
+    {
+        unsigned int longeur = segments[i].getLongeur();
+        int id = corail.getId();
+        if(longeur< l_repro-l_seg_interne or longeur>=l_repro)
+        {
+        
+        cout <<message::segment_length_outside(id,longeur);
+        std ::exit(EXIT_FAILURE);
+
+        }
+        double angle = segments[i].getAngle();
+        if(angle< -M_PI or angle > M_PI)
+        {
+        
+        cout <<message::segment_angle_outside(id,angle);
+        std ::exit(EXIT_FAILURE);
+
+        if (i != 0)
+        {
+            if(segments[i].intersect_mm(segments[i-1]))
+            {
+                cout <<message::segment_superposition(id, i-1, i);
+                std ::exit(EXIT_FAILURE);
+            }
+
+        }
+        }
+    }
+}
+void testRayon(double rayon)
+{
+    if(rayon <r_sca or rayon > r_sca_repro)
+    {
+        cout <<message::scavenger_radius_outside(rayon);
+        std ::exit(EXIT_FAILURE);
+    }
+}
+void testPos(S2d pos)
+{   /*pour resoudre le conflit entre la fct et la variable max 
+    on spécifie avec :: le namespace globale*/
+
+    if(pos.x< 1 or pos.x> ::max -1 or pos.y< 1 or pos.y> ::max -1)
+    {
+        cout <<message::lifeform_center_outside(pos.x,pos.y);
+        std ::exit(EXIT_FAILURE);
+    }
+}
+void Corail::testCorail() const
+{
+    testAge(proprietes.getAge());
+    testPos(proprietes.getPosition());
+    testSeg(*this);
+
+}
+void Algue::testAlgue() const
+{
+    testAge(proprietes.getAge());
+    testPos(proprietes.getPosition());
+
+}void Scavenger::testScavenger() const
+{
+    testAge(proprietes.getAge());
+    testPos(proprietes.getPosition());
+    testRayon(rayon);
+
 }

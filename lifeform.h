@@ -4,10 +4,12 @@
 
 #include <string>
 #include <sstream>
+#include <cmath>
 #include <iostream>
 #include <vector>
 #include "shape.h"
 #include "constantes.h"
+#include "message.h"
 
 class Entite
 {
@@ -33,7 +35,10 @@ private :
     int cor_id_cible;
 public :
     Scavenger(std::istringstream& data);
+    int getcorIdCible() const;
     Entite getEntite() const;
+    void testScavenger() const;
+
 };
 
 class Corail{
@@ -56,6 +61,7 @@ public :
     bool getStatutDev() const;
     unsigned int getNbSeg() const;
     std::vector<Segment> getSegments() const;
+    void testCorail() const;
 };
 
 class Algue{
@@ -64,5 +70,7 @@ private:
 public:
     Algue(std::istringstream& data);
     Entite getEntite() const;
+    void testAlgue() const;
+
 };
 #endif // LIFEFORM_H_INCLUDED

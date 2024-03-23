@@ -2,7 +2,6 @@
 #define SIMULATION_H_INCLUDED
 
 #include <string>
-#include <cmath>
 #include <vector>
 #include <iostream>
 #include <fstream>//pour ouvrir et lire fichiers
