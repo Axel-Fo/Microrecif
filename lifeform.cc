@@ -1,6 +1,7 @@
 #include "lifeform.h"
 
 using namespace std;
+
 S2d Entite::getPosition() const
 {
     return pos;
@@ -28,20 +29,19 @@ Corail::Corail(istringstream &data)
     
     proprietes.setPosition(x, y);
     proprietes.setAge(age);
+    //tant qu'un corail ne possède pas de segments son extremite est sa base :
+    extremite = proprietes.getPosition();
+}
 
-    S2d base(proprietes.getPosition());
-
-    // on regarde les propriétés de chaque segment pour les entrer :
-    for(unsigned i(0);i <= nb_seg; ++i)
-    {
-        double angle;
-        int longueur;
-        data >> angle >> longueur;//marche pas il faut lire d'autre lignes
-        Segment new_segment(base,angle,longueur);
-        segments.push_back(new_segment);
-
-        base = new_segment.autre_pt(new_segment);  
-    }
+void Corail::ajout_seg(istringstream &data)
+{
+    double angle;
+    unsigned int longueur;
+    data >> angle >> longueur;
+    Segment new_segment(extremite,angle,longueur);
+    segments.push_back(new_segment);
+    //nouvelle extremite
+    extremite = new_segment.autre_pt(new_segment);
 }
 
 Scavenger::Scavenger(istringstream &data)
@@ -112,7 +112,8 @@ unsigned int Corail::getNbSeg() const
 { 
     return nb_seg; 
 }
-std::vector<Segment> Corail::getSegments() const 
+
+vector<Segment> Corail::getSegments() const 
 { 
     return segments; 
 }
@@ -190,7 +191,9 @@ void Algue::testAlgue() const
     testAge(proprietes.getAge());
     testPos(proprietes.getPosition());
 
-}void Scavenger::testScavenger() const
+}
+
+void Scavenger::testScavenger() const
 {
     testAge(proprietes.getAge());
     testPos(proprietes.getPosition());

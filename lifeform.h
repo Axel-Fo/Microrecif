@@ -50,6 +50,7 @@ private :
     bool statut_dev;
     unsigned int nb_seg;
     std::vector<Segment> segments;
+    S2d extremite;
     
 public :
     //constructeur
@@ -61,6 +62,7 @@ public :
     bool getStatutDev() const;
     unsigned int getNbSeg() const;
     std::vector<Segment> getSegments() const;
+    void ajout_seg(std::istringstream& data);
     void testCorail() const;
 };
 

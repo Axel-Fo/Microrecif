@@ -9,7 +9,7 @@ void Simulation::lecture(string fichier_entree)
     string line;
     
     ifstream fichier(fichier_entree); 
-    if(!fichier.fail()) 
+    if(fichier.fail()) 
     {
         etat_lecture = NBA;
         compteur = 0 ;
@@ -77,7 +77,10 @@ void Simulation::switch_lecture(istringstream &data)
             algues.push_back(new_alg);
             ++compteur;
             if (compteur == nbAlg)
+            {
                 etat_lecture = NBC;
+                compteur = 0;
+            }
             break;
         }
         case NBC:
@@ -91,14 +94,24 @@ void Simulation::switch_lecture(istringstream &data)
         }
         case COR:
         {
-            compteur = 0;
             Corail new_corail(data);
             new_corail.testCorail();
             test_id(coraux,new_corail);
             coraux.push_back(new_corail);
             ++compteur;
+            nbSeg= new_corail.getNbSeg();
+            etat_lecture = SEG;
             if (compteur == nbCor)
                 etat_lecture = NBS;
+            break;
+        }
+        case SEG:
+        {
+            //on ajoute au dernier corail du vecteur un segment
+            (coraux.back()).ajout_seg(data);
+            compteur_seg++;
+            if (compteur_seg == nbSeg)
+                etat_lecture = NBC;
             break;
         }
         case NBS:
@@ -115,10 +128,10 @@ void Simulation::switch_lecture(istringstream &data)
             Scavenger new_sca(data);
             new_sca.testScavenger();
             scavengers.push_back(new_sca);
-            //plus besoin du compteur forcement des donnees de scavenger.
+            //plus besoin du compteur car forcement des donnees de scavenger.
             break;
         }
-        default: cout<< "Erreur, on est arrivés dans le default du switch de lecture" 
+        default: cout<< "Erreur, on est arrivé dans le default du switch de lecture" 
                 << endl;
     }   
 }

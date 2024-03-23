@@ -15,7 +15,7 @@
 enum Etat_lecture
 {
     NBA, ALG ,
-    NBC, COR, 
+    NBC, COR, SEG, 
     NBS, SCA 
 };
 
@@ -26,6 +26,8 @@ private:
     std::vector<Algue> algues;
     unsigned int etat_lecture;
     unsigned int compteur;
+    unsigned int nbSeg;
+    unsigned int compteur_seg;
     unsigned int nbAlg;
     unsigned int nbCor;
     unsigned int nbSca;
