@@ -36,6 +36,10 @@ public:
  
  void setAngle(double a);
  void setLongeur(double l);
+
+ double getAngle() const ;
+ double getLongeur() const ;
+ S2d getPoint () const ;
 };
 
 class Cercle

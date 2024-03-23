@@ -28,6 +28,18 @@ void Segment::setLongeur(double l)
     }
 
 }
+double Segment::getAngle() const
+{
+    return angle;
+}
+double Segment::getLongeur() const
+{
+    return longeur;
+}
+S2d Segment::getPoint() const
+{
+    return point;
+}
 //pour avoir le deuxième pt du segment
 S2d Segment::autre_pt(Segment seg)//a modifier
 {
@@ -122,7 +134,6 @@ double Segment::ecart_ang(Segment autre)
 }
  bool Segment:: intersect_mm(Segment autre)
 {
-    
     if(this->ecart_ang(autre) == 0)
     {
         return true;

@@ -6,7 +6,7 @@ CXXFLAGS = -g -Wall -std=c++11
 CXXFILES = projet.cc message.cc shape.cc simulation.cc lifeform.cc
 OFILES = $(CXXFILES:.cc=.o)
 
-TEST_CXXFILES = test.cc message.cc shape.cc simulation.cc
+TEST_CXXFILES = test.cc message.cc shape.cc 
 TEST_OFILES = $(TEST_CXXFILES:.cc=.o)
 
 # Definition de la premiere regle
@@ -37,8 +37,11 @@ clean:
 # -- Regles de dependances generees automatiquement
 #
 # DO NOT DELETE THIS LINE
-projet.o: projet.cc
+projet.o: projet.cc simulation.h lifeform.h shape.h constantes.h \
+ message.h
 message.o: message.cc message.h
 shape.o: shape.cc shape.h
-simulation.o: simulation.cc simulation.h
+simulation.o: simulation.cc simulation.h lifeform.h shape.h constantes.h \
+ message.h
+lifeform.o: lifeform.cc lifeform.h shape.h constantes.h
 test.o: test.cc shape.h

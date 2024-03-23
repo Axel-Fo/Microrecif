@@ -45,7 +45,7 @@ void Simulation::switch_lecture(istringstream &data)
         case ALG:
         {
             Algue new_alg(data);
-            test_age();
+            //test_age();
             algues.push_back(new_alg);
             ++compteur;
             if (compteur == nbAlg)
@@ -96,6 +96,7 @@ void Simulation::switch_lecture(istringstream &data)
 void test_age(Entite entite)
 {
     int age = entite.getAge();
+    //pas de test avec des valeurs negatives pour l'age
     if(age==0)
     {
         cout <<message::lifeform_age(age);
@@ -103,12 +104,58 @@ void test_age(Entite entite)
     }
 }
 
-void test_age(Entite entite)
+/*void test_pos(Entite entite)
 {
-    int age = entite.getAge();
-    if(age==0)
+    S2d pos = entite.getPosition();
+    bool x = pos.x< 1 or pos.x> constantes::max -1;///jsp pas commmmmmment faire pour max
+    bool y = pos.y< 1 or pos.y> constantes::max -1;
+    if(x or y)
     {
-        cout <<message::lifeform_age(age);
+        cout <<message::lifeform_center_outside(1, constantes::max  -1);
         std ::exit(EXIT_FAILURE);
+    }
+}*/
+void test_id(std::vector<Corail> coraux,Corail corail)
+{
+    for(long unsigned int i(0); i< coraux.size();i++)
+    {
+        if(coraux[i].getId() == corail.getId())
+        {
+        cout <<message::lifeform_duplicated_id(corail.getId());
+        std ::exit(EXIT_FAILURE);
+        }
+    }
+}
+void test_seg(Corail corail)
+{   
+    std::vector<Segment> segments = corail.getSegments();
+    for(long unsigned int i(0);i < segments.size();i++)
+    {
+        unsigned int longeur = segments[i].getLongeur();
+        int id = corail.getId();
+        if(longeur< l_repro-l_seg_interne or longeur>=l_repro)
+        {
+        
+        cout <<message::segment_length_outside(id,longeur);
+        std ::exit(EXIT_FAILURE);
+
+        }
+        double angle = segments[i].getAngle();
+        if(angle< -M_PI or angle > M_PI)
+        {
+        
+        cout <<message::segment_angle_outside(id,angle);
+        std ::exit(EXIT_FAILURE);
+
+        if (i != 0)
+        {
+            if(segments[i].intersect_mm(segments[i-1]))
+            {
+                cout <<message::segment_superposition(id, i-1, i);
+                std ::exit(EXIT_FAILURE);
+            }
+
+        }
+        }
     }
 }

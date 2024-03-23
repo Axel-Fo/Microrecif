@@ -71,19 +71,19 @@ Algue::Algue(istringstream &data)
 
 }
 
-Entite Algue::getEntite()
+Entite Algue::getEntite() const
 {
     return proprietes;
 }
 
-Entite Scavenger::getEntite()
+Entite Scavenger::getEntite() const
 {
     return proprietes;
 }
 //.....................................................................................
 //definition des geteurs pour le corail
 
-Entite Corail::getEntite()
+Entite Corail::getEntite() const
 {
     return proprietes;
 }
@@ -109,7 +109,7 @@ unsigned int Corail::getNbSeg() const
 { 
     return nb_seg; 
 }
-vector<Segment> Corail::getSegments() const 
+std::vector<Segment> Corail::getSegments() const 
 { 
     return segments; 
 }
