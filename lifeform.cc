@@ -171,7 +171,7 @@ void testRayon(double rayon)
 }
 void testPos(S2d pos)
 {   /*pour resoudre le conflit entre la fct et la variable max 
-    on spécifie avec :: le namespace globale*/
+    on spécifie avec :: le namespace global*/
 
     if(pos.x< 1 or pos.x> ::max -1 or pos.y< 1 or pos.y> ::max -1)
     {
