@@ -12,17 +12,13 @@ Segment::Segment(S2d point,double a, double l)
 // les fonctions set
 void Segment::setAngle(double a)
 {
-    if(a <= M_PI and a > -M_PI)
-    {
         angle = a;
-    }
-
 }
 
 
 void Segment::setLongeur(double l)
 {
-    if(l>0)
+    if(l>=0)
     {
         longeur = l;
     }
@@ -41,12 +37,12 @@ S2d Segment::getPoint() const
     return point;
 }
 //pour avoir le deuxième pt du segment
-S2d Segment::autre_pt(Segment seg)//a modifier
+S2d Segment::autre_pt()//a modifier
 {
-    S2d point;
-    point.x = seg.point.x + seg.longeur*cos(seg.angle);
-    point.y = seg.point.y + seg.longeur*sin(seg.angle);
-    return point;
+    S2d autre;
+    autre.x = point.x + longeur*cos(angle);
+    autre.y = point.y + longeur*sin(angle);
+    return autre;
 }
 double norme(S2d pt1, S2d pt2)
 {
@@ -86,9 +82,9 @@ int orientation(S2d p, S2d q, S2d r,Etat_epsil_zero etat)
 } 
 bool Segment ::intersect(Segment autre, Etat_epsil_zero etat)
 {   S2d p1 = point;
-    S2d p2 = autre_pt(*this);
+    S2d p2 = autre.autre_pt();
     S2d q1 = autre.point;
-    S2d q2 = autre_pt(autre);
+    S2d q2 = autre_pt();
     // Find the four orientations needed for general and 
  
     int o1 = orientation(p1, q1, p2, etat); 
@@ -97,7 +93,7 @@ bool Segment ::intersect(Segment autre, Etat_epsil_zero etat)
     int o4 = orientation(p2, q2, q1, etat); 
   
     // General case 
-    if (o1 != o2 && o3 != o4) 
+    if (o1 != o2 && o3 != o4)
         return true; 
   
     // Special Cases 

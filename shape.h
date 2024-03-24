@@ -32,7 +32,7 @@ public:
  double ecart_ang(Segment autre);
  bool intersect_mm(Segment autre);
  
- S2d autre_pt(Segment seg);
+ S2d autre_pt();
  
  void setAngle(double a);
  void setLongeur(double l);

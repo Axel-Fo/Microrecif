@@ -30,7 +30,6 @@ class Scavenger{
 private :
     Entite proprietes;
     bool statut_sca; //0 pour LIBRE et 1 pour MANGE
-    bool vie_sca;
     double rayon;
     int cor_id_cible;
 public :
@@ -38,6 +37,7 @@ public :
     int getcorIdCible() const;
     Entite getEntite() const;
     void testScavenger() const;
+    bool getStatutSca()const;
 
 };
 
