@@ -63,20 +63,28 @@ void testIdMange(vector<Corail> coraux, Scavenger scav)
 void testcollision(vector<Corail> coraux, Corail corail)// a voir 0³ vraimnet
 {   
     vector<Segment> segs = corail.getSegments();
+    //test de collision avec les autres
     for(unsigned int i(0); i < coraux.size(); i++)
     {   
          for(unsigned int j(0); j < (coraux[i].getSegments()).size(); j++)
         {
              for(unsigned int k(0); k < segs.size(); k++)
             {   
-                if(segs[k].intersect((coraux[i].getSegments())[j],NOT_EPSIL))
+                if(!(coraux[i].getId()==corail.getId() and (k==j+1 or k==j-1)))
+                /*on ne veut pas tester la collision entre 
+                deux segments qui se précèdent sur le mm corail*/
                 {
-                    cout <<message::segment_collision(coraux[i].getId(),j,corail.getId(),k);
-                    std ::exit(EXIT_FAILURE);  
+                    if(segs[k].intersect((coraux[i].getSegments())[j],NOT_EPSIL))
+                    {   
+                        cout <<message::segment_collision(coraux[i].getId(),j,corail.getId(),k);
+                        std ::exit(EXIT_FAILURE);  
+                    }
                 }
             }
         }
     }
+
+
 
 }
 void Simulation::switch_lecture(istringstream &data)
