@@ -1,0 +1,3 @@
+#!/bin/bash
+./projet  t/t$1.txt > result/sortie$1.txt
+diff out/out$1.txt result/sortie$1.txt  

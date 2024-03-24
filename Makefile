@@ -20,6 +20,25 @@ test: $(TEST_OFILES)
 	$(CXX) $(TEST_OFILES) -o test
 
 # Definitions de cibles particulieres
+runtest: 
+	rm -rf result 
+	mkdir -p result
+	./testproject 00
+	./testproject 01
+	./testproject 02
+	./testproject 03
+	./testproject 04
+	./testproject 05
+	./testproject 06
+	./testproject 07
+	./testproject 08
+	./testproject 09
+	./testproject 10
+	./testproject 11
+	./testproject 12
+	./testproject 13
+	./testproject 14
+	./testproject 15
 
 depend:
 	@echo " *** MISE A JOUR DES DEPENDANCES ***"
