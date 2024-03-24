@@ -83,8 +83,8 @@ int orientation(S2d p, S2d q, S2d r,Etat_epsil_zero etat)
 bool Segment ::intersect(Segment autre, Etat_epsil_zero etat)
 {   S2d p1 = point;
     S2d p2 = autre.autre_pt();
-    S2d q1 = autre.point;
-    S2d q2 = autre_pt();
+    S2d q1 = autre_pt();
+    S2d q2 = autre.point;
     // Find the four orientations needed for general and 
  
     int o1 = orientation(p1, q1, p2, etat); 

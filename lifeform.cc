@@ -185,7 +185,7 @@ void testPos(S2d pos)
 }
 void testRayon(double rayon)
 {
-    if(rayon <r_sca or rayon > r_sca_repro)
+    if(rayon <r_sca or rayon >= r_sca_repro)
     {
         cout <<message::scavenger_radius_outside(rayon);
         std ::exit(EXIT_FAILURE);
