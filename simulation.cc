@@ -1,6 +1,6 @@
 #include "simulation.h"
 
-
+//test git 25.03.24
 using namespace std;
 //on traite le fichier ligne par ligne
 
