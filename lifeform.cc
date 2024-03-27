@@ -7,7 +7,7 @@
 
 using namespace std;
 
-//Prototypes des fonctions:
+//Prototypes des fonctions utilisées par les methodes de classe:
 void testPos(S2d pos);
 void testAge(unsigned int age);
 
@@ -54,7 +54,7 @@ Corail::Corail(istringstream& data) {
     S2d pos;
     int age;
     data >> pos.x >> pos.y >> age >> id >> vie_cor 
-            >> sens_rota >> statut_dev >> nb_seg;
+         >> sens_rota >> statut_dev >> nb_seg;
 
     Entite new_entite(pos,age);
     proprietes = new_entite;
@@ -168,7 +168,7 @@ Entite Algue::getEntite() const {
 }
 
 //....................................................................................
-//Definition des fonctions utilisées par plusieur classes :
+//Definition des fonctions utilisées par plusieurs classes :
 
 void testAge(unsigned int age) {
     // pas de test avec des valeurs negatives pour l'age

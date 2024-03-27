@@ -1,3 +1,9 @@
+/*
+* Fichier : projet.cc
+* Auteurs : Nestor Guibentif et Axel Fouet
+* Version : V1
+*/
+
 #include <iostream>
 #include "simulation.h"
 

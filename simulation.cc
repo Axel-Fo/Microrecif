@@ -1,9 +1,11 @@
+/*
+* Fichier : simulation.cc
+* Auteurs : Nestor Guibentif et Axel Fouet
+* Version : V1
+*/
 #include "simulation.h"
 
 using namespace std;
-
-
-
 
 bool Simulation::idExist(int id) {
     for (long unsigned int i(0); i < coraux.size(); i++) {
@@ -14,7 +16,7 @@ bool Simulation::idExist(int id) {
     return false;
 }
 
-void Simulation::test_id(Corail corail) {
+void Simulation::testId(Corail corail) {
     if (idExist(corail.getId())) {
         cout << message::lifeform_duplicated_id(corail.getId());
         std ::exit(EXIT_FAILURE);
@@ -89,7 +91,7 @@ void Simulation::switch_lecture(istringstream& data) {
         }
         case COR: {
             Corail new_corail(data);
-            test_id(new_corail);
+            testId(new_corail);
             coraux.push_back(new_corail);
             ++compteur;
             nbSeg = new_corail.getNbSeg();

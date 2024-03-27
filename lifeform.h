@@ -16,6 +16,7 @@
 #include "message.h"
 #include "shape.h"
 
+//Classe Entite qui sera une Super Classe pour les prochains rendus.
 class Entite {
 private:
     S2d pos;

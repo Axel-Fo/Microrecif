@@ -36,6 +36,7 @@ class Segment {
     S2d getPoint() const;
 };
 
+//Classes qui seront utilisées pour les prochains rendus
 class Cercle {
    private:
     S2d centre;

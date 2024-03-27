@@ -1,5 +1,5 @@
 /*
-* Fichier : simulation.cc
+* Fichier : simulation.h
 * Auteurs : Nestor Guibentif et Axel Fouet
 * Version : V1
 */
@@ -41,7 +41,7 @@ private:
     
     void switch_lecture(std::istringstream& data);
     bool idExist(int id);
-    void test_id(Corail corail);
+    void testId(Corail corail);
     void testIdMange(Scavenger scav);
     void testCollision(Corail corail);
 
