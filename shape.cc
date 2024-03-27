@@ -18,15 +18,19 @@ void Segment::setLongeur(double l) {
         longeur = l;
     }
 }
+
 double Segment::getAngle() const {
     return angle;
 }
+
 double Segment::getLongeur() const {
     return longeur;
 }
+
 S2d Segment::getPoint() const {
     return point;
 }
+
 // pour avoir le deuxième pt du segment
 S2d Segment::autre_pt()  // a modifier
 {
@@ -35,6 +39,7 @@ S2d Segment::autre_pt()  // a modifier
     autre.y = point.y + longeur * sin(angle);
     return autre;
 }
+
 double norme(S2d pt1, S2d pt2) {
     return sqrt(pow(pt1.x - pt2.x, 2) + pow(pt1.y - pt2.y, 2));
 }
@@ -53,6 +58,7 @@ bool onSegment(S2d p, S2d q, S2d r, Etat_epsil_zero etat) {
         return true;
     return false;
 }
+
 int orientation(S2d p, S2d q, S2d r, Etat_epsil_zero etat) {
     double comparaison(0.);
     if (etat) {
@@ -67,6 +73,7 @@ int orientation(S2d p, S2d q, S2d r, Etat_epsil_zero etat) {
 
     return (val > 0) ? 1 : 2;  // clock or counterclock wise
 }
+
 bool Segment ::intersect(Segment autre, Etat_epsil_zero etat) {
     S2d p1 = point;
     S2d p2 = autre.autre_pt();
@@ -114,6 +121,7 @@ double Segment::ecart_ang(Segment autre) {
 
     return ang_ecart;
 }
+
 bool Segment::intersect_mm(Segment autre) {
     if (this->ecart_ang(autre) == 0) {
         return true;

@@ -19,6 +19,7 @@ enum Etat_lecture {
     NBS,
     SCA
 };  
+
 class Simulation {
    private:
     std::vector<Corail> coraux;
