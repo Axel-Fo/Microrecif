@@ -16,14 +16,17 @@ class Segment {
     double angle;
     double longeur;
 
+    double norme(S2d pt1, S2d pt2) const;
+    int orientation(S2d p, S2d q, S2d r, Etat_epsil_zero etat) const;
+    bool onSegment(S2d p, S2d q, S2d r, Etat_epsil_zero etat) const;
+
    public:
     Segment(S2d point, double a, double l);
 
-    bool intersect(Segment autre, Etat_epsil_zero etat);
-    double ecart_ang(Segment autre);
-    bool intersect_mm(Segment autre);
-
-    S2d autre_pt();
+    bool intersect(Segment autre, Etat_epsil_zero etat) const;
+    double ecart_ang(Segment autre) const;
+    bool intersect_mm(Segment autre) const;
+    S2d autre_pt() const;
 
     void setAngle(double a);
     void setLongeur(double l);

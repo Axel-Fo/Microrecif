@@ -19,7 +19,7 @@ projet: $(OFILES)
 test: $(TEST_OFILES)
 	$(CXX) $(TEST_OFILES) -o test
 
-# Definitions de cibles particulieres
+# Pour faire tous les test
 runtest: 
 	rm -rf result 
 	mkdir -p result

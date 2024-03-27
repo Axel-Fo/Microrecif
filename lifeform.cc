@@ -1,6 +1,20 @@
+/*
+* Fichier : lifeform.cc
+* Auteurs : Nestor Guibentif et Axel Fouet
+* Version : V1
+*/
 #include "lifeform.h"
 
 using namespace std;
+
+//Prototypes des fonctions:
+void testPos(S2d pos);
+void testAge(unsigned int age);
+
+//Classe Entite.......................................................................
+//constructeur par défaut :
+Entite::Entite(){}
+Entite::Entite(S2d pos,unsigned int age): pos(pos), age(age){}
 
 S2d Entite::getPosition() const {
     return pos;
@@ -9,25 +23,46 @@ S2d Entite::getPosition() const {
 unsigned int Entite::getAge() const {
     return age;
 }
-void Entite::setPosition(double newX, double newY) {
-    pos.x = newX;
-    pos.y = newY;
-}
-void Entite::setAge(unsigned int newAge) {
-    age = newAge;
+
+
+//Classe Corail.......................................................................
+
+void Corail::testSeg() const {
+    for (long unsigned int i(0); i < segments.size(); i++) {
+        unsigned int longeur = segments[i].getLongeur();
+        // on teste si la longeur du segment est bien dans l'intervalle
+        if (longeur < l_repro - l_seg_interne or longeur >= l_repro) {
+            cout << message::segment_length_outside(id, longeur);
+            std ::exit(EXIT_FAILURE);
+
+        }// on teste si l'angle est dans le bon intervalle
+        double angle = segments[i].getAngle();
+        if (angle < -M_PI or angle > M_PI) {
+            cout << message::segment_angle_outside(id, angle);
+            std ::exit(EXIT_FAILURE);
+        }
+        // on teste si l'extremité du segment est bien dans le cadre
+        S2d autre = segments[i].autre_pt();
+        if (autre.x < 0 or autre.x > dmax or autre.y < 0 or autre.y > dmax) {
+            cout << message::lifeform_computed_outside(id, autre.x, autre.y);
+            std ::exit(EXIT_FAILURE);
+        }
+    }
 }
 
 Corail::Corail(istringstream& data) {
-    double x, y;
+    S2d pos;
     int age;
-    data >> x >> y >> age >> id >> vie_cor >> sens_rota >> statut_dev >> nb_seg;
+    data >> pos.x >> pos.y >> age >> id >> vie_cor 
+            >> sens_rota >> statut_dev >> nb_seg;
 
-    proprietes.setPosition(x, y);
-    proprietes.setAge(age);
+    Entite new_entite(pos,age);
+    proprietes = new_entite;
     // tant qu'un corail ne possède pas de segments son extremite est sa base :
     extremite = proprietes.getPosition();
 }
 
+//Méthodes publiques corail:
 void Corail::ajout_seg(istringstream& data) {
     double angle;
     unsigned int longueur;
@@ -38,41 +73,12 @@ void Corail::ajout_seg(istringstream& data) {
     extremite = new_segment.autre_pt();
 }
 
-Scavenger::Scavenger(istringstream& data) {
-    double x, y;
-    unsigned int age;
-    data >> x >> y >> age >> rayon >> statut_sca;
-
-    proprietes.setPosition(x, y);
-    proprietes.setAge(age);
-    if (statut_sca) {
-        data >> cor_id_cible;
-    }
+void Corail::testCorail() const {
+    testAge(proprietes.getAge());
+    testPos(proprietes.getPosition());
+    testSeg();
 }
 
-Algue::Algue(istringstream& data) {
-    double x, y;
-    int age;
-    data >> x >> y >> age;
-
-    proprietes.setPosition(x, y);
-    proprietes.setAge(age);
-}
-
-Entite Algue::getEntite() const {
-    return proprietes;
-}
-
-Entite Scavenger::getEntite() const {
-    return proprietes;
-}
-int Scavenger::getcorIdCible() const {
-    return cor_id_cible;
-}
-bool Scavenger::getStatutSca() const {
-    return statut_sca;
-}
-//.....................................................................................
 // definition des geteurs pour le corail
 
 Entite Corail::getEntite() const {
@@ -86,12 +92,14 @@ int Corail::getId() const {
 bool Corail::getVieCor() const {
     return vie_cor;
 }
+
 bool Corail::getSensRota() const {
     return sens_rota;
 }
 bool Corail::getStatutDev() const {
     return statut_dev;
 }
+
 unsigned int Corail::getNbSeg() const {
     return nb_seg;
 }
@@ -100,6 +108,68 @@ vector<Segment> Corail::getSegments() const {
     return segments;
 }
 
+//Classe Scavenger....................................................................
+
+void Scavenger::testRayon() const {
+    if (rayon < r_sca or rayon >= r_sca_repro) {
+        cout << message::scavenger_radius_outside(rayon);
+        std ::exit(EXIT_FAILURE);
+    }
+}
+
+Scavenger::Scavenger(istringstream& data) {
+    S2d pos;
+    unsigned int age;
+    data >> pos.x >> pos.y >> age >> rayon >> statut_sca;
+
+    Entite new_entite(pos,age);
+    proprietes = new_entite;
+    if (statut_sca) {
+        data >> cor_id_cible;
+    }
+}
+
+void Scavenger::testScavenger() const {
+    testAge(proprietes.getAge());
+    testPos(proprietes.getPosition());
+    testRayon();
+}
+
+int Scavenger::getcorIdCible() const {
+    return cor_id_cible;
+}
+
+Entite Scavenger::getEntite() const {
+    return proprietes;
+}
+
+bool Scavenger::getStatutSca() const {
+    return statut_sca;
+}
+
+//Classe Algue........................................................................
+
+Algue::Algue(istringstream& data) {
+    S2d pos;
+    int age;
+    data >> pos.x >> pos.y >> age;
+
+    Entite new_entite(pos,age);
+    proprietes = new_entite;
+}
+
+void Algue::testAlgue() const {
+    testAge(proprietes.getAge());
+    testPos(proprietes.getPosition());
+}
+
+Entite Algue::getEntite() const {
+    return proprietes;
+}
+
+//....................................................................................
+//Definition des fonctions utilisées par plusieur classes :
+
 void testAge(unsigned int age) {
     // pas de test avec des valeurs negatives pour l'age
     if (age == 0) {
@@ -107,64 +177,11 @@ void testAge(unsigned int age) {
         std ::exit(EXIT_FAILURE);
     }
 }
-void testSeg(Corail corail) {
-    unsigned int id = corail.getId();
-    std::vector<Segment> segments = corail.getSegments();
-    for (long unsigned int i(0); i < segments.size(); i++) {  // on test la longeur du segment
-        unsigned int longeur = segments[i].getLongeur();
 
-        if (longeur < l_repro - l_seg_interne or longeur >= l_repro) {
-            cout << message::segment_length_outside(id, longeur);
-            std ::exit(EXIT_FAILURE);
+void testPos(S2d pos) { 
 
-        }  // on test si l'angle est dans le bon interval
-        double angle = segments[i].getAngle();
-        if (angle < -M_PI or angle > M_PI) {
-            cout << message::segment_angle_outside(id, angle);
-            std ::exit(EXIT_FAILURE);
-        }
-        // on test si le segment est replier sur le précédent si il existe
-        if (i != 0) {
-            if (segments[i].intersect_mm(segments[i - 1])) {
-                cout << message::segment_superposition(id, i - 1, i);
-                std ::exit(EXIT_FAILURE);
-            }
-        }
-        // on test si l'extremité sur segment est bien dans le cadre
-        S2d autre = segments[i].autre_pt();
-        if (autre.x < 0 or autre.x > ::max or autre.y < 0 or autre.y > ::max) {
-            cout << message::lifeform_computed_outside(id, autre.x, autre.y);
-            std ::exit(EXIT_FAILURE);
-        }
-    }
-}
-
-void testPos(S2d pos) { /*pour resoudre le conflit entre la fct et la variable max
-                        on spécifie avec :: le namespace global*/
-
-    if (pos.x < 1 or pos.x > ::max - 1 or pos.y < 1 or pos.y > ::max - 1) {
+    if (pos.x < 1 or pos.x > dmax - 1 or pos.y < 1 or pos.y > dmax - 1) {
         cout << message::lifeform_center_outside(pos.x, pos.y);
         std ::exit(EXIT_FAILURE);
     }
-}
-void testRayon(double rayon) {
-    if (rayon < r_sca or rayon >= r_sca_repro) {
-        cout << message::scavenger_radius_outside(rayon);
-        std ::exit(EXIT_FAILURE);
-    }
-}
-void Corail::testCorail() const {
-    testAge(proprietes.getAge());
-    testPos(proprietes.getPosition());
-    testSeg(*this);
-}
-void Algue::testAlgue() const {
-    testAge(proprietes.getAge());
-    testPos(proprietes.getPosition());
-}
-
-void Scavenger::testScavenger() const {
-    testAge(proprietes.getAge());
-    testPos(proprietes.getPosition());
-    testRayon(rayon);
 }

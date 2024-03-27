@@ -2,28 +2,10 @@
 
 using namespace std;
 
-void Simulation::lecture(string fichier_entree) {
-    string line;
 
-    ifstream fichier(fichier_entree);
-    if (!fichier.fail()) {
-        etat_lecture = NBA;
-        compteur = 0;
-        nbAlg = 0;
-        nbSca = 0;
-        nbCor = 0;
-        while (getline(fichier >> ws, line)) {
-            if (line[0] == '#')
-                continue;
 
-            istringstream data(line);
-            switch_lecture(data);
-        }
-        cout << message::success();
-    } else
-        cout << "erreur lgn 22 simu" << endl;
-}
-bool idExist(std::vector<Corail> coraux, int id) {
+
+bool Simulation::idExist(int id) {
     for (long unsigned int i(0); i < coraux.size(); i++) {
         if (coraux[i].getId() == id) {
             return true;
@@ -31,33 +13,43 @@ bool idExist(std::vector<Corail> coraux, int id) {
     }
     return false;
 }
-void test_id(vector<Corail> coraux, Corail corail) {
-    if (idExist(coraux, corail.getId())) {
+
+void Simulation::test_id(Corail corail) {
+    if (idExist(corail.getId())) {
         cout << message::lifeform_duplicated_id(corail.getId());
         std ::exit(EXIT_FAILURE);
     }
 }
-void testIdMange(vector<Corail> coraux, Scavenger scav) {
+
+void Simulation::testIdMange(Scavenger scav) {
     if (scav.getStatutSca()) {
-        if (!idExist(coraux, scav.getcorIdCible())) {
+        if (!idExist(scav.getcorIdCible())) {
             cout << message::lifeform_invalid_id(scav.getcorIdCible());
             std ::exit(EXIT_FAILURE);
         }
     }
 }
-void testcollision(vector<Corail> coraux, Corail corail)  // a voir 0³ vraimnet
-{
+
+void Simulation::testCollision(Corail corail){
     vector<Segment> segs = corail.getSegments();
-    // test de collision avec les autres
+    // test de collision avec les autres coraux
     for (unsigned int i(0); i < coraux.size(); i++) {
         for (unsigned int j(0); j < (coraux[i].getSegments()).size(); j++) {
             for (unsigned int k(0); k < segs.size(); k++) {
-                if (!(coraux[i].getId() == corail.getId() and (k == j + 1 or k == j - 1)))
+                if (!(coraux[i].getId() == corail.getId() and (k == j+1 or k == j-1)))
                 /*on ne veut pas tester la collision entre
-                deux segments qui se précèdent sur le mm corail*/
+                deux segments qui se précèdent sur le mm corail mais 
+                on teste avec le else si ils ne sont pas repliés l'un sur l'autre*/
                 {
                     if (segs[k].intersect((coraux[i].getSegments())[j], NOT_EPSIL)) {
-                        cout << message::segment_collision(coraux[i].getId(), j, corail.getId(), k);
+                        cout << message::segment_collision(coraux[i].getId(), 
+                                                            j, corail.getId(), k);
+                        std ::exit(EXIT_FAILURE);
+                    }
+                }else{
+                    if (segs[k].intersect_mm((coraux[i].getSegments())[j])) {
+                        unsigned int id = coraux[i].getId();
+                        cout << message::segment_superposition(id, k - 1, k);
                         std ::exit(EXIT_FAILURE);
                     }
                 }
@@ -65,6 +57,7 @@ void testcollision(vector<Corail> coraux, Corail corail)  // a voir 0³ vraimnet
         }
     }
 }
+
 void Simulation::switch_lecture(istringstream& data) {
     switch (etat_lecture) {
         case NBA: {
@@ -96,7 +89,7 @@ void Simulation::switch_lecture(istringstream& data) {
         }
         case COR: {
             Corail new_corail(data);
-            test_id(coraux, new_corail);
+            test_id(new_corail);
             coraux.push_back(new_corail);
             ++compteur;
             nbSeg = new_corail.getNbSeg();
@@ -108,8 +101,8 @@ void Simulation::switch_lecture(istringstream& data) {
             (coraux.back()).ajout_seg(data);
             compteur_seg++;
             if (compteur_seg == nbSeg) {
-                (coraux.back()).testCorail();  // une fois le segment rempli on peut le tester
-                testcollision(coraux, coraux.back());
+                (coraux.back()).testCorail();
+                testCollision(coraux.back());
                 if (compteur == nbCor) {
                     etat_lecture = NBS;
                     break;
@@ -130,12 +123,39 @@ void Simulation::switch_lecture(istringstream& data) {
         case SCA: {
             Scavenger new_sca(data);
             new_sca.testScavenger();
-            testIdMange(coraux, new_sca);
+            testIdMange(new_sca);
             scavengers.push_back(new_sca);
             // plus besoin du compteur car forcement des donnees de scavenger.
             break;
         }
         default:
-            cout << "Erreur, on est arrivé dans le default du switch de lecture" << endl;
+            cout << "Erreur, on est arrivé dans le default du switch de lecture" 
+                    << endl;
     }
+}
+//...................................................................................
+//Methodes publiques :
+
+Simulation::Simulation(){}
+
+void Simulation::lecture(string fichier_entree) {
+    string line;
+
+    ifstream fichier(fichier_entree);
+    if (!fichier.fail()) {
+        etat_lecture = NBA;
+        compteur = 0;
+        nbAlg = 0;
+        nbSca = 0;
+        nbCor = 0;
+        while (getline(fichier >> ws, line)) {
+            if (line[0] == '#')
+                continue;
+
+            istringstream data(line);
+            switch_lecture(data);
+        }
+        cout << message::success();
+    } else
+        cout << "erreur lgn 22 simu" << endl;
 }

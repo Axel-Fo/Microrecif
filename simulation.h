@@ -1,3 +1,9 @@
+/*
+* Fichier : simulation.cc
+* Auteurs : Nestor Guibentif et Axel Fouet
+* Version : V1
+*/
+
 #ifndef SIMULATION_H_INCLUDED
 #define SIMULATION_H_INCLUDED
 
@@ -21,7 +27,7 @@ enum Etat_lecture {
 };  
 
 class Simulation {
-   private:
+private:
     std::vector<Corail> coraux;
     std::vector<Scavenger> scavengers;
     std::vector<Algue> algues;
@@ -32,9 +38,15 @@ class Simulation {
     unsigned int nbAlg;
     unsigned int nbCor;
     unsigned int nbSca;
+    
     void switch_lecture(std::istringstream& data);
+    bool idExist(int id);
+    void test_id(Corail corail);
+    void testIdMange(Scavenger scav);
+    void testCollision(Corail corail);
 
-   public:
+public:
+    Simulation();
     void lecture(std::string file);
 };
 

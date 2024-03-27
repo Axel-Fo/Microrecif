@@ -2,50 +2,28 @@
 #include <iostream>
 #include "shape.h"
 
-using namespace std;
+//Methodes private Segment............................................................
 
-Segment::Segment(S2d point, double a, double l) : point(point) {
-    setLongeur(l);
-    setAngle(a);
-}
-// les fonctions set
-void Segment::setAngle(double a) {
-    angle = a;
-}
-
-void Segment::setLongeur(double l) {
-    if (l >= 0) {
-        longeur = l;
-    }
-}
-
-double Segment::getAngle() const {
-    return angle;
-}
-
-double Segment::getLongeur() const {
-    return longeur;
-}
-
-S2d Segment::getPoint() const {
-    return point;
-}
-
-// pour avoir le deuxième pt du segment
-S2d Segment::autre_pt()  // a modifier
-{
-    S2d autre;
-    autre.x = point.x + longeur * cos(angle);
-    autre.y = point.y + longeur * sin(angle);
-    return autre;
-}
-
-double norme(S2d pt1, S2d pt2) {
+double Segment::norme(S2d pt1, S2d pt2) const {
     return sqrt(pow(pt1.x - pt2.x, 2) + pow(pt1.y - pt2.y, 2));
 }
-// Given three collinear points p, q, r, the function checks if
-// point q lies on line segment 'pr'
-bool onSegment(S2d p, S2d q, S2d r, Etat_epsil_zero etat) {
+
+int Segment::orientation(S2d p, S2d q, S2d r, Etat_epsil_zero etat) const {
+    double comparaison(0.);
+    if (etat) {
+        comparaison = epsil_zero;
+    }
+
+    double normepq = norme(p, q);
+    double val = (q.y - p.y) * (r.x - q.x) - (q.x - p.x) * (r.y - q.y);
+    val = val / normepq;
+    if (abs(val) <= comparaison)
+        return 0;  // collineaire
+
+    return (val > 0) ? 1 : 2;  
+}
+
+bool Segment::onSegment(S2d p, S2d q, S2d r, Etat_epsil_zero etat) const {
     double comparaison(0.);
     if (etat) {
         comparaison = epsil_zero;
@@ -59,22 +37,13 @@ bool onSegment(S2d p, S2d q, S2d r, Etat_epsil_zero etat) {
     return false;
 }
 
-int orientation(S2d p, S2d q, S2d r, Etat_epsil_zero etat) {
-    double comparaison(0.);
-    if (etat) {
-        comparaison = epsil_zero;
-    }
+//Methodes publiques Segment..........................................................
 
-    double normepq = norme(p, q);
-    double val = (q.y - p.y) * (r.x - q.x) - (q.x - p.x) * (r.y - q.y);
-    val = val / normepq;
-    if (abs(val) <= comparaison)
-        return 0;  // collineaire
+//Constructeur
+Segment::Segment(S2d point, double a, double l) 
+                : point(point), angle(a), longeur(l) {}
 
-    return (val > 0) ? 1 : 2;  // clock or counterclock wise
-}
-
-bool Segment ::intersect(Segment autre, Etat_epsil_zero etat) {
+bool Segment ::intersect(Segment autre, Etat_epsil_zero etat) const {
     S2d p1 = point;
     S2d p2 = autre.autre_pt();
     S2d q1 = autre_pt();
@@ -106,7 +75,7 @@ bool Segment ::intersect(Segment autre, Etat_epsil_zero etat) {
     return false;  // Doesn't fall in any of the above cases
 }
 
-double Segment::ecart_ang(Segment autre) {
+double Segment::ecart_ang(Segment autre) const {
     double ang1 = angle;
     double ang2 = autre.angle;
     double ang_ecart = M_PI + (ang1 - ang2);  // a revoir
@@ -122,9 +91,29 @@ double Segment::ecart_ang(Segment autre) {
     return ang_ecart;
 }
 
-bool Segment::intersect_mm(Segment autre) {
+bool Segment::intersect_mm(Segment autre) const {
     if (this->ecart_ang(autre) == 0) {
         return true;
     }
     return false;
+}
+
+S2d Segment::autre_pt() const {
+    S2d autre;
+    autre.x = point.x + longeur * cos(angle);
+    autre.y = point.y + longeur * sin(angle);
+    return autre;
+}
+//Getteurs et setteurs pour Segment ...................................................
+
+double Segment::getAngle() const {
+    return angle;
+}
+
+double Segment::getLongeur() const {
+    return longeur;
+}
+
+S2d Segment::getPoint() const {
+    return point;
 }
