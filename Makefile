@@ -56,11 +56,11 @@ clean:
 # -- Regles de dependances generees automatiquement
 #
 # DO NOT DELETE THIS LINE
-projet.o: projet.cc simulation.h lifeform.h shape.h constantes.h \
+projet.o: projet.cc simulation.h lifeform.h constantes.h shape.h \
  message.h
 message.o: message.cc message.h
 shape.o: shape.cc shape.h
-simulation.o: simulation.cc simulation.h lifeform.h shape.h constantes.h \
+simulation.o: simulation.cc simulation.h lifeform.h constantes.h shape.h \
  message.h
-lifeform.o: lifeform.cc lifeform.h shape.h constantes.h
+lifeform.o: lifeform.cc lifeform.h constantes.h shape.h message.h
 test.o: test.cc shape.h

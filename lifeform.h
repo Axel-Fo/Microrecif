@@ -1,59 +1,59 @@
 #ifndef LIFEFORM_H_INCLUDED
 #define LIFEFORM_H_INCLUDED
 
-
-#include <string>
-#include <sstream>
 #include <cmath>
 #include <iostream>
+#include <sstream>
+#include <string>
 #include <vector>
-#include "shape.h"
 #include "constantes.h"
 #include "message.h"
+#include "shape.h"
 
-class Entite
-{
-private:
+class Entite {
+   private:
     S2d pos;
     unsigned int age;
-public:
+
+   public:
     // Setters
     void setPosition(double newX, double newY);
     void setAge(unsigned int newAge);
 
     // Getters
     S2d getPosition() const;
-    unsigned int getAge() const; 
+    unsigned int getAge() const;
 };
 
-class Scavenger{
-private :
+class Scavenger {
+   private:
     Entite proprietes;
-    bool statut_sca; //0 pour LIBRE et 1 pour MANGE
+    bool statut_sca;  // 0 pour LIBRE et 1 pour MANGE
+    bool vie_sca;
     double rayon;
     int cor_id_cible;
-public :
+
+   public:
     Scavenger(std::istringstream& data);
     int getcorIdCible() const;
     Entite getEntite() const;
     void testScavenger() const;
-    bool getStatutSca()const;
-
+    bool getStatutSca() const;
 };
 
-class Corail{
-private :
+class Corail {
+   private:
     Entite proprietes;
     int id;
-    bool vie_cor; 
-    bool sens_rota; 
+    bool vie_cor;
+    bool sens_rota;
     bool statut_dev;
     unsigned int nb_seg;
     std::vector<Segment> segments;
     S2d extremite;
-    
-public :
-    //constructeur
+
+   public:
+    // constructeur
     Corail(std::istringstream& data);
     Entite getEntite() const;
     int getId() const;
@@ -66,13 +66,13 @@ public :
     void testCorail() const;
 };
 
-class Algue{
-private:
+class Algue {
+   private:
     Entite proprietes;
-public:
+
+   public:
     Algue(std::istringstream& data);
     Entite getEntite() const;
     void testAlgue() const;
-
 };
-#endif // LIFEFORM_H_INCLUDED
+#endif  // LIFEFORM_H_INCLUDED
