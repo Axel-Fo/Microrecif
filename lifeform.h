@@ -17,23 +17,18 @@
 #include "shape.h"
 
 //Classe Entite qui sera une Super Classe pour les prochains rendus.
-class Entite {
-private:
+class Lifeform {
+protected:
     S2d pos;
     unsigned int age;
 
 public:
-    Entite();
-    Entite(S2d pos, unsigned int age);
-    // Getters
-    S2d getPosition() const;
-    unsigned int getAge() const;
+    Lifeform();
 };
 
 
-class Corail {
+class Corail : public Lifeform {
 private:
-    Entite proprietes;
     int id;
     bool vie_cor;
     bool sens_rota;
@@ -50,7 +45,6 @@ public:
     void ajout_seg(std::istringstream& data);
     void testCorail() const;
 
-    Entite getEntite() const;
     int getId() const;
     bool getVieCor() const;
     bool getSensRota() const;
@@ -59,9 +53,8 @@ public:
     std::vector<Segment> getSegments() const;
 };
 
-class Scavenger {
+class Scavenger : public Lifeform{
 private:
-    Entite proprietes;
     bool statut_sca;
     bool vie_sca;
     double rayon;
@@ -73,19 +66,15 @@ public:
     
     void testScavenger() const;
     int getcorIdCible() const;
-    Entite getEntite() const;
     bool getStatutSca() const;
 };
 
-class Algue {
-private:
-    Entite proprietes;
+class Algue : public Lifeform{
 
 public:
     Algue(std::istringstream& data);
     
     void testAlgue() const;
-    Entite getEntite() const;
     
 };
 #endif  // LIFEFORM_H_INCLUDED

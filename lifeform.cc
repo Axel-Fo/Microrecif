@@ -13,17 +13,7 @@ void testAge(unsigned int age);
 
 //Classe Entite.......................................................................
 //constructeur par défaut :
-Entite::Entite(){}
-Entite::Entite(S2d pos,unsigned int age): pos(pos), age(age){}
-
-S2d Entite::getPosition() const {
-    return pos;
-}
-
-unsigned int Entite::getAge() const {
-    return age;
-}
-
+Lifeform::Lifeform(){}
 
 //Classe Corail.......................................................................
 
@@ -51,15 +41,12 @@ void Corail::testSeg() const {
 }
 
 Corail::Corail(istringstream& data) {
-    S2d pos;
-    int age;
+
     data >> pos.x >> pos.y >> age >> id >> vie_cor 
          >> sens_rota >> statut_dev >> nb_seg;
 
-    Entite new_entite(pos,age);
-    proprietes = new_entite;
     // tant qu'un corail ne possède pas de segments son extremite est sa base :
-    extremite = proprietes.getPosition();
+    extremite = pos;
 }
 
 //Méthodes publiques corail:
@@ -74,16 +61,13 @@ void Corail::ajout_seg(istringstream& data) {
 }
 
 void Corail::testCorail() const {
-    testAge(proprietes.getAge());
-    testPos(proprietes.getPosition());
+    testAge(age);
+    testPos(pos);
     testSeg();
 }
 
 // definition des geteurs pour le corail
 
-Entite Corail::getEntite() const {
-    return proprietes;
-}
 
 int Corail::getId() const {
     return id;
@@ -118,20 +102,18 @@ void Scavenger::testRayon() const {
 }
 
 Scavenger::Scavenger(istringstream& data) {
-    S2d pos;
-    unsigned int age;
+
     data >> pos.x >> pos.y >> age >> rayon >> statut_sca;
 
-    Entite new_entite(pos,age);
-    proprietes = new_entite;
+ 
     if (statut_sca) {
         data >> cor_id_cible;
     }
 }
 
 void Scavenger::testScavenger() const {
-    testAge(proprietes.getAge());
-    testPos(proprietes.getPosition());
+    testAge(age);
+    testPos(pos);
     testRayon();
 }
 
@@ -139,9 +121,7 @@ int Scavenger::getcorIdCible() const {
     return cor_id_cible;
 }
 
-Entite Scavenger::getEntite() const {
-    return proprietes;
-}
+
 
 bool Scavenger::getStatutSca() const {
     return statut_sca;
@@ -150,22 +130,15 @@ bool Scavenger::getStatutSca() const {
 //Classe Algue........................................................................
 
 Algue::Algue(istringstream& data) {
-    S2d pos;
-    int age;
     data >> pos.x >> pos.y >> age;
-
-    Entite new_entite(pos,age);
-    proprietes = new_entite;
 }
 
 void Algue::testAlgue() const {
-    testAge(proprietes.getAge());
-    testPos(proprietes.getPosition());
+    testAge(age);
+    testPos(pos);
 }
 
-Entite Algue::getEntite() const {
-    return proprietes;
-}
+
 
 //....................................................................................
 //Definition des fonctions utilisées par plusieurs classes :
