@@ -2,8 +2,10 @@
 # Definitions de macros
 
 CXX     = g++
-CXXFLAGS = -g -Wall -std=c++11
-CXXFILES = projet.cc message.cc shape.cc simulation.cc lifeform.cc
+CXXFLAGS = -g -Wall -std=c++17
+CXXFILES = projet.cc message.cc shape.cc simulation.cc lifeform.cc gui.cc graphic.cc
+LINKING = `pkg-config --cflags gtkmm-4.0`
+LDLIBS = `pkg-config --libs gtkmm-4.0`
 OFILES = $(CXXFILES:.cc=.o)
 
 TEST_CXXFILES = test.cc message.cc shape.cc 
@@ -12,12 +14,18 @@ TEST_OFILES = $(TEST_CXXFILES:.cc=.o)
 # Definition de la premiere regle
 
 projet: $(OFILES)
-	$(CXX) $(OFILES) -o projet
+	$(CXX) $(OFILES) $(CXXFLAGS) $(LINKING) -o projet $(LDLIBS)
 
 # Pour creer un executable test.exe
 
 test: $(TEST_OFILES)
 	$(CXX) $(TEST_OFILES) -o test
+
+%.o: %.cc %.h
+	$(CXX) $(CXXFLAGS) $(LINKING) -c $< -o $@ $(LDLIBS)
+
+projet.o: projet.cc 
+	$(CXX) $(CXXFLAGS) $(LINKING) -c $< -o $@ $(LDLIBS)
 
 # Pour faire tous les test
 runtest: 
@@ -63,4 +71,6 @@ shape.o: shape.cc shape.h
 simulation.o: simulation.cc simulation.h lifeform.h constantes.h shape.h \
  message.h
 lifeform.o: lifeform.cc lifeform.h constantes.h shape.h message.h
+gui.o: gui.cc
+graphic.o: graphic.cc
 test.o: test.cc shape.h
