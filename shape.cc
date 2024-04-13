@@ -1,5 +1,3 @@
-#include <cmath>
-#include <iostream>
 #include "shape.h"
 
 //Methodes private Segment............................................................
@@ -103,6 +101,10 @@ S2d Segment::autre_pt() const {
     autre.y = point.y + longeur * sin(angle);
     return autre;
 }
+void Segment::afficheSeg(Couleur couleur, double largeur)const{
+    S2d point2 = autre_pt();
+    dessin_ligne(point.x,point.y,point2.x,point2.y,couleur,largeur);
+}
 //Getteurs et setteurs pour Segment ...................................................
 
 double Segment::getAngle() const {
@@ -115,4 +117,15 @@ double Segment::getLongeur() const {
 
 S2d Segment::getPoint() const {
     return point;
+}
+//Methodes publiques Cercle...........................................................
+Cercle::Cercle(S2d centre, double rayon):centre(centre),rayon(rayon){}
+void Cercle::afficheCecle(Couleur couleur, double largeur) const{
+    dessin_cercle(centre.x, centre.y,rayon,couleur,largeur);
+}
+//Methodes publiques Carre...........................................................
+Carre::Carre(S2d centre, double arete):centre(centre), arete(arete){}
+void Carre::afficheCarre(Couleur couleur, double largeur) const{
+                              
+    dessin_carre(centre.x, centre.y,arete,couleur,largeur);
 }

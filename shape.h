@@ -1,6 +1,7 @@
 #ifndef SHAPE_H_INCLUDED
 #define SHAPE_H_INCLUDED
 
+#include <cmath>
 #include "graphic.h"
 constexpr double epsil_zero(0.5);
 
@@ -29,6 +30,8 @@ class Segment {
     bool intersect_mm(Segment autre) const;
     S2d autre_pt() const;
 
+    void afficheSeg(Couleur couleur, double largeur)const;
+
     void setAngle(double a);
     void setLongeur(double l);
 
@@ -36,21 +39,25 @@ class Segment {
     double getLongeur() const;
     S2d getPoint() const;
 };
-
-//Classes qui seront utilisées pour les prochains rendus
-class Cercle {
-   private:
+class Cercle{
+private:
     S2d centre;
     double rayon;
 
-   public:
-    // Cercle(S2d centre,double rayon);
+public:
+    Cercle(S2d centre, double rayon);
+    void afficheCecle(Couleur couleur, double largeur) const;
 };
 
-class Carre {
-   private:
-   public:
-    // Carre();
+class Carre{
+private:
+    S2d centre;
+    double arete;
+   
+
+public:
+    Carre(S2d centre, double arete);
+    void afficheCarre(Couleur couleur, double largeur) const;
 };
 
 #endif  // SHAPE_H_INCLUDED

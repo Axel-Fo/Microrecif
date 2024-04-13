@@ -6,19 +6,21 @@
 #include <gtkmm/checkbutton.h>
 #include <gtkmm/label.h>
 #include <gtkmm/box.h>
+#include <cairomm/context.h>
 #include <iostream>
 #include <string>
+#include "graphic_gui.h"
 
 class MyArea : public Gtk::DrawingArea
 {
 public:
     MyArea();
     virtual ~MyArea();
+    void refresh();
 
 protected:
     // Override default signal handler:
-    void on_draw(const Cairo::RefPtr<Cairo::Context> &cr,
-                 int width, int height);
+    void on_draw(const Cairo::RefPtr<Cairo::Context> &cr,int width, int height);
 };
 
 class MyWindow : public Gtk::Window
@@ -35,7 +37,7 @@ protected:
     Gtk::Box m_info_box;
 
     // Button widgets de button_box et titre des bouttons:
-    Gtk::Label m_label_subtitle1;
+    Gtk::Label m_label_subtitle;
     Gtk::Button m_button_exit;
     Gtk::Button m_button_open;
     Gtk::Button m_button_save;
@@ -45,10 +47,10 @@ protected:
     Gtk::CheckButton m_check_button_naissance;
 
     // Label de info box:
-    Gtk::Label m_label_subtitle2;
+    Gtk::Label m_label_info_subtitle;
     Gtk::Label m_label_maj;
     Gtk::Label m_label_algues;
-    Gtk::Label m_label_corail;
+    Gtk::Label m_label_corails;
     Gtk::Label m_label_charognards;
 
     //action des boutons

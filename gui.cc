@@ -1,20 +1,31 @@
 #include "gui.h"
-#include <cairomm/context.h>
 
-MyArea::MyArea() {}
+
+MyArea::MyArea() {
+
+    set_draw_func(sigc::mem_fun(*this, &MyArea::on_draw));
+}
 MyArea::~MyArea() {}
 
 void MyArea::on_draw(const Cairo::RefPtr<Cairo::Context> &cr,
                      int width, int height)
 {
-    /*graphic_set_context(cr);
-    // coordinates for the center of the GTKmm window
-    int xc, yc;
-    xc = width / 2;
-    yc = height / 2;
-    graphic_draw_shape(width, height, xc, yc);*/
-}
 
+
+    cr->set_source_rgb(0.0, 0.0, 0.0); 
+    cr->paint();
+    int min;
+ 
+
+}
+void MyArea::refresh()
+{
+	queue_draw();
+}
+void distortion(){
+
+
+}
 MyWindow::MyWindow():
     m_main_box(Gtk::Orientation::HORIZONTAL,2),
     m_control_box(Gtk::Orientation::VERTICAL,2),
@@ -22,20 +33,21 @@ MyWindow::MyWindow():
     m_naissance_box(Gtk::Orientation::HORIZONTAL,2),
     m_info_box(Gtk::Orientation::VERTICAL,2),
     
-	m_label_subtitle1("General"),
+	m_label_subtitle("General"),
 	m_button_exit("exit"),m_button_open("open"),
 	m_button_save("save"),m_button_start_stop("start"),
 	m_button_step("step"),
     m_label_naissance("Naissance d'algue"),
 
-	m_label_subtitle2("Info : nombre de ..."),
+	m_label_info_subtitle("Info : nombre de ..."),
 	m_label_maj("mises à jour: "),
     m_label_algues("algues: "),
-    m_label_corail("corail: "),
+    m_label_corails("corails: "),
     m_label_charognards("charognards: ")
 {
     set_title("Microrécif");
     set_child(m_main_box);
+    set_default_size(500, 500);
 
     	// Box
 	m_area.set_expand(true);
@@ -47,7 +59,7 @@ MyWindow::MyWindow():
     m_naissance_box.append(m_label_naissance);
 
 	// Ajoute les boutons dans leur box
-	m_button_box.append(m_label_subtitle1);
+	m_button_box.append(m_label_subtitle);
 	m_button_box.append(m_button_exit);
 	m_button_box.append(m_button_open);
 	m_button_box.append(m_button_save);
@@ -61,10 +73,10 @@ MyWindow::MyWindow():
 	m_button_start_stop.signal_clicked().connect(sigc::mem_fun(*this, &MyWindow::on_button_clicked_start_stop));
 	m_button_step.signal_clicked().connect(sigc::mem_fun(*this, &MyWindow::on_button_clicked_step));
     
-    m_info_box.append(m_label_subtitle2);
+    m_info_box.append(m_label_info_subtitle);
 	m_info_box.append(m_label_maj);
     m_info_box.append(m_label_algues);
-    m_info_box.append(m_label_corail);
+    m_info_box.append(m_label_corails);
     m_info_box.append(m_label_charognards);
 }
 void MyWindow::on_button_clicked_exit()
@@ -90,6 +102,7 @@ void MyWindow::on_button_clicked_start_stop()
 
     if(boutonEtat == "start"){
         m_button_start_stop.set_label("stop");
+        m_area.refresh();
         ////
     }else{
         m_button_start_stop.set_label("start");
