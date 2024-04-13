@@ -1,6 +1,7 @@
 #ifndef SHAPE_H_INCLUDED
 #define SHAPE_H_INCLUDED
 
+#include "graphic.h"
 constexpr double epsil_zero(0.5);
 
 enum Etat_epsil_zero { NOT_EPSIL, IS_EPSIL };

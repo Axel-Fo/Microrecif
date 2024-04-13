@@ -44,7 +44,6 @@ public:
 
     void ajout_seg(std::istringstream& data);
     void testCorail() const;
-
     int getId() const;
     bool getVieCor() const;
     bool getSensRota() const;
