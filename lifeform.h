@@ -24,6 +24,8 @@ protected:
 
 public:
     Lifeform();
+    virtual ~Lifeform();
+    S2d getPos() const;
 };
 
 
@@ -66,6 +68,7 @@ public:
     void testScavenger() const;
     int getcorIdCible() const;
     bool getStatutSca() const;
+    double getRayon() const;
 };
 
 class Algue : public Lifeform{

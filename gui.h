@@ -10,23 +10,40 @@
 #include <iostream>
 #include <string>
 #include "graphic_gui.h"
+#include "simulation.h"
+
+struct Frame // Model Framing and window parameters
+{
+	double xMin; // frame parameters
+	double xMax;
+	double yMin;
+	double yMax;
+	double asp;  // frame aspect ratio
+	int height;  // window height
+	int width;   // window width
+};
 
 class MyArea : public Gtk::DrawingArea
 {
 public:
     MyArea();
     virtual ~MyArea();
+    void setFrame(Frame f); 
+    void adjustFrame(int width, int height);
     void refresh();
 
 protected:
     // Override default signal handler:
     void on_draw(const Cairo::RefPtr<Cairo::Context> &cr,int width, int height);
+private:
+    Frame frame;
 };
 
 class MyWindow : public Gtk::Window
 {
 public:
-    MyWindow();
+    MyWindow(Simulation& simulation);
+    void maj_info_box();
 protected:
     MyArea m_area;
     // Box

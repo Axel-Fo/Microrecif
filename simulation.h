@@ -48,6 +48,10 @@ private:
 public:
     Simulation();
     void lecture(std::string file);
+    unsigned int getNbAlg()const;
+    unsigned int getNbCor()const;
+    unsigned int getNbSca()const;
+    void affiche()const;
 };
 
 #endif  // SIMULATION_H_INCLUDED

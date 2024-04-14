@@ -38,7 +38,7 @@ void Simulation::testCollision(Corail corail){
     for (unsigned int i(0); i < coraux.size(); i++) {
         for (unsigned int j(0); j < (coraux[i].getSegments()).size(); j++) {
             for (unsigned int k(0); k < segs.size(); k++) {
-                if (!(coraux[i].getId() == corail.getId() and (k == j+1 or k == j-1)))
+                if (!(coraux[i].getId() == corail.getId() and (k == j+1 or k == j-1 or k == j)))
                 /*on ne veut pas tester la collision entre
                 deux segments qui se précèdent sur le mm corail mais 
                 on teste avec le else si ils ne sont pas repliés l'un sur l'autre*/
@@ -49,11 +49,14 @@ void Simulation::testCollision(Corail corail){
                         std ::exit(EXIT_FAILURE);
                     }
                 }else{
-                    if (segs[k].intersect_mm((coraux[i].getSegments())[j])) {
+                    if(k != j){
+                        if (segs[k].intersect_mm((coraux[i].getSegments())[j])) {
                         unsigned int id = coraux[i].getId();
                         cout << message::segment_superposition(id, k - 1, k);
                         std ::exit(EXIT_FAILURE);
+                        }
                     }
+                    
                 }
             }
         }
@@ -160,4 +163,37 @@ void Simulation::lecture(string fichier_entree) {
         cout << message::success();
     } else
         cout << "erreur lgn 22 simu" << endl;
+}
+unsigned int Simulation::getNbAlg()const{
+    return nbAlg;
+}
+unsigned int Simulation::getNbCor()const{
+    return nbCor;
+}
+unsigned int Simulation::getNbSca()const{
+    return nbSca;
+}
+void Simulation::affiche()const{
+
+    for (const auto& corail : coraux) {
+        // Obtenez les segments du corail
+        const auto& segments = corail.getSegments();
+        Carre carre(segments[0].getPoint(),1);
+        carre.afficheCarre(bleu,4);
+        for (const auto& seg : segments) {           
+            seg.afficheSeg(bleu, 1);
+        }
+    }
+        
+    for(const auto& scav : scavengers){
+        Cercle cercle(scav.getPos(),scav.getRayon());
+        cercle.afficheCecle(rouge, 1);
+    }
+    for(const auto& algue : algues){
+        Cercle cercle(algue.getPos(),2);
+        cercle.afficheCecle(vert, 1);
+    }
+    
+    
+
 }

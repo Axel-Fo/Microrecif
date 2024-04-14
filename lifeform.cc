@@ -14,7 +14,11 @@ void testAge(unsigned int age);
 //Classe Entite.......................................................................
 //constructeur par défaut :
 Lifeform::Lifeform(){}
+Lifeform::~Lifeform(){}
 
+S2d Lifeform::getPos() const{
+    return pos;
+}
 //Classe Corail.......................................................................
 
 void Corail::testSeg() const {
@@ -109,6 +113,7 @@ Scavenger::Scavenger(istringstream& data) {
     if (statut_sca) {
         data >> cor_id_cible;
     }
+
 }
 
 void Scavenger::testScavenger() const {
@@ -126,6 +131,10 @@ int Scavenger::getcorIdCible() const {
 bool Scavenger::getStatutSca() const {
     return statut_sca;
 }
+double Scavenger::getRayon() const{
+    return rayon;
+}
+
 
 //Classe Algue........................................................................
 
