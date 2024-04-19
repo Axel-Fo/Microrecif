@@ -29,10 +29,10 @@ string Lifeform::lifeform_to_string() const {
 
 void Corail::testSeg() const {
     for (long unsigned int i(0); i < segments.size(); i++) {
-        unsigned int longeur = segments[i].getLongeur();
-        // on teste si la longeur du segment est bien dans l'intervalle
-        if (longeur < l_repro - l_seg_interne or longeur >= l_repro) {
-            cout << message::segment_length_outside(id, longeur);
+        unsigned int longueur = segments[i].getLongueur();
+        // on teste si la longueur du segment est bien dans l'intervalle
+        if (longueur < l_repro - l_seg_interne or longueur >= l_repro) {
+            cout << message::segment_length_outside(id, longueur);
             std ::exit(EXIT_FAILURE);
 
         }// on teste si l'angle est dans le bon intervalle
@@ -191,5 +191,5 @@ void testPos(S2d pos) {
 }
 
 string seg_to_string(Segment seg) {
-    return to_string(seg.getAngle()) + " " + to_string(seg.getLongeur());
+    return to_string(seg.getAngle()) + " " + to_string(seg.getLongueur());
 }

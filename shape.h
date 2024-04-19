@@ -16,7 +16,7 @@ class Segment {
 private:
     S2d point;
     double angle;
-    double longeur;
+    double longueur;
 
     double norme(S2d pt1, S2d pt2) const;
     int orientation(S2d p, S2d q, S2d r, Etat_epsil_zero etat) const;
@@ -36,7 +36,7 @@ public:
     void setLongeur(double l);
 
     double getAngle() const;
-    double getLongeur() const;
+    double getLongueur() const;
     S2d getPoint() const;
 };
 class Cercle{
@@ -52,11 +52,11 @@ public:
 class Carre{
 private:
     S2d centre;
-    double arete;
+    double arrete;
    
 
 public:
-    Carre(S2d centre, double arete);
+    Carre(S2d centre, double arrete);
     void afficheCarre(Couleur couleur, double largeur) const;
 };
 

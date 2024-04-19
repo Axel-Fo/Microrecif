@@ -40,7 +40,7 @@ bool Segment::onSegment(S2d p, S2d q, S2d r, Etat_epsil_zero etat) const {
 
 //Constructeur
 Segment::Segment(S2d point, double a, double l) 
-                : point(point), angle(a), longeur(l) {}
+                : point(point), angle(a), longueur(l) {}
 
 bool Segment ::intersect(Segment autre, Etat_epsil_zero etat) const {
     S2d p1 = point;
@@ -98,13 +98,13 @@ bool Segment::intersect_mm(Segment autre) const {
 
 S2d Segment::autre_pt() const {
     S2d autre;
-    autre.x = point.x + longeur * cos(angle);
-    autre.y = point.y + longeur * sin(angle);
+    autre.x = point.x + longueur * cos(angle);
+    autre.y = point.y + longueur * sin(angle);
     return autre;
 }
 void Segment::afficheSeg(Couleur couleur, double largeur)const{
     S2d point2 = autre_pt();
-    dessin_ligne(point.x,point.y,point2.x,point2.y,couleur,largeur);
+    dessin_ligne(point.x,point.y, point2.x, point2.y, couleur, largeur);
 }
 //Getteurs et setteurs pour Segment ...................................................
 
@@ -112,21 +112,21 @@ double Segment::getAngle() const {
     return angle;
 }
 
-double Segment::getLongeur() const {
-    return longeur;
+double Segment::getLongueur() const {
+    return longueur;
 }
 
 S2d Segment::getPoint() const {
     return point;
 }
 //Methodes publiques Cercle...........................................................
-Cercle::Cercle(S2d centre, double rayon):centre(centre),rayon(rayon){}
+Cercle::Cercle(S2d centre, double rayon) : centre(centre), rayon(rayon){}
 void Cercle::afficheCecle(Couleur couleur, double largeur) const{
-    dessin_cercle(centre.x, centre.y,rayon,couleur,largeur);
+    dessin_cercle(centre.x, centre.y, rayon, couleur, largeur);
 }
 //Methodes publiques Carre...........................................................
-Carre::Carre(S2d centre, double arete):centre(centre), arete(arete){}
+Carre::Carre(S2d centre, double arrete):centre(centre), arrete(arrete){}
 void Carre::afficheCarre(Couleur couleur, double largeur) const{
                               
-    dessin_carre(centre.x, centre.y,arete,couleur,largeur);
+    dessin_carre(centre.x, centre.y, arrete, couleur, largeur);
 }

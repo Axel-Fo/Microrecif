@@ -179,8 +179,8 @@ void Simulation::affiche()const{
     for (const auto& corail : coraux) {
         // Obtenez les segments du corail
         const auto& segments = corail.getSegments();
-        Carre carre(segments[0].getPoint(),1);
-        carre.afficheCarre(bleu,4);
+        Carre carre(segments[0].getPoint(),d_cor);
+        carre.afficheCarre(bleu,1);
         for (const auto& seg : segments) {           
             seg.afficheSeg(bleu, 1);
         }
@@ -191,7 +191,7 @@ void Simulation::affiche()const{
         cercle.afficheCecle(rouge, 1);
     }
     for(const auto& algue : algues){
-        Cercle cercle(algue.getPos(),2);
+        Cercle cercle(algue.getPos(),r_alg);
         cercle.afficheCecle(vert, 1);
     }
 }

@@ -7,7 +7,7 @@ static Simulation _simulation;
 static void orthographic_projection(const Cairo::RefPtr<Cairo::Context>& cr, 
 									Frame frame);
 // default Model Framing and window parameters
-static Frame default_frame = {-1 ,dmax +2, -1, dmax +2, 1, 30, 30}; 
+static Frame default_frame = {-1 ,dmax +2, -1, dmax +2, 1, 500, 500}; 
 
 MyArea::MyArea() {
     setFrame(default_frame);
@@ -119,7 +119,6 @@ MyWindow::MyWindow(Simulation& simulation):
     _simulation = simulation;
     set_title("Microrécif");
     set_child(m_main_box);
-    set_default_size(500, 500);
 	maj_info_box();
 
     // Box
