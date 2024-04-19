@@ -13,7 +13,7 @@ struct S2d {
 };
 
 class Segment {
-   private:
+private:
     S2d point;
     double angle;
     double longeur;
@@ -22,7 +22,7 @@ class Segment {
     int orientation(S2d p, S2d q, S2d r, Etat_epsil_zero etat) const;
     bool onSegment(S2d p, S2d q, S2d r, Etat_epsil_zero etat) const;
 
-   public:
+public:
     Segment(S2d point, double a, double l);
 
     bool intersect(Segment autre, Etat_epsil_zero etat) const;

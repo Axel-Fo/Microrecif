@@ -38,7 +38,8 @@ void Simulation::testCollision(Corail corail){
     for (unsigned int i(0); i < coraux.size(); i++) {
         for (unsigned int j(0); j < (coraux[i].getSegments()).size(); j++) {
             for (unsigned int k(0); k < segs.size(); k++) {
-                if (!(coraux[i].getId() == corail.getId() and (k == j+1 or k == j-1 or k == j)))
+                if (!(coraux[i].getId() == corail.getId() and (k == j+1 or 
+                                                               k == j-1 or k == j)))
                 /*on ne veut pas tester la collision entre
                 deux segments qui se précèdent sur le mm corail mais 
                 on teste avec le else si ils ne sont pas repliés l'un sur l'autre*/
@@ -193,7 +194,26 @@ void Simulation::affiche()const{
         Cercle cercle(algue.getPos(),2);
         cercle.afficheCecle(vert, 1);
     }
-    
-    
+}
 
+string Simulation::data_to_string(){
+    
+    string stringAlg(to_string(algues.size()) + "\n");
+    for (size_t i(0); i<algues.size();++i){
+        stringAlg += algues[i].lifeform_to_string() + "\n" ;
+        //une algue n'a pas d'attributs de classe en plus que lifeform donc 
+        //la fonction lifeform_to_string suffit
+    }
+
+    string stringCor(to_string(coraux.size()) + "\n");
+    for (size_t i(0); i < coraux.size(); ++i){
+        stringCor += coraux[i].cor_to_string() + "\n" ;
+    }
+
+    string stringSca(to_string(scavengers.size()) + "\n");
+    for (size_t i(0); i < scavengers.size(); ++i){
+        stringCor += scavengers[i].sca_to_string() + "\n" ;
+    }
+    
+    return stringAlg + stringCor + stringSca;
 }

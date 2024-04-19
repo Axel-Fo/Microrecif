@@ -16,7 +16,6 @@
 #include "message.h"
 #include "shape.h"
 
-//Classe Entite qui sera une Super Classe pour les prochains rendus.
 class Lifeform {
 protected:
     S2d pos;
@@ -26,6 +25,7 @@ public:
     Lifeform();
     virtual ~Lifeform();
     S2d getPos() const;
+    std::string lifeform_to_string() const; 
 };
 
 
@@ -46,12 +46,14 @@ public:
 
     void ajout_seg(std::istringstream& data);
     void testCorail() const;
+    std::string cor_to_string() const;
     int getId() const;
     bool getVieCor() const;
     bool getSensRota() const;
     bool getStatutDev() const;
     unsigned int getNbSeg() const;
     std::vector<Segment> getSegments() const;
+    
 };
 
 class Scavenger : public Lifeform{
@@ -66,6 +68,7 @@ public:
     Scavenger(std::istringstream& data);
     
     void testScavenger() const;
+    std::string sca_to_string() const;
     int getcorIdCible() const;
     bool getStatutSca() const;
     double getRayon() const;
@@ -77,6 +80,5 @@ public:
     Algue(std::istringstream& data);
     
     void testAlgue() const;
-    
 };
 #endif  // LIFEFORM_H_INCLUDED

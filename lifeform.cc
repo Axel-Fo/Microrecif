@@ -10,15 +10,21 @@ using namespace std;
 //Prototypes des fonctions utilisées par les methodes de classe:
 void testPos(S2d pos);
 void testAge(unsigned int age);
+string seg_to_string(Segment seg);
 
-//Classe Entite.......................................................................
+//Classe Lifeform.....................................................................
 //constructeur par défaut :
 Lifeform::Lifeform(){}
 Lifeform::~Lifeform(){}
 
-S2d Lifeform::getPos() const{
+S2d Lifeform::getPos() const {
     return pos;
 }
+
+string Lifeform::lifeform_to_string() const {
+    return "\t" + to_string(pos.x) + " " + to_string(pos.y) + " " + to_string(age);
+}
+
 //Classe Corail.......................................................................
 
 void Corail::testSeg() const {
@@ -70,6 +76,18 @@ void Corail::testCorail() const {
     testSeg();
 }
 
+string Corail::cor_to_string() const{
+    string stringSeg;
+    for (size_t i(0); i < nb_seg; ++i){
+        stringSeg += seg_to_string(segments[i]);
+        stringSeg += "\n";
+    }
+
+    return lifeform_to_string() + to_string(id) + " " + to_string(vie_cor) + " " 
+            + to_string(sens_rota) + " " + to_string(statut_dev) + " " 
+            + to_string(nb_seg) + " " + stringSeg ;
+}
+
 // definition des geteurs pour le corail
 
 
@@ -109,11 +127,9 @@ Scavenger::Scavenger(istringstream& data) {
 
     data >> pos.x >> pos.y >> age >> rayon >> statut_sca;
 
- 
     if (statut_sca) {
         data >> cor_id_cible;
     }
-
 }
 
 void Scavenger::testScavenger() const {
@@ -122,6 +138,14 @@ void Scavenger::testScavenger() const {
     testRayon();
 }
 
+string Scavenger::sca_to_string() const {
+    string statut_et_cible("");
+    //on veut convertir l'id en string uniquement si le scavenger MANGE
+    if (statut_sca){
+        statut_et_cible += to_string(statut_sca) + " " + to_string(cor_id_cible);
+    }
+    return lifeform_to_string() + " " + to_string(rayon) + " " + statut_et_cible;
+}
 int Scavenger::getcorIdCible() const {
     return cor_id_cible;
 }
@@ -131,7 +155,7 @@ int Scavenger::getcorIdCible() const {
 bool Scavenger::getStatutSca() const {
     return statut_sca;
 }
-double Scavenger::getRayon() const{
+double Scavenger::getRayon() const {
     return rayon;
 }
 
@@ -146,8 +170,6 @@ void Algue::testAlgue() const {
     testAge(age);
     testPos(pos);
 }
-
-
 
 //....................................................................................
 //Definition des fonctions utilisées par plusieurs classes :
@@ -166,4 +188,8 @@ void testPos(S2d pos) {
         cout << message::lifeform_center_outside(pos.x, pos.y);
         std ::exit(EXIT_FAILURE);
     }
+}
+
+string seg_to_string(Segment seg) {
+    return to_string(seg.getAngle()) + " " + to_string(seg.getLongeur());
 }

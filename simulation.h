@@ -52,6 +52,7 @@ public:
     unsigned int getNbCor()const;
     unsigned int getNbSca()const;
     void affiche()const;
+    std::string data_to_string();
 };
 
 #endif  // SIMULATION_H_INCLUDED
