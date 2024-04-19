@@ -53,6 +53,7 @@ public:
     unsigned int getNbSca()const;
     void affiche()const;
     std::string data_to_string();
+    void step(bool naissance);
 };
 
 #endif  // SIMULATION_H_INCLUDED

@@ -217,3 +217,9 @@ string Simulation::data_to_string(){
     
     return stringAlg + stringCor + stringSca;
 }
+void Simulation::step(bool naissance){
+    if(naissance){
+
+    }
+
+}

@@ -8,6 +8,7 @@
 #include <gtkmm/checkbutton.h>
 #include <gtkmm/label.h>
 #include <gtkmm/box.h>
+#include <gtkmm/eventcontrollerkey.h>
 #include <cairomm/context.h>
 #include <glibmm/main.h>
 #include <iostream>
@@ -33,10 +34,9 @@ public:
     virtual ~MyArea();
     void setFrame(Frame f); 
     void adjustFrame(int width, int height);
-    void refresh();
+    void maj_drawing();
 
 protected:
-    // Override default signal handler:
     void on_draw(const Cairo::RefPtr<Cairo::Context> &cr,int width, int height);
 private:
     Frame frame;
@@ -47,10 +47,8 @@ class MyWindow : public Gtk::Window
 public:
     MyWindow(Simulation& simulation);
     void maj_info_box();
-    bool on_timeout();
 protected:
     MyArea m_area;
-
 
     // Box
     Gtk::Box m_main_box;
@@ -76,7 +74,9 @@ protected:
     Gtk::Label m_label_corails;
     Gtk::Label m_label_charognards;
 
-    bool disconnect; 
+    //timer
+    bool disconnect; //pour avoir l'etat du timer
+    bool on_timeout();
 
     //action des boutons
     void on_button_clicked_exit();
@@ -84,10 +84,9 @@ protected:
 	void on_button_clicked_save();
 	void on_button_clicked_start_stop();
 	void on_button_clicked_step();
+
+    // Event clavier
+    bool on_window_key_pressed(guint keyval, guint keycode, Gdk::ModifierType state);
 };
-
-
-
-
 
 #endif // GUI_H_INCLUDED

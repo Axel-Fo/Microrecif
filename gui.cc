@@ -88,7 +88,7 @@ void MyArea::on_draw(const Cairo::RefPtr<Cairo::Context> &cr,
     dessin_carre(dmax/2,dmax/2, dmax + 1,gris,1);
 
 }
-void MyArea::refresh()
+void MyArea::maj_drawing()
 {
 	queue_draw();
 }
@@ -145,6 +145,11 @@ MyWindow::MyWindow(Simulation& simulation):
 	m_button_save.signal_clicked().connect(sigc::mem_fun(*this, &MyWindow::on_button_clicked_save));
 	m_button_start_stop.signal_clicked().connect(sigc::mem_fun(*this, &MyWindow::on_button_clicked_start_stop));
 	m_button_step.signal_clicked().connect(sigc::mem_fun(*this, &MyWindow::on_button_clicked_step));
+	    // Handling Keyboard Events.
+    auto controller = Gtk::EventControllerKey::create();
+    controller->signal_key_pressed().connect(
+                  sigc::mem_fun(*this, &MyWindow::on_window_key_pressed), false);
+    add_controller(controller);
     
     m_info_box.append(m_label_info_subtitle);
 	m_info_box.append(m_label_maj);
@@ -193,14 +198,35 @@ void MyWindow::on_button_clicked_start_stop()
 			
     }else{
         m_button_start_stop.set_label("start");
-        std::cout << "manually disconnecting the timer " << std::endl;
 		disconnect  = true;  
     }
 
 }
 void MyWindow::on_button_clicked_step()
-{
-    on_timeout();
+{ 
+	//On veut pouvoir step seulement si la simulation n'est pas en cours
+	std::string boutonEtat = m_button_start_stop.get_label();
+	if(boutonEtat == "start")
+	{
+    	on_timeout();
+	}
+
+}
+bool MyWindow::on_window_key_pressed(guint keyval, guint, Gdk::ModifierType state)
+{	
+	switch(gdk_keyval_to_unicode(keyval))
+	{
+		case 's':
+			//on veut faire la même chose que si le bouton start/stop est clické
+			on_button_clicked_start_stop();
+			return true;
+		case '1':
+			//on veut faire la même chose que si le bouton step est clické
+			on_button_clicked_step();
+			return true;
+	}
+    // Au cas où l'événement n'a pas été géré
+    return false;
 }
 
 bool MyWindow::on_timeout()
@@ -208,14 +234,15 @@ bool MyWindow::on_timeout()
 	static unsigned int val(1);
 	
 	if(disconnect)
-	{
+	{	
 		disconnect = false; // reset for next time a Timer is created
-		
 		return false; // End of Timer 
 	}
 	
+	_simulation.step(m_check_button_naissance.get_active());
 	m_label_maj.set_text("mises à jour: " + std::to_string(val));
-	std::cout << "This is simulation update number : " << val << std::endl;
+	maj_info_box();
+	m_area.maj_drawing();
 
 	++val;
 	return true; 
