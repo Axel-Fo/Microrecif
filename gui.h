@@ -1,5 +1,7 @@
 #ifndef GUI_H_INCLUDED
 #define GUI_H_INCLUDED
+
+
 #include <gtkmm/drawingarea.h>
 #include <gtkmm/window.h>
 #include <gtkmm/button.h>
@@ -7,6 +9,7 @@
 #include <gtkmm/label.h>
 #include <gtkmm/box.h>
 #include <cairomm/context.h>
+#include <glibmm/main.h>
 #include <iostream>
 #include <string>
 #include "graphic_gui.h"
@@ -44,8 +47,11 @@ class MyWindow : public Gtk::Window
 public:
     MyWindow(Simulation& simulation);
     void maj_info_box();
+    bool on_timeout();
 protected:
     MyArea m_area;
+
+
     // Box
     Gtk::Box m_main_box;
     Gtk::Box m_control_box;
@@ -69,6 +75,8 @@ protected:
     Gtk::Label m_label_algues;
     Gtk::Label m_label_corails;
     Gtk::Label m_label_charognards;
+
+    bool disconnect; 
 
     //action des boutons
     void on_button_clicked_exit();

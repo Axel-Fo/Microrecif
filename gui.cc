@@ -1,5 +1,6 @@
 #include "gui.h"
 
+using namespace std;
 //les deux  classes ont besoin de pouvoir acceder a simulation
 static Simulation _simulation;
 
@@ -112,7 +113,8 @@ MyWindow::MyWindow(Simulation& simulation):
 	m_label_maj("mises à jour: "),
     m_label_algues("algues: "),
     m_label_corails("corails: "),
-    m_label_charognards("charognards: ")
+    m_label_charognards("charognards: "),
+	disconnect(false)
 {   
     _simulation = simulation;
     set_title("Microrécif");
@@ -153,11 +155,9 @@ MyWindow::MyWindow(Simulation& simulation):
 }
 void MyWindow::maj_info_box()
 {
-	m_label_maj.set_text("mises à jour: " );// a faire;
 	m_label_algues.set_text("algues: " + std::to_string(_simulation.getNbAlg()));
 	m_label_corails.set_text("corails: " + std::to_string(_simulation.getNbCor()));
 	m_label_charognards.set_text("charognards: " + std::to_string(_simulation.getNbSca()));
-	
 } 
 void MyWindow::on_button_clicked_exit()
 {
@@ -182,15 +182,42 @@ void MyWindow::on_button_clicked_start_stop()
 
     if(boutonEtat == "start"){
         m_button_start_stop.set_label("stop");
-        ////
+        // Creation of a new object prevents long lines and shows us a little
+		// how slots work.  We have 0 parameters and bool as a return value
+		// after calling sigc::bind.
+		sigc::slot<bool()> my_slot = sigc::bind(sigc::mem_fun(*this,
+		                                        &MyWindow::on_timeout));
+		
+		// This is where we connect the slot to the Glib::signal_timeout()
+		//*1000 pour convertir les ms en secondes
+		auto conn = Glib::signal_timeout().connect(my_slot,alg_birth_rate * 1000);
+			
     }else{
         m_button_start_stop.set_label("start");
-        ////
+        std::cout << "manually disconnecting the timer " << std::endl;
+		disconnect  = true;  
     }
 
 }
 void MyWindow::on_button_clicked_step()
 {
-    ///
+    on_timeout();
+}
 
+bool MyWindow::on_timeout()
+{
+	static unsigned int val(1);
+	
+	if(disconnect)
+	{
+		disconnect = false; // reset for next time a Timer is created
+		
+		return false; // End of Timer 
+	}
+	
+	m_label_maj.set_text("mises à jour: " + std::to_string(val));
+	std::cout << "This is simulation update number : " << val << std::endl;
+
+	++val;
+	return true; 
 }
