@@ -219,8 +219,8 @@ string Simulation::data_to_string(){
     
     return stringAlg + stringCor + stringSca;
 }
+
 void Simulation::step(bool naissance){
-    
     step_algues();
     step_coraux();
     step_scav();
@@ -233,13 +233,14 @@ void Simulation::step(bool naissance){
     }
     
 }
+
 void Simulation::step_algues(){
     
     for(unsigned int i(0); i < algues.size(); i++){
         algues[i].step();
         unsigned int age = algues[i].getAge();
         if(age == max_life_alg){
-            //pour limiter le coût calcule
+            //pour limiter le coût calcul
             swap(algues[i], algues[algues.size()-1]);
             algues.pop_back();
         }

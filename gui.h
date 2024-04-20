@@ -9,6 +9,7 @@
 #include <gtkmm/label.h>
 #include <gtkmm/box.h>
 #include <gtkmm/eventcontrollerkey.h>
+#include <gtkmm/filechooserdialog.h>
 #include <cairomm/context.h>
 #include <glibmm/main.h>
 #include <iostream>
@@ -87,6 +88,8 @@ protected:
 
     // Event clavier
     bool on_window_key_pressed(guint keyval, guint keycode, Gdk::ModifierType state);
+    void on_file_dialog_response(int response_id, Gtk::FileChooserDialog* dialog);
+
 };
 
 #endif // GUI_H_INCLUDED

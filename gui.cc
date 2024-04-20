@@ -18,8 +18,8 @@ MyArea::MyArea() {
 MyArea::~MyArea() {}
 
 static void orthographic_projection(const Cairo::RefPtr<Cairo::Context>& cr, 
-								    Frame frame)
-{
+								    Frame frame){
+	
 	// déplace l'origine au centre de la fenêtre
 	cr->translate(frame.width/2, frame.height/2);
   
@@ -31,8 +31,7 @@ static void orthographic_projection(const Cairo::RefPtr<Cairo::Context>& cr,
 	// décalage au centre du cadrage
 	cr->translate(-(frame.xMin + frame.xMax)/2, -(frame.yMin + frame.yMax)/2);
 }
-void MyArea::adjustFrame(int width, int height)
-{
+void MyArea::adjustFrame(int width, int height){
 	frame.width  = width;
 	frame.height = height;
 
@@ -41,8 +40,8 @@ void MyArea::adjustFrame(int width, int height)
 	
     // use the reference framing as a guide for preventing distortion
     double new_aspect_ratio((double)width/height);
-    if( new_aspect_ratio > default_frame.asp)
-    { // keep yMax and yMin. Adjust xMax and xMin
+    if( new_aspect_ratio > default_frame.asp){ 
+		// keep yMax and yMin. Adjust xMax and xMin
 	    frame.yMax = default_frame.yMax ;
 	    frame.yMin = default_frame.yMin ;	
 	  
@@ -52,8 +51,8 @@ void MyArea::adjustFrame(int width, int height)
 	    frame.xMax = mid + 0.5*(new_aspect_ratio/default_frame.asp)*delta ;
 	    frame.xMin = mid - 0.5*(new_aspect_ratio/default_frame.asp)*delta ;		  	  
     }
-    else
-    { // keep xMax and xMin. Adjust yMax and yMin
+    else{ 
+		// keep xMax and xMin. Adjust yMax and yMin
 	    frame.xMax = default_frame.xMax ;
 	    frame.xMin = default_frame.xMin ;
 	  	  
@@ -65,8 +64,7 @@ void MyArea::adjustFrame(int width, int height)
     }
 }
 
-void MyArea::setFrame(Frame f)
-{
+void MyArea::setFrame(Frame f){
 	if((f.xMin <= f.xMax) and (f.yMin <= f.yMax) and (f.height > 0))
 	{
 		f.asp = f.width/f.height;
@@ -77,8 +75,7 @@ void MyArea::setFrame(Frame f)
 }
 
 void MyArea::on_draw(const Cairo::RefPtr<Cairo::Context> &cr,
-                     int width, int height)
-{
+                     int width, int height){
 
     graphic_set_context(cr);
     adjustFrame(width, height);
@@ -88,14 +85,13 @@ void MyArea::on_draw(const Cairo::RefPtr<Cairo::Context> &cr,
     dessin_carre(dmax/2,dmax/2, dmax + 1,gris,1);
 
 }
-void MyArea::maj_drawing()
-{
+void MyArea::maj_drawing(){
 	queue_draw();
 }
 void distortion(){
 
-
 }
+
 MyWindow::MyWindow(Simulation& simulation):
     m_main_box(Gtk::Orientation::HORIZONTAL,2),
     m_control_box(Gtk::Orientation::VERTICAL,2),
@@ -157,38 +153,60 @@ MyWindow::MyWindow(Simulation& simulation):
     m_info_box.append(m_label_corails);
     m_info_box.append(m_label_charognards);
 }
-void MyWindow::maj_info_box()
-{
+void MyWindow::maj_info_box(){
+	
 	m_label_algues.set_text("algues: " + std::to_string(_simulation.getNbAlg()));
 	m_label_corails.set_text("corails: " + std::to_string(_simulation.getNbCor()));
 	m_label_charognards.set_text("charognards: " + std::to_string(_simulation.getNbSca()));
 } 
-void MyWindow::on_button_clicked_exit()
-{
+void MyWindow::on_button_clicked_exit(){
     exit(EXIT_SUCCESS);
-
 }  
 
-void MyWindow::on_button_clicked_open()
-{
+void MyWindow::on_button_clicked_open(){
+    
+	auto dialog = new Gtk::FileChooserDialog("Please choose a file",
+		  Gtk::FileChooser::Action::OPEN);
+	dialog->set_transient_for(*this);
+	dialog->set_modal(true);
+	dialog->signal_response().connect(sigc::bind(
+	sigc::mem_fun(*this, &MyWindow::on_file_dialog_response), dialog));
+	
+	//Add response buttons to the dialog:
+	dialog->add_button("_Cancel", Gtk::ResponseType::CANCEL);
+	dialog->add_button("_Open", Gtk::ResponseType::OK);
+
+	//Add filters, so that only certain file types can be selected:
+	auto filter_text = Gtk::FileFilter::create();
+	filter_text->set_name("Text files");
+	filter_text->add_mime_type("text/plain");
+	dialog->add_filter(filter_text);
+	
+	auto filter_cpp = Gtk::FileFilter::create();
+	filter_cpp->set_name("C/C++ files");
+	filter_cpp->add_mime_type("text/x-c");
+	filter_cpp->add_mime_type("text/x-c++");
+	filter_cpp->add_mime_type("text/x-c-header");
+	dialog->add_filter(filter_cpp);
+	
+	auto filter_any = Gtk::FileFilter::create();
+	filter_any->set_name("Any files");
+	filter_any->add_pattern("*");
+	dialog->add_filter(filter_any);
+
+	dialog->show();
+} 
+
+void MyWindow::on_button_clicked_save(){
     ///
 
 } 
-
-void MyWindow::on_button_clicked_save()
-{
-    ///
-
-} 
-void MyWindow::on_button_clicked_start_stop()
-{
+void MyWindow::on_button_clicked_start_stop(){
     std::string boutonEtat = m_button_start_stop.get_label();
 
     if(boutonEtat == "start"){
         m_button_start_stop.set_label("stop");
-        // Creation of a new object prevents long lines and shows us a little
-		// how slots work.  We have 0 parameters and bool as a return value
-		// after calling sigc::bind.
+
 		sigc::slot<bool()> my_slot = sigc::bind(sigc::mem_fun(*this,
 		                                        &MyWindow::on_timeout));
 		
@@ -202,20 +220,16 @@ void MyWindow::on_button_clicked_start_stop()
     }
 
 }
-void MyWindow::on_button_clicked_step()
-{ 
+void MyWindow::on_button_clicked_step(){ 
 	//On veut pouvoir step seulement si la simulation n'est pas en cours
 	std::string boutonEtat = m_button_start_stop.get_label();
-	if(boutonEtat == "start")
-	{
+	if(boutonEtat == "start"){
     	on_timeout();
 	}
 
 }
-bool MyWindow::on_window_key_pressed(guint keyval, guint, Gdk::ModifierType state)
-{	
-	switch(gdk_keyval_to_unicode(keyval))
-	{
+bool MyWindow::on_window_key_pressed(guint keyval, guint, Gdk::ModifierType state){	
+	switch(gdk_keyval_to_unicode(keyval)){
 		case 's':
 			//on veut faire la même chose que si le bouton start/stop est clické
 			on_button_clicked_start_stop();
@@ -229,8 +243,7 @@ bool MyWindow::on_window_key_pressed(guint keyval, guint, Gdk::ModifierType stat
     return false;
 }
 
-bool MyWindow::on_timeout()
-{
+bool MyWindow::on_timeout(){
 	static unsigned int val(1);
 	
 	if(disconnect)
@@ -246,4 +259,26 @@ bool MyWindow::on_timeout()
 
 	++val;
 	return true; 
+}
+
+void MyWindow::on_file_dialog_response(int response_id, 
+										    Gtk::FileChooserDialog* dialog){
+	//Handle the response:
+	switch (response_id){
+		case Gtk::ResponseType::OK:{
+		 
+		    auto filename = dialog->get_file()->get_path();
+		    std::cout << "File selected: " <<  filename << std::endl;
+		    break;
+		}
+		case Gtk::ResponseType::CANCEL:{
+		    std::cout << "Cancel clicked." << std::endl;
+		    break;
+		}
+		default:{
+		    std::cout << "Unexpected button clicked." << std::endl;
+		    break;
+		}
+	}
+	delete dialog;
 }

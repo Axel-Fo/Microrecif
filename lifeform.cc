@@ -16,14 +16,13 @@ string seg_to_string(Segment seg);
 //constructeur par défaut :
 Lifeform::Lifeform(){}
 Lifeform::Lifeform(S2d pos, unsigned int age):pos(pos), age(age){}
-void Lifeform::step(){
-    age++;
-}
+
 Lifeform::~Lifeform(){}
 
 unsigned int Lifeform::getAge()const{
     return age;
 }
+
 S2d Lifeform::getPos() const {
     return pos;
 }
@@ -32,6 +31,9 @@ string Lifeform::lifeform_to_string() const {
     return "\t" + to_string(pos.x) + " " + to_string(pos.y) + " " + to_string(age);
 }
 
+void Lifeform::step(){
+    age++;
+}
 //Classe Corail.......................................................................
 
 void Corail::testSeg() const {

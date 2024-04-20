@@ -39,6 +39,7 @@ private:
     unsigned int nbAlg;
     unsigned int nbCor;
     unsigned int nbSca;
+    
     // pour la sequence random
     std::default_random_engine e;
     std::bernoulli_distribution random_algue;
