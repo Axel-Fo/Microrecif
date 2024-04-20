@@ -12,6 +12,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <random> 
 
 #include "lifeform.h"
 #include "message.h"
@@ -38,6 +39,10 @@ private:
     unsigned int nbAlg;
     unsigned int nbCor;
     unsigned int nbSca;
+    // pour la sequence random
+    std::default_random_engine e;
+    std::bernoulli_distribution random_algue;
+    std::uniform_int_distribution<unsigned> random_pos;
     
     void switch_lecture(std::istringstream& data);
     bool idExist(int id);

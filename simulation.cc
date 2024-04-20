@@ -142,13 +142,15 @@ void Simulation::switch_lecture(istringstream& data) {
 //...................................................................................
 //Methodes publiques :
 
-Simulation::Simulation(){}
+Simulation::Simulation():random_algue(alg_birth_rate),random_pos(1,dmax-1){}
 
 void Simulation::lecture(string fichier_entree) {
+    
     string line;
 
     ifstream fichier(fichier_entree);
     if (!fichier.fail()) {
+        e.seed(1); // reset la fonction random pour l'ouverture d'un nouveau fichier
         etat_lecture = NBA;
         compteur = 0;
         nbAlg = 0;
@@ -218,8 +220,12 @@ string Simulation::data_to_string(){
     return stringAlg + stringCor + stringSca;
 }
 void Simulation::step(bool naissance){
-    if(naissance){
-
+    
+    if(naissance and random_algue(e)){
+        S2d pos;
+        pos.x = random_pos(e);
+        pos.y = random_pos(e);
+        Algue new_alg(pos);
+        algues.push_back(new_alg);
     }
-
 }

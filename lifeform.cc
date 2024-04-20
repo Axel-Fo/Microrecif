@@ -15,6 +15,7 @@ string seg_to_string(Segment seg);
 //Classe Lifeform.....................................................................
 //constructeur par défaut :
 Lifeform::Lifeform(){}
+Lifeform::Lifeform(S2d pos, unsigned int age):pos(pos), age(age){}
 Lifeform::~Lifeform(){}
 
 S2d Lifeform::getPos() const {
@@ -165,6 +166,7 @@ double Scavenger::getRayon() const {
 Algue::Algue(istringstream& data) {
     data >> pos.x >> pos.y >> age;
 }
+Algue::Algue(S2d pos):Lifeform(pos) {} 
 
 void Algue::testAlgue() const {
     testAge(age);

@@ -23,6 +23,7 @@ protected:
 
 public:
     Lifeform();
+    Lifeform(S2d pos, unsigned int age = 1);
     virtual ~Lifeform();
     S2d getPos() const;
     std::string lifeform_to_string() const; 
@@ -78,6 +79,7 @@ class Algue : public Lifeform{
 
 public:
     Algue(std::istringstream& data);
+    Algue(S2d pos);
     
     void testAlgue() const;
 };
