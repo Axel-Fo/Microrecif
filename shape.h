@@ -30,7 +30,7 @@ public:
     bool intersect_mm(Segment autre) const;
     S2d autre_pt() const;
 
-    void afficheSeg(Couleur couleur, double largeur)const;
+    void affiche(Couleur couleur, double largeur)const;
 
     void setAngle(double a);
     void setLongeur(double l);
@@ -46,7 +46,7 @@ private:
 
 public:
     Cercle(S2d centre, double rayon);
-    void afficheCecle(Couleur couleur, double largeur) const;
+    void affiche(Couleur couleur, double largeur) const;
 };
 
 class Carre{
@@ -57,7 +57,7 @@ private:
 
 public:
     Carre(S2d centre, double arrete);
-    void afficheCarre(Couleur couleur, double largeur) const;
+    void affiche(Couleur couleur, double largeur) const;
 };
 
 #endif  // SHAPE_H_INCLUDED

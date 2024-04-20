@@ -47,6 +47,13 @@ runtest:
 	./testproject 13
 	./testproject 14
 	./testproject 15
+	./testproject 16
+	./testproject 17
+	./testproject 18
+	./testproject 19
+	./testproject 20
+	./testproject 21
+	./testproject 22
 
 depend:
 	@echo " *** MISE A JOUR DES DEPENDANCES ***"

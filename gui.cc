@@ -193,8 +193,8 @@ void MyWindow::on_button_clicked_start_stop()
 		                                        &MyWindow::on_timeout));
 		
 		// This is where we connect the slot to the Glib::signal_timeout()
-		//*1000 pour convertir les ms en secondes
-		auto conn = Glib::signal_timeout().connect(my_slot,alg_birth_rate * 1000);
+		//maj toutes les 500 ms
+		auto conn = Glib::signal_timeout().connect(my_slot,500);
 			
     }else{
         m_button_start_stop.set_label("start");

@@ -102,7 +102,7 @@ S2d Segment::autre_pt() const {
     autre.y = point.y + longueur * sin(angle);
     return autre;
 }
-void Segment::afficheSeg(Couleur couleur, double largeur)const{
+void Segment::affiche(Couleur couleur, double largeur)const{
     S2d point2 = autre_pt();
     dessin_ligne(point.x,point.y, point2.x, point2.y, couleur, largeur);
 }
@@ -121,12 +121,12 @@ S2d Segment::getPoint() const {
 }
 //Methodes publiques Cercle...........................................................
 Cercle::Cercle(S2d centre, double rayon) : centre(centre), rayon(rayon){}
-void Cercle::afficheCecle(Couleur couleur, double largeur) const{
+void Cercle::affiche(Couleur couleur, double largeur) const{
     dessin_cercle(centre.x, centre.y, rayon, couleur, largeur);
 }
 //Methodes publiques Carre...........................................................
 Carre::Carre(S2d centre, double arrete):centre(centre), arrete(arrete){}
-void Carre::afficheCarre(Couleur couleur, double largeur) const{
+void Carre::affiche(Couleur couleur, double largeur) const{
                               
     dessin_carre(centre.x, centre.y, arrete, couleur, largeur);
 }

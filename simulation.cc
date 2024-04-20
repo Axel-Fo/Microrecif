@@ -168,13 +168,13 @@ void Simulation::lecture(string fichier_entree) {
         cout << "erreur lgn 22 simu" << endl;
 }
 unsigned int Simulation::getNbAlg()const{
-    return nbAlg;
+    return algues.size();
 }
 unsigned int Simulation::getNbCor()const{
-    return nbCor;
+    return coraux.size();
 }
 unsigned int Simulation::getNbSca()const{
-    return nbSca;
+    return scavengers.size();
 }
 void Simulation::affiche()const{
 
@@ -182,19 +182,19 @@ void Simulation::affiche()const{
         // Obtenez les segments du corail
         const auto& segments = corail.getSegments();
         Carre carre(segments[0].getPoint(),d_cor);
-        carre.afficheCarre(bleu,1);
+        carre.affiche(bleu,1);
         for (const auto& seg : segments) {           
-            seg.afficheSeg(bleu, 1);
+            seg.affiche(bleu, 1);
         }
     }
         
     for(const auto& scav : scavengers){
         Cercle cercle(scav.getPos(),scav.getRayon());
-        cercle.afficheCecle(rouge, 1);
+        cercle.affiche(rouge, 1);
     }
     for(const auto& algue : algues){
         Cercle cercle(algue.getPos(),r_alg);
-        cercle.afficheCecle(vert, 1);
+        cercle.affiche(vert, 1);
     }
 }
 
