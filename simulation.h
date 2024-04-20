@@ -49,6 +49,9 @@ private:
     void testId(Corail corail);
     void testIdMange(Scavenger scav);
     void testCollision(Corail corail);
+    void step_algues();
+    void step_coraux();
+    void step_scav();
 
 public:
     Simulation();

@@ -24,7 +24,9 @@ protected:
 public:
     Lifeform();
     Lifeform(S2d pos, unsigned int age = 1);
+    void step();
     virtual ~Lifeform();
+    unsigned int getAge()const;
     S2d getPos() const;
     std::string lifeform_to_string() const; 
 };

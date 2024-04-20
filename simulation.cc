@@ -221,6 +221,9 @@ string Simulation::data_to_string(){
 }
 void Simulation::step(bool naissance){
     
+    step_algues();
+    step_coraux();
+    step_scav();
     if(naissance and random_algue(e)){
         S2d pos;
         pos.x = random_pos(e);
@@ -228,4 +231,24 @@ void Simulation::step(bool naissance){
         Algue new_alg(pos);
         algues.push_back(new_alg);
     }
+    
 }
+void Simulation::step_algues(){
+    
+    for(unsigned int i(0); i < algues.size(); i++){
+        algues[i].step();
+        unsigned int age = algues[i].getAge();
+        if(age == max_life_alg){
+            //pour limiter le coût calcule
+            swap(algues[i], algues[algues.size()-1]);
+            algues.pop_back();
+        }
+    }
+}
+void Simulation::step_coraux(){
+    
+}
+void Simulation::step_scav(){
+    
+}
+
