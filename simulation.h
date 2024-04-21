@@ -39,6 +39,7 @@ private:
     unsigned int nbAlg;
     unsigned int nbCor;
     unsigned int nbSca;
+    bool erreur;
     
     // pour la sequence random
     std::default_random_engine e;
@@ -47,9 +48,9 @@ private:
     
     void switch_lecture(std::istringstream& data);
     bool idExist(int id);
-    void testId(Corail corail);
-    void testIdMange(Scavenger scav);
-    void testCollision(Corail corail);
+    bool testId(Corail corail);
+    bool testIdMange(Scavenger scav);
+    bool testCollision(Corail corail);
     void step_algues();
     void step_coraux();
     void step_scav();

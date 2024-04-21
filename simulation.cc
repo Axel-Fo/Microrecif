@@ -16,23 +16,25 @@ bool Simulation::idExist(int id) {
     return false;
 }
 
-void Simulation::testId(Corail corail) {
+bool Simulation::testId(Corail corail) {
     if (idExist(corail.getId())) {
         cout << message::lifeform_duplicated_id(corail.getId());
-        std ::exit(EXIT_FAILURE);
+        return true;
     }
+    return false;
 }
 
-void Simulation::testIdMange(Scavenger scav) {
+bool Simulation::testIdMange(Scavenger scav) {
     if (scav.getStatutSca()) {
         if (!idExist(scav.getcorIdCible())) {
             cout << message::lifeform_invalid_id(scav.getcorIdCible());
-            std ::exit(EXIT_FAILURE);
+            return true;
         }
     }
+    return false;
 }
 
-void Simulation::testCollision(Corail corail){
+bool Simulation::testCollision(Corail corail){
     vector<Segment> segs = corail.getSegments();
     // test de collision avec les autres coraux
     for (unsigned int i(0); i < coraux.size(); i++) {
@@ -47,14 +49,14 @@ void Simulation::testCollision(Corail corail){
                     if (segs[k].intersect((coraux[i].getSegments())[j], NOT_EPSIL)) {
                         cout << message::segment_collision(coraux[i].getId(), 
                                                             j, corail.getId(), k);
-                        std ::exit(EXIT_FAILURE);
+                        return true;
                     }
                 }else{
                     if(k != j){
                         if (segs[k].intersect_mm((coraux[i].getSegments())[j])) {
                         unsigned int id = coraux[i].getId();
                         cout << message::segment_superposition(id, k - 1, k);
-                        std ::exit(EXIT_FAILURE);
+                        return true;
                         }
                     }
                     
@@ -62,6 +64,7 @@ void Simulation::testCollision(Corail corail){
             }
         }
     }
+    return false;
 }
 
 void Simulation::switch_lecture(istringstream& data) {
@@ -76,7 +79,7 @@ void Simulation::switch_lecture(istringstream& data) {
         }
         case ALG: {
             Algue new_alg(data);
-            new_alg.testAlgue();
+            erreur = new_alg.testAlgue();
             algues.push_back(new_alg);
             ++compteur;
             if (compteur == nbAlg) {
@@ -95,7 +98,7 @@ void Simulation::switch_lecture(istringstream& data) {
         }
         case COR: {
             Corail new_corail(data);
-            testId(new_corail);
+            erreur = testId(new_corail);
             coraux.push_back(new_corail);
             ++compteur;
             nbSeg = new_corail.getNbSeg();
@@ -104,11 +107,11 @@ void Simulation::switch_lecture(istringstream& data) {
         }
         case SEG:  // on ajoute au dernier corail du vecteur un segment
         {
-            (coraux.back()).ajout_seg(data);
+            coraux.back().ajout_seg(data);
             compteur_seg++;
             if (compteur_seg == nbSeg) {
-                (coraux.back()).testCorail();
-                testCollision(coraux.back());
+                if(coraux.back().testCorail() or testCollision(coraux.back()))
+                    erreur = true;
                 if (compteur == nbCor) {
                     etat_lecture = NBS;
                     break;
@@ -128,21 +131,22 @@ void Simulation::switch_lecture(istringstream& data) {
         }
         case SCA: {
             Scavenger new_sca(data);
-            new_sca.testScavenger();
-            testIdMange(new_sca);
+            if(new_sca.testScavenger() or testIdMange(new_sca))
+                erreur = true;
+
             scavengers.push_back(new_sca);
             // plus besoin du compteur car forcement des donnees de scavenger.
             break;
         }
         default:
-            cout << "Erreur, on est arrivé dans le default du switch de lecture" 
-                    << endl;
+            cout <<"Erreur, on est arrivé dans le default du switch de lecture"<<endl;      
     }
 }
 //...................................................................................
 //Methodes publiques :
 
-Simulation::Simulation():random_algue(alg_birth_rate),random_pos(1,dmax-1){}
+Simulation::Simulation():erreur(false),random_algue(alg_birth_rate), 
+                                                                random_pos(1,dmax-1){}
 
 void Simulation::lecture(string fichier_entree) {
     
@@ -153,6 +157,7 @@ void Simulation::lecture(string fichier_entree) {
         e.seed(1); // reset la fonction random pour l'ouverture d'un nouveau fichier
         etat_lecture = NBA;
         compteur = 0;
+        compteur_seg = 0;
         nbAlg = 0;
         nbSca = 0;
         nbCor = 0;
@@ -162,8 +167,16 @@ void Simulation::lecture(string fichier_entree) {
 
             istringstream data(line);
             switch_lecture(data);
+            
+            if(erreur){
+                reset();
+                break;
+            }
         }
-        cout << message::success();
+        if(!erreur){
+            cout << message::success();
+        }
+
     } else
         cout << "erreur lecture simulation" << endl;
 }

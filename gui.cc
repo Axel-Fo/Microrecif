@@ -297,10 +297,8 @@ bool MyWindow::on_timeout(){
 
 void MyWindow::on_file_dialog_response(int response_id, 
 										    Gtk::FileChooserDialog* dialog){
-
 	switch (response_id){
 		case Gtk::ResponseType::OK:{
-			
 			if(etat_save){ 
 				//on veut créer le fichier à enregistrer et l'enregistrer
 		    	auto filename = dialog->get_file()->get_path();
@@ -313,12 +311,13 @@ void MyWindow::on_file_dialog_response(int response_id,
 					cout << "Echec de l'ouverture du fichier" << endl;
 				}
 			}else{
-				/*/cette fois on veut juste lancer la simulation avec
+				//cette fois on veut juste lancer la simulation avec
 				//le fichier qu'on ouvre en effacant la simulation en cours
 				auto filename = dialog->get_file()->get_path();
 				_simulation.reset();
 				_simulation.lecture(filename);
-				maj_info_box();*/
+				maj_info_box();
+				m_area.maj_drawing();
 
 			}
 		    break;

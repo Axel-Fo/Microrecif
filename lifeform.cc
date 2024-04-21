@@ -8,8 +8,8 @@
 using namespace std;
 
 //Prototypes des fonctions utilisées par les methodes de classe:
-void testPos(S2d pos);
-void testAge(unsigned int age);
+bool testPos(S2d pos);
+bool testAge(unsigned int age);
 string seg_to_string(Segment seg);
 
 //Classe Lifeform.....................................................................
@@ -36,27 +36,28 @@ void Lifeform::step(){
 }
 //Classe Corail.......................................................................
 
-void Corail::testSeg() const {
+bool Corail::testSeg() const {
     for (long unsigned int i(0); i < segments.size(); i++) {
         unsigned int longueur = segments[i].getLongueur();
         // on teste si la longueur du segment est bien dans l'intervalle
         if (longueur < l_repro - l_seg_interne or longueur >= l_repro) {
             cout << message::segment_length_outside(id, longueur);
-            std ::exit(EXIT_FAILURE);
+            return true;
 
         }// on teste si l'angle est dans le bon intervalle
         double angle = segments[i].getAngle();
         if (angle < -M_PI or angle > M_PI) {
             cout << message::segment_angle_outside(id, angle);
-            std ::exit(EXIT_FAILURE);
+            return true;
         }
         // on teste si l'extremité du segment est bien dans le cadre
         S2d autre = segments[i].autre_pt();
         if (autre.x < 0 or autre.x > dmax or autre.y < 0 or autre.y > dmax) {
             cout << message::lifeform_computed_outside(id, autre.x, autre.y);
-            std ::exit(EXIT_FAILURE);
+            return true;
         }
     }
+    return false;
 }
 
 Corail::Corail(istringstream& data) {
@@ -79,10 +80,11 @@ void Corail::ajout_seg(istringstream& data) {
     extremite = new_segment.autre_pt();
 }
 
-void Corail::testCorail() const {
-    testAge(age);
-    testPos(pos);
-    testSeg();
+bool Corail::testCorail() const {
+    if(testAge(age) or testPos(pos) or testSeg()){
+        return true;
+    }
+    return false;
 }
 
 string Corail::cor_to_string() const{
@@ -126,11 +128,12 @@ vector<Segment> Corail::getSegments() const {
 
 //Classe Scavenger....................................................................
 
-void Scavenger::testRayon() const {
+bool Scavenger::testRayon() const {
     if (rayon < r_sca or rayon >= r_sca_repro) {
         cout << message::scavenger_radius_outside(rayon);
-        std ::exit(EXIT_FAILURE);
+        return true;
     }
+    return false;
 }
 
 Scavenger::Scavenger(istringstream& data) {
@@ -142,10 +145,12 @@ Scavenger::Scavenger(istringstream& data) {
     }
 }
 
-void Scavenger::testScavenger() const {
-    testAge(age);
-    testPos(pos);
-    testRayon();
+bool Scavenger::testScavenger() const {
+    if(testAge(age) or testPos(pos) or testRayon()){
+        return true;
+    }
+    return false;
+    
 }
 
 string Scavenger::sca_to_string() const {
@@ -174,28 +179,32 @@ Algue::Algue(istringstream& data) {
 }
 Algue::Algue(S2d pos):Lifeform(pos) {} 
 
-void Algue::testAlgue() const {
-    testAge(age);
-    testPos(pos);
+bool Algue::testAlgue() const {
+    if(testAge(age) or testPos(pos)){
+        return true;
+    }
+    return false;
 }
 
 //....................................................................................
 //Definition des fonctions utilisées par plusieurs classes :
 
-void testAge(unsigned int age) {
+bool testAge(unsigned int age) {
     // pas de test avec des valeurs negatives pour l'age
     if (age == 0) {
         cout << message::lifeform_age(age);
-        std ::exit(EXIT_FAILURE);
+        return true;
     }
+    return false;
 }
 
-void testPos(S2d pos) { 
+bool testPos(S2d pos) { 
 
     if (pos.x < 1 or pos.x > dmax - 1 or pos.y < 1 or pos.y > dmax - 1) {
         cout << message::lifeform_center_outside(pos.x, pos.y);
-        std ::exit(EXIT_FAILURE);
+        return true;
     }
+    return false;
 }
 
 string seg_to_string(Segment seg) {

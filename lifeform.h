@@ -42,14 +42,14 @@ private:
     unsigned int nb_seg;
     std::vector<Segment> segments;
     S2d extremite;
-    void testSeg() const;
+    bool testSeg() const;
 
 public:
     // constructeur
     Corail(std::istringstream& data);
 
     void ajout_seg(std::istringstream& data);
-    void testCorail() const;
+    bool testCorail() const;
     std::string cor_to_string() const;
     int getId() const;
     bool getVieCor() const;
@@ -66,12 +66,12 @@ private:
     bool vie_sca;
     double rayon;
     int cor_id_cible;
-    void testRayon() const;
+    bool testRayon() const;
 
 public:
     Scavenger(std::istringstream& data);
     
-    void testScavenger() const;
+    bool testScavenger() const;
     std::string sca_to_string() const;
     int getcorIdCible() const;
     bool getStatutSca() const;
@@ -84,6 +84,6 @@ public:
     Algue(std::istringstream& data);
     Algue(S2d pos);
     
-    void testAlgue() const;
+    bool testAlgue() const;
 };
 #endif  // LIFEFORM_H_INCLUDED
