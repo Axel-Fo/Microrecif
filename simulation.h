@@ -57,10 +57,11 @@ private:
 public:
     Simulation();
     void lecture(std::string file);
-    unsigned int getNbAlg()const;
-    unsigned int getNbCor()const;
-    unsigned int getNbSca()const;
-    void affiche()const;
+    void reset();
+    unsigned int getNbAlg() const;
+    unsigned int getNbCor() const;
+    unsigned int getNbSca() const;
+    void affiche() const;
     std::string data_to_string();
     void step(bool naissance);
 };

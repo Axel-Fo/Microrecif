@@ -165,17 +165,29 @@ void Simulation::lecture(string fichier_entree) {
         }
         cout << message::success();
     } else
-        cout << "erreur lgn 22 simu" << endl;
+        cout << "erreur lecture simulation" << endl;
 }
+
+void Simulation::reset(){
+    coraux.clear();
+    scavengers.clear();
+    algues.clear();
+    //les nb d'entités et les etats des compteur et lecture sont déja mis a 0 dans 
+    //la méthode lecture
+}
+
 unsigned int Simulation::getNbAlg()const{
     return algues.size();
 }
+
 unsigned int Simulation::getNbCor()const{
     return coraux.size();
 }
+
 unsigned int Simulation::getNbSca()const{
     return scavengers.size();
 }
+
 void Simulation::affiche()const{
 
     for (const auto& corail : coraux) {

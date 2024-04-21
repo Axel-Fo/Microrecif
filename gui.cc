@@ -94,6 +94,7 @@ void distortion(){
 }
 
 MyWindow::MyWindow(Simulation& simulation):
+
     m_main_box(Gtk::Orientation::HORIZONTAL,2),
     m_control_box(Gtk::Orientation::VERTICAL,2),
     m_button_box(Gtk::Orientation::VERTICAL,2),
@@ -157,10 +158,11 @@ MyWindow::MyWindow(Simulation& simulation):
 }
 void MyWindow::maj_info_box(){
 	
-	m_label_algues.set_text("algues: " + std::to_string(_simulation.getNbAlg()));
-	m_label_corails.set_text("corails: " + std::to_string(_simulation.getNbCor()));
-	m_label_charognards.set_text("charognards: " + std::to_string(_simulation.getNbSca()));
+	m_label_algues.set_text("algues: " + to_string(_simulation.getNbAlg()));
+	m_label_corails.set_text("corails: " + to_string(_simulation.getNbCor()));
+	m_label_charognards.set_text("charognards: " + to_string(_simulation.getNbSca()));
 } 
+
 void MyWindow::on_button_clicked_exit(){
     exit(EXIT_SUCCESS);
 }  
@@ -299,20 +301,28 @@ void MyWindow::on_file_dialog_response(int response_id,
 	switch (response_id){
 		case Gtk::ResponseType::OK:{
 			
-			if(etat_save){ //on veut créer le fichier à enregistrer et l'enregistrer
+			if(etat_save){ 
+				//on veut créer le fichier à enregistrer et l'enregistrer
 		    	auto filename = dialog->get_file()->get_path();
 				ofstream fichier;
 				fichier.open(filename);
 				if (!fichier.fail()){
 					fichier << _simulation.data_to_string() << endl;
 					fichier.close();
-				}else{//cette fois on veut juste lancer la simulation avec
-					  //le fichier ouvert
-
+				}else{
+					cout << "Echec de l'ouverture du fichier" << endl;
 				}
+			}else{
+				/*/cette fois on veut juste lancer la simulation avec
+				//le fichier qu'on ouvre en effacant la simulation en cours
+				auto filename = dialog->get_file()->get_path();
+				_simulation.reset();
+				_simulation.lecture(filename);
+				maj_info_box();*/
 
-		    	break;
 			}
+		    break;
+			
 		}
 		case Gtk::ResponseType::CANCEL:{
 		    cout << "Cancel clicked." << endl;
@@ -323,5 +333,6 @@ void MyWindow::on_file_dialog_response(int response_id,
 		    break;
 		}
 	}
+	etat_save = false;
 	delete dialog;
 }
