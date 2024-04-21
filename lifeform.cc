@@ -149,12 +149,9 @@ void Scavenger::testScavenger() const {
 }
 
 string Scavenger::sca_to_string() const {
-    string statut_et_cible("");
-    //on veut convertir l'id en string uniquement si le scavenger MANGE
-    if (statut_sca){
-        statut_et_cible += to_string(statut_sca) + " " + to_string(cor_id_cible);
-    }
-    return lifeform_to_string() + " " + to_string(rayon) + " " + statut_et_cible;
+    
+    return lifeform_to_string() + " " + to_string(rayon) + " " + to_string(statut_sca) 
+                                                    + " " + to_string(cor_id_cible);
 }
 int Scavenger::getcorIdCible() const {
     return cor_id_cible;
