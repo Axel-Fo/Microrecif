@@ -13,6 +13,7 @@
 #include <cairomm/context.h>
 #include <glibmm/main.h>
 #include <iostream>
+#include <fstream>
 #include <string>
 #include "graphic_gui.h"
 #include "simulation.h"
@@ -83,6 +84,7 @@ protected:
     void on_button_clicked_exit();
 	void on_button_clicked_open();
 	void on_button_clicked_save();
+    bool etat_save; //1 si on est en train de save, 0 sinon
 	void on_button_clicked_start_stop();
 	void on_button_clicked_step();
 

@@ -28,7 +28,7 @@ S2d Lifeform::getPos() const {
 }
 
 string Lifeform::lifeform_to_string() const {
-    return "\t" + to_string(pos.x) + " " + to_string(pos.y) + " " + to_string(age);
+    return "    " + to_string(pos.x) + " " + to_string(pos.y) + " " + to_string(age);
 }
 
 void Lifeform::step(){
@@ -87,12 +87,13 @@ void Corail::testCorail() const {
 
 string Corail::cor_to_string() const{
     string stringSeg;
+    
     for (size_t i(0); i < nb_seg; ++i){
-        stringSeg += seg_to_string(segments[i]);
         stringSeg += "\n";
+        stringSeg += seg_to_string(segments[i]);
     }
 
-    return lifeform_to_string() + to_string(id) + " " + to_string(vie_cor) + " " 
+    return lifeform_to_string() + " " + to_string(id) + " " + to_string(vie_cor) + " " 
             + to_string(sens_rota) + " " + to_string(statut_dev) + " " 
             + to_string(nb_seg) + " " + stringSeg ;
 }
@@ -201,5 +202,6 @@ void testPos(S2d pos) {
 }
 
 string seg_to_string(Segment seg) {
-    return to_string(seg.getAngle()) + " " + to_string(seg.getLongueur());
+    return "        " + to_string(seg.getAngle()) + " "
+                      + to_string(seg.getLongueur());
 }

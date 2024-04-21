@@ -202,22 +202,22 @@ string Simulation::data_to_string(){
     
     string stringAlg(to_string(algues.size()) + "\n");
     for (size_t i(0); i<algues.size();++i){
-        stringAlg += algues[i].lifeform_to_string() + "\n" ;
+        stringAlg += algues[i].lifeform_to_string() + "\n";
         //une algue n'a pas d'attributs de classe en plus que lifeform donc 
         //la fonction lifeform_to_string suffit
     }
 
     string stringCor(to_string(coraux.size()) + "\n");
     for (size_t i(0); i < coraux.size(); ++i){
-        stringCor += coraux[i].cor_to_string() + "\n" ;
+        stringCor += coraux[i].cor_to_string() + "\n";
     }
 
     string stringSca(to_string(scavengers.size()) + "\n");
     for (size_t i(0); i < scavengers.size(); ++i){
-        stringCor += scavengers[i].sca_to_string() + "\n" ;
+        stringSca += scavengers[i].sca_to_string() + "\n";
     }
     
-    return stringAlg + stringCor + stringSca;
+    return stringAlg + "\n" + stringCor + "\n" + stringSca;
 }
 
 void Simulation::step(bool naissance){

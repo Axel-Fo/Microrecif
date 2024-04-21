@@ -88,6 +88,7 @@ void MyArea::on_draw(const Cairo::RefPtr<Cairo::Context> &cr,
 void MyArea::maj_drawing(){
 	queue_draw();
 }
+
 void distortion(){
 
 }
@@ -110,7 +111,8 @@ MyWindow::MyWindow(Simulation& simulation):
     m_label_algues("algues: "),
     m_label_corails("corails: "),
     m_label_charognards("charognards: "),
-	disconnect(false)
+	disconnect(false),
+	etat_save(false)
 {   
     _simulation = simulation;
     set_title("Microrécif");
@@ -198,7 +200,37 @@ void MyWindow::on_button_clicked_open(){
 } 
 
 void MyWindow::on_button_clicked_save(){
-    ///
+
+    etat_save = true;
+	auto dialog = new Gtk::FileChooserDialog("Please choose a file",
+		  Gtk::FileChooser::Action::SAVE);
+	dialog->set_transient_for(*this);
+	dialog->set_modal(true);
+	dialog->signal_response().connect(sigc::bind(
+	sigc::mem_fun(*this, &MyWindow::on_file_dialog_response), dialog));
+	
+	//Add response buttons to the dialog:
+	dialog->add_button("_Cancel", Gtk::ResponseType::CANCEL);
+	dialog->add_button("_Save", Gtk::ResponseType::OK);
+	
+	//Add filters, so that only certain file types can be selected:
+	auto filter_text = Gtk::FileFilter::create();
+	filter_text->set_name("Text files");
+	filter_text->add_mime_type("text/plain");
+	dialog->add_filter(filter_text);
+	
+	auto filter_cpp = Gtk::FileFilter::create();
+	filter_cpp->set_name("C/C++ files");
+	filter_cpp->add_mime_type("text/x-c");
+	filter_cpp->add_mime_type("text/x-c++");
+	filter_cpp->add_mime_type("text/x-c-header");
+	dialog->add_filter(filter_cpp);
+	
+	auto filter_any = Gtk::FileFilter::create();
+	filter_any->set_name("Any files");
+	filter_any->add_pattern("*");
+	dialog->add_filter(filter_any);
+	dialog->show();
 
 } 
 void MyWindow::on_button_clicked_start_stop(){
@@ -263,20 +295,31 @@ bool MyWindow::on_timeout(){
 
 void MyWindow::on_file_dialog_response(int response_id, 
 										    Gtk::FileChooserDialog* dialog){
-	//Handle the response:
+
 	switch (response_id){
 		case Gtk::ResponseType::OK:{
-		 
-		    auto filename = dialog->get_file()->get_path();
-		    std::cout << "File selected: " <<  filename << std::endl;
-		    break;
+			
+			if(etat_save){ //on veut créer le fichier à enregistrer et l'enregistrer
+		    	auto filename = dialog->get_file()->get_path();
+				ofstream fichier;
+				fichier.open(filename);
+				if (!fichier.fail()){
+					fichier << _simulation.data_to_string() << endl;
+					fichier.close();
+				}else{//cette fois on veut juste lancer la simulation avec
+					  //le fichier ouvert
+
+				}
+
+		    	break;
+			}
 		}
 		case Gtk::ResponseType::CANCEL:{
-		    std::cout << "Cancel clicked." << std::endl;
+		    cout << "Cancel clicked." << endl;
 		    break;
 		}
 		default:{
-		    std::cout << "Unexpected button clicked." << std::endl;
+		    cout << "Unexpected button clicked." << endl;
 		    break;
 		}
 	}
