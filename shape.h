@@ -52,11 +52,10 @@ public:
 class Carre{
 private:
     S2d centre;
-    double arrete;
+    double arete;
    
-
 public:
-    Carre(S2d centre, double arrete);
+    Carre(S2d centre, double arete);
     void affiche(Couleur couleur, double largeur) const;
 };
 

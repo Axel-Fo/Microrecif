@@ -39,6 +39,7 @@ private:
     unsigned int nbAlg;
     unsigned int nbCor;
     unsigned int nbSca;
+    unsigned int nbMaj;
     bool erreur;
     
     // pour la sequence random
@@ -59,9 +60,12 @@ public:
     Simulation();
     void lecture(std::string file);
     void reset();
+    
     unsigned int getNbAlg() const;
     unsigned int getNbCor() const;
     unsigned int getNbSca() const;
+    unsigned int getNbMaj() const;
+    
     void affiche() const;
     std::string data_to_string();
     void step(bool naissance);

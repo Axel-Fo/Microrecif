@@ -3,24 +3,25 @@
 #include <vector>
 #include <iostream>
 #include <cmath>
+
 static const Cairo::RefPtr<Cairo::Context>* ptcr(nullptr);
-struct Rgb
-{
+
+struct Rgb{
     double r;
     double g;
     double b;
 };
+
 // le code des couleur en Rgb de blanc,bleu,rouge,vert,gris,noir
 std::vector<Rgb> couleur_rgb = {Rgb{1,1,1},Rgb{0,0,1},Rgb{1,0,0},
                                 Rgb{0,1,0},Rgb{0.5,0.5,0.5},Rgb{0,0,0}};
 
-void graphic_set_context( const Cairo::RefPtr<Cairo::Context>& cr)
-{
+void graphic_set_context( const Cairo::RefPtr<Cairo::Context>& cr){
     ptcr = &cr;
 }
+
 void dessin_ligne(double x1, double y1,double x2, double y2,
-                                                Couleur couleur,double largeur)
-{
+                                                Couleur couleur, double largeur){
     (*ptcr)->set_line_width(largeur);
     
     (*ptcr)->set_source_rgb(couleur_rgb[couleur].r,couleur_rgb[couleur].g,
@@ -31,19 +32,17 @@ void dessin_ligne(double x1, double y1,double x2, double y2,
     (*ptcr)->stroke();
 }
 
-void dessin_carre(double xc, double yc, double arrete,Couleur couleur,double largeur)
-{
+void dessin_carre(double xc, double yc, double arete, Couleur couleur, double largeur){
     (*ptcr)->set_line_width(largeur);
     
     (*ptcr)->set_source_rgb(couleur_rgb[couleur].r,couleur_rgb[couleur].g,
                                                    couleur_rgb[couleur].b);
-    (*ptcr)->rectangle(xc-arrete/2,yc-arrete/2,arrete,arrete);
+    (*ptcr)->rectangle(xc-arete/2,yc-arete/2,arete,arete);
 
     (*ptcr)->stroke();
 }
 
-void dessin_cercle(double xc, double yc, double rayon,Couleur couleur,double largeur)
-{   
+void dessin_cercle(double xc, double yc, double rayon, Couleur couleur, double largeur){
     (*ptcr)->set_line_width(largeur);
     (*ptcr)->set_source_rgb(couleur_rgb[couleur].r,couleur_rgb[couleur].g,
                                             couleur_rgb[couleur].b);

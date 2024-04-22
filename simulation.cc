@@ -155,7 +155,9 @@ void Simulation::lecture(string fichier_entree) {
     ifstream fichier(fichier_entree);
     if (!fichier.fail()) {
         e.seed(1); // reset la fonction random pour l'ouverture d'un nouveau fichier
+        erreur = false;
         etat_lecture = NBA;
+        nbMaj = 0;
         compteur = 0;
         compteur_seg = 0;
         nbAlg = 0;
@@ -169,7 +171,7 @@ void Simulation::lecture(string fichier_entree) {
             switch_lecture(data);
             
             if(erreur){
-                reset();
+                reset();//om met tout à 0 et on sort de la lecture
                 break;
             }
         }
@@ -185,10 +187,11 @@ void Simulation::reset(){
     coraux.clear();
     scavengers.clear();
     algues.clear();
-    //les nb d'entités et les etats des compteur et lecture sont déja mis a 0 dans 
+    //les nb d'entités et les etats des compteurs et lecture sont déja mis a 0 dans 
     //la méthode lecture
 }
 
+//Getteurs............................................................................
 unsigned int Simulation::getNbAlg()const{
     return algues.size();
 }
@@ -201,18 +204,23 @@ unsigned int Simulation::getNbSca()const{
     return scavengers.size();
 }
 
+unsigned int Simulation::getNbMaj()const{
+    return nbMaj;
+}
+
+
+//..........................................................................
 void Simulation::affiche()const{
 
     for (const auto& corail : coraux) {
         // Obtenez les segments du corail
-        const auto& segments = corail.getSegments();
+        const auto& segments = corail.getSegments();//reference les seg sans copier
         Carre carre(segments[0].getPoint(),d_cor);
         carre.affiche(bleu,1);
         for (const auto& seg : segments) {           
             seg.affiche(bleu, 1);
         }
     }
-        
     for(const auto& scav : scavengers){
         Cercle cercle(scav.getPos(),scav.getRayon());
         cercle.affiche(rouge, 1);
@@ -249,6 +257,7 @@ void Simulation::step(bool naissance){
     step_algues();
     step_coraux();
     step_scav();
+    ++nbMaj;
     if(naissance and random_algue(e)){
         S2d pos;
         pos.x = random_pos(e);
@@ -256,7 +265,6 @@ void Simulation::step(bool naissance){
         Algue new_alg(pos);
         algues.push_back(new_alg);
     }
-    
 }
 
 void Simulation::step_algues(){

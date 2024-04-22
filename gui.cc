@@ -158,6 +158,7 @@ MyWindow::MyWindow(Simulation& simulation):
 }
 void MyWindow::maj_info_box(){
 	
+	m_label_maj.set_text("mises à jour: " + to_string(_simulation.getNbMaj()));
 	m_label_algues.set_text("algues: " + to_string(_simulation.getNbAlg()));
 	m_label_corails.set_text("corails: " + to_string(_simulation.getNbCor()));
 	m_label_charognards.set_text("charognards: " + to_string(_simulation.getNbSca()));
@@ -245,8 +246,8 @@ void MyWindow::on_button_clicked_start_stop(){
 		                                        &MyWindow::on_timeout));
 		
 		// This is where we connect the slot to the Glib::signal_timeout()
-		//maj toutes les 500 ms
-		auto conn = Glib::signal_timeout().connect(my_slot,500);
+		//maj toutes les 25 ms
+		auto conn = Glib::signal_timeout().connect(my_slot,25);
 			
     }else{
         m_button_start_stop.set_label("start");
@@ -278,8 +279,7 @@ bool MyWindow::on_window_key_pressed(guint keyval, guint, Gdk::ModifierType stat
 }
 
 bool MyWindow::on_timeout(){
-	static unsigned int val(1);
-	
+
 	if(disconnect)
 	{	
 		disconnect = false; // reset for next time a Timer is created
@@ -287,11 +287,9 @@ bool MyWindow::on_timeout(){
 	}
 	
 	_simulation.step(m_check_button_naissance.get_active());
-	m_label_maj.set_text("mises à jour: " + std::to_string(val));
 	maj_info_box();
 	m_area.maj_drawing();
 
-	++val;
 	return true; 
 }
 
@@ -303,7 +301,7 @@ void MyWindow::on_file_dialog_response(int response_id,
 				//on veut créer le fichier à enregistrer et l'enregistrer
 		    	auto filename = dialog->get_file()->get_path();
 				ofstream fichier;
-				fichier.open(filename);
+				fichier.open(filename,ofstream::trunc);
 				if (!fichier.fail()){
 					fichier << _simulation.data_to_string() << endl;
 					fichier.close();
