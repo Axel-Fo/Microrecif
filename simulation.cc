@@ -178,7 +178,6 @@ void Simulation::lecture(string fichier_entree) {
         if(!erreur){
             cout << message::success();
         }
-
     } else
         cout << "erreur lecture simulation" << endl;
 }

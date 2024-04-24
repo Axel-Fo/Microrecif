@@ -155,9 +155,15 @@ bool Scavenger::testScavenger() const {
 
 string Scavenger::sca_to_string() const {
     
-    return lifeform_to_string() + " " + to_string(rayon) + " " + to_string(statut_sca) 
-                                                    + " " + to_string(cor_id_cible);
+    if (statut_sca){
+        return lifeform_to_string() + " " + to_string(rayon) + " " 
+            + to_string(statut_sca) + " " + to_string(cor_id_cible);
+    }
+
+    
+    return lifeform_to_string() + " " + to_string(rayon) + " " + to_string(statut_sca);
 }
+
 int Scavenger::getcorIdCible() const {
     return cor_id_cible;
 }
