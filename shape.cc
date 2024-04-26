@@ -1,8 +1,10 @@
 #include "shape.h"
 #include <iostream>
 
-//Methodes private Segment............................................................
 
+//Classe Segment......................................................................
+
+//Methodes private Segment:
 double Segment::norme(S2d pt1, S2d pt2) const {
     return sqrt(pow(pt1.x - pt2.x, 2) + pow(pt1.y - pt2.y, 2));
 }
@@ -120,13 +122,15 @@ S2d Segment::getPoint() const {
     return point;
 }
 
-//Methodes publiques Cercle...........................................................
+//Méthodes publiques Cercle...........................................................
 Cercle::Cercle(S2d centre, double rayon) : centre(centre), rayon(rayon){}
+
 void Cercle::affiche(Couleur couleur, double largeur) const{
+
     dessin_cercle(centre.x, centre.y, rayon, couleur, largeur);
 }
 
-//Methodes publiques Carre...........................................................
+//Méthodes publiques Carre...........................................................
 Carre::Carre(S2d centre, double arete):centre(centre), arete(arete){}
 
 void Carre::affiche(Couleur couleur, double largeur) const{

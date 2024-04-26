@@ -1,3 +1,8 @@
+/*
+* Fichier : gui.h
+* Auteurs : Nestor Guibentif et Axel Fouet
+* Version : V1
+*/
 #ifndef GUI_H_INCLUDED
 #define GUI_H_INCLUDED
 
@@ -18,19 +23,19 @@
 #include "graphic_gui.h"
 #include "simulation.h"
 
-struct Frame // Model Framing and window parameters
-{
+constexpr unsigned taille_dessin(500);
+
+struct Frame { // Paramètres du modèle et de la fenêtre 
 	double xMin; // frame parameters
 	double xMax;
 	double yMin;
 	double yMax;
-	double asp;  // frame aspect ratio
-	int height;  // window height
-	int width;   // window width
+	double asp;  // rapport hauteur du cadre 
+	int height;  
+	int width;   
 };
 
-class MyArea : public Gtk::DrawingArea
-{
+class MyArea : public Gtk::DrawingArea{
 public:
     MyArea();
     virtual ~MyArea();
@@ -44,8 +49,7 @@ private:
     Frame frame;
 };
 
-class MyWindow : public Gtk::Window
-{
+class MyWindow : public Gtk::Window{
 public:
     MyWindow(Simulation& simulation);
     void maj_info_box();
@@ -80,18 +84,19 @@ protected:
     bool disconnect; //pour avoir l'etat du timer
     bool on_timeout();
 
-    //action des boutons
+    //action des boutons et events clavier
     void on_button_clicked_exit();
 	void on_button_clicked_open();
 	void on_button_clicked_save();
-    bool etat_save; //1 si on est en train de save, 0 sinon
 	void on_button_clicked_start_stop();
 	void on_button_clicked_step();
 
-    // Event clavier
     bool on_window_key_pressed(guint keyval, guint keycode, Gdk::ModifierType state);
+    
+    //pour l'ouverture et l'enregistrement des fichiers :
+    
     void on_file_dialog_response(int response_id, Gtk::FileChooserDialog* dialog);
-
+    bool etat_save; //1 si on est en train de save, 0 sinon
 };
 
 #endif // GUI_H_INCLUDED

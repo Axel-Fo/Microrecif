@@ -35,14 +35,15 @@ void dessin_ligne(double x1, double y1,double x2, double y2,
 void dessin_carre(double xc, double yc, double arete, Couleur couleur, double largeur){
     (*ptcr)->set_line_width(largeur);
     
-    (*ptcr)->set_source_rgb(couleur_rgb[couleur].r,couleur_rgb[couleur].g,
-                                                   couleur_rgb[couleur].b);
+    (*ptcr)->set_source_rgb(couleur_rgb[couleur].r, couleur_rgb[couleur].g,
+                                                    couleur_rgb[couleur].b);
     (*ptcr)->rectangle(xc-arete/2,yc-arete/2,arete,arete);
 
     (*ptcr)->stroke();
 }
 
-void dessin_cercle(double xc, double yc, double rayon, Couleur couleur, double largeur){
+void dessin_cercle(double xc, double yc, double rayon, 
+                                        Couleur couleur, double largeur){
     (*ptcr)->set_line_width(largeur);
     (*ptcr)->set_source_rgb(couleur_rgb[couleur].r,couleur_rgb[couleur].g,
                                             couleur_rgb[couleur].b);

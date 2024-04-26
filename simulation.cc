@@ -1,11 +1,15 @@
 /*
 * Fichier : simulation.cc
 * Auteurs : Nestor Guibentif et Axel Fouet
-* Version : V1
+* Version : V2
 */
 #include "simulation.h"
 
 using namespace std;
+
+//Classe Simulation...................................................................
+
+//Méthodes private :
 
 bool Simulation::idExist(int id) {
     for (long unsigned int i(0); i < coraux.size(); i++) {
@@ -26,8 +30,8 @@ bool Simulation::testId(Corail corail) {
 
 bool Simulation::testIdMange(Scavenger scav) {
     if (scav.getStatutSca()) {
-        if (!idExist(scav.getcorIdCible())) {
-            cout << message::lifeform_invalid_id(scav.getcorIdCible());
+        if (!idExist(scav.getCorIdCible())) {
+            cout << message::lifeform_invalid_id(scav.getCorIdCible());
             return true;
         }
     }
@@ -142,6 +146,26 @@ void Simulation::switch_lecture(istringstream& data) {
             cout <<"Erreur, on est arrivé dans le default du switch de lecture"<<endl;      
     }
 }
+
+void Simulation::step_algues(){
+    
+    for(unsigned int i(0); i < algues.size(); i++){
+        algues[i].step();
+        unsigned int age = algues[i].getAge();
+        if(age == max_life_alg){
+            //pour limiter le coût calcul
+            swap(algues[i], algues[algues.size()-1]);
+            algues.pop_back();
+        }
+    }
+}
+
+void Simulation::step_coraux(){
+    
+}
+void Simulation::step_scav(){
+    
+}
 //...................................................................................
 //Methodes publiques :
 
@@ -213,13 +237,14 @@ void Simulation::affiche()const{
 
     for (const auto& corail : coraux) {
         // Obtenez les segments du corail
-        const auto& segments = corail.getSegments();//reference les seg sans copier
+        const auto& segments = corail.getSegments();
         Carre carre(segments[0].getPoint(),d_cor);
         carre.affiche(bleu,1);
         for (const auto& seg : segments) {           
             seg.affiche(bleu, 1);
         }
     }
+
     for(const auto& scav : scavengers){
         Cercle cercle(scav.getPos(),scav.getRayon());
         cercle.affiche(rouge, 1);
@@ -236,7 +261,7 @@ string Simulation::data_to_string(){
     for (size_t i(0); i<algues.size();++i){
         stringAlg += algues[i].lifeform_to_string() + "\n";
         //une algue n'a pas d'attributs de classe en plus que lifeform donc 
-        //la fonction lifeform_to_string suffit
+        //la méthode lifeform_to_string suffit
     }
 
     string stringCor(to_string(coraux.size()) + "\n");
@@ -254,8 +279,8 @@ string Simulation::data_to_string(){
 
 void Simulation::step(bool naissance){
     step_algues();
-    step_coraux();
-    step_scav();
+    step_coraux(); //pour le rendu 3
+    step_scav(); //pour le rendu 3
     ++nbMaj;
     if(naissance and random_algue(e)){
         S2d pos;
@@ -265,23 +290,3 @@ void Simulation::step(bool naissance){
         algues.push_back(new_alg);
     }
 }
-
-void Simulation::step_algues(){
-    
-    for(unsigned int i(0); i < algues.size(); i++){
-        algues[i].step();
-        unsigned int age = algues[i].getAge();
-        if(age == max_life_alg){
-            //pour limiter le coût calcul
-            swap(algues[i], algues[algues.size()-1]);
-            algues.pop_back();
-        }
-    }
-}
-void Simulation::step_coraux(){
-    
-}
-void Simulation::step_scav(){
-    
-}
-

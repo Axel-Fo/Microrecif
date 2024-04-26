@@ -1,7 +1,7 @@
 /*
 * Fichier : projet.cc
 * Auteurs : Nestor Guibentif et Axel Fouet
-* Version : V1
+* Version : V2
 */
 
 #include <iostream>
@@ -17,6 +17,7 @@ int main(int argc, char* argv[]) {
     if (argc != 2) {
         cout << "Error : il faut mettre un nom de fichier." << endl;
     }
+
     simulation.lecture(argv[1]);
 
     auto myApp = Gtk::Application::create();

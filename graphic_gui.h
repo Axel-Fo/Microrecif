@@ -1,3 +1,10 @@
+
+/*
+* Fichier : graphic_gui.hh
+* Auteurs : Nestor Guibentif et Axel Fouet
+* Version : V2
+*/
+
 #ifndef GRAPHIC_GUI_H
 #define GRAPHIC_GUI_H
 

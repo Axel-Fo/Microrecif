@@ -1,7 +1,7 @@
 /*
 * Fichier : lifeform.h
 * Auteurs : Nestor Guibentif et Axel Fouet
-* Version : V1
+* Version : V2
 */
 
 #ifndef LIFEFORM_H_INCLUDED
@@ -73,7 +73,7 @@ public:
     
     bool testScavenger() const;
     std::string sca_to_string() const;
-    int getcorIdCible() const;
+    int getCorIdCible() const;
     bool getStatutSca() const;
     double getRayon() const;
 };

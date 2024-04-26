@@ -3,9 +3,10 @@
 
 #include <cmath>
 #include "graphic.h"
-constexpr double epsil_zero(0.5);
 
 enum Etat_epsil_zero { NOT_EPSIL, IS_EPSIL };
+
+constexpr double epsil_zero(0.5);
 
 struct S2d {
     double x = 0.;
@@ -31,9 +32,6 @@ public:
     S2d autre_pt() const;
 
     void affiche(Couleur couleur, double largeur)const;
-
-    void setAngle(double a);
-    void setLongeur(double l);
 
     double getAngle() const;
     double getLongueur() const;

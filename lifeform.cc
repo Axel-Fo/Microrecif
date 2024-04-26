@@ -1,7 +1,7 @@
 /*
 * Fichier : lifeform.cc
 * Auteurs : Nestor Guibentif et Axel Fouet
-* Version : V1
+* Version : V2
 */
 #include "lifeform.h"
 
@@ -34,6 +34,7 @@ string Lifeform::lifeform_to_string() const {
 void Lifeform::step(){
     age++;
 }
+
 //Classe Corail.......................................................................
 
 bool Corail::testSeg() const {
@@ -60,6 +61,7 @@ bool Corail::testSeg() const {
     return false;
 }
 
+//Methodes publiques : 
 Corail::Corail(istringstream& data) {
 
     data >> pos.x >> pos.y >> age >> id >> vie_cor 
@@ -100,8 +102,7 @@ string Corail::cor_to_string() const{
             + to_string(nb_seg) + " " + stringSeg ;
 }
 
-// definition des geteurs pour le corail
-
+// Définition des geteurs pour le corail :
 
 int Corail::getId() const {
     return id;
@@ -155,7 +156,7 @@ bool Scavenger::testScavenger() const {
 
 string Scavenger::sca_to_string() const {
     
-    if (statut_sca){
+    if (statut_sca){ //l'id du corail cible est là uniquement si le scavenger MANGE
         return lifeform_to_string() + " " + to_string(rayon) + " " 
             + to_string(statut_sca) + " " + to_string(cor_id_cible);
     }
@@ -164,11 +165,9 @@ string Scavenger::sca_to_string() const {
     return lifeform_to_string() + " " + to_string(rayon) + " " + to_string(statut_sca);
 }
 
-int Scavenger::getcorIdCible() const {
+int Scavenger::getCorIdCible() const {
     return cor_id_cible;
 }
-
-
 
 bool Scavenger::getStatutSca() const {
     return statut_sca;
@@ -183,6 +182,7 @@ double Scavenger::getRayon() const {
 Algue::Algue(istringstream& data) {
     data >> pos.x >> pos.y >> age;
 }
+
 Algue::Algue(S2d pos):Lifeform(pos) {} 
 
 bool Algue::testAlgue() const {
@@ -212,6 +212,7 @@ bool testPos(S2d pos) {
     }
     return false;
 }
+
 
 string seg_to_string(Segment seg) {
     return "        " + to_string(seg.getAngle()) + " "

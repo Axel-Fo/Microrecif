@@ -2,7 +2,7 @@
 #define GRAPHIC_H
 
 
-enum Couleur{blanc,bleu,rouge,vert,gris,noir};
+enum Couleur{blanc, bleu, rouge, vert, gris, noir};
 
 void dessin_ligne(double x1, double y1,double x2, double y2,
                                                     Couleur couleur,double largeur);

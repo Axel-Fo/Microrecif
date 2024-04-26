@@ -1,21 +1,26 @@
+/*
+* Fichier : gui.cc
+* Auteurs : Nestor Guibentif et Axel Fouet
+* Version : V1
+*/
 #include "gui.h"
 
 using namespace std;
-//les deux  classes ont besoin de pouvoir acceder a simulation
+
+
+//les deux  classes ont besoin de pouvoir accéder à simulation
 static Simulation _simulation;
 
 static void orthographic_projection(const Cairo::RefPtr<Cairo::Context>& cr, 
-									Frame frame);
-// default Model Framing and window parameters
-static Frame default_frame = {-1 ,dmax +2, -1, dmax +2, 1, 500, 500}; 
+									Frame frame); 
 
-MyArea::MyArea() {
-    setFrame(default_frame);
-	set_content_width(default_frame.width);
-	set_content_height(default_frame.height);
-    set_draw_func(sigc::mem_fun(*this, &MyArea::on_draw));
-}
-MyArea::~MyArea() {}
+// Frame par defaut et paramètres de la fenêtre
+static Frame default_frame = {-1 ,dmax +2, -1, dmax +2, 1, taille_dessin, 
+																	taille_dessin}; 
+
+
+//Classe MyArea.......................................................................
+
 
 static void orthographic_projection(const Cairo::RefPtr<Cairo::Context>& cr, 
 								    Frame frame){
@@ -31,11 +36,32 @@ static void orthographic_projection(const Cairo::RefPtr<Cairo::Context>& cr,
 	// décalage au centre du cadrage
 	cr->translate(-(frame.xMin + frame.xMax)/2, -(frame.yMin + frame.yMax)/2);
 }
+
+//Méthodes publiques MyArea:
+MyArea::MyArea(){
+    setFrame(default_frame);
+	set_content_width(default_frame.width);
+	set_content_height(default_frame.height);
+    set_draw_func(sigc::mem_fun(*this, &MyArea::on_draw));
+}
+
+MyArea::~MyArea() {}
+
+void MyArea::setFrame(Frame f){
+	if((f.xMin <= f.xMax) and (f.yMin <= f.yMax) and (f.height > 0))
+	{
+		f.asp = f.width/f.height;
+		frame = f;
+	}
+	else
+		std::cout << "incorrect Model framing or window parameters" << std::endl;
+}
+
 void MyArea::adjustFrame(int width, int height){
 	frame.width  = width;
 	frame.height = height;
 
-	// Preventing distorsion by adjusting the frame (cadrage)
+	// Pour eviter la distorsion quand on change la taille de la fenêtre
 	// to have the same proportion as the graphical area
 	
     // use the reference framing as a guide for preventing distortion
@@ -64,15 +90,11 @@ void MyArea::adjustFrame(int width, int height){
     }
 }
 
-void MyArea::setFrame(Frame f){
-	if((f.xMin <= f.xMax) and (f.yMin <= f.yMax) and (f.height > 0))
-	{
-		f.asp = f.width/f.height;
-		frame = f;
-	}
-	else
-		std::cout << "incorrect Model framing or window parameters" << std::endl;
+void MyArea::maj_drawing(){
+	queue_draw();
 }
+
+//methodes Protected MyArea:
 
 void MyArea::on_draw(const Cairo::RefPtr<Cairo::Context> &cr,
                      int width, int height){
@@ -85,14 +107,10 @@ void MyArea::on_draw(const Cairo::RefPtr<Cairo::Context> &cr,
     dessin_carre(dmax/2,dmax/2, dmax + 1,gris,1);
 
 }
-void MyArea::maj_drawing(){
-	queue_draw();
-}
 
-void distortion(){
+//Classe MyWindow.....................................................................
 
-}
-
+//Méthodes publiques : 
 MyWindow::MyWindow(Simulation& simulation):
 
     m_main_box(Gtk::Orientation::HORIZONTAL,2),
@@ -113,9 +131,9 @@ MyWindow::MyWindow(Simulation& simulation):
     m_label_corails("corails: "),
     m_label_charognards("charognards: "),
 	disconnect(false),
-	etat_save(false)
-{   
-    _simulation = simulation;
+	etat_save(false)  {   
+
+	_simulation = simulation;
     set_title("Microrécif");
     set_child(m_main_box);
 	maj_info_box();
@@ -139,11 +157,16 @@ MyWindow::MyWindow(Simulation& simulation):
 	m_button_box.append(m_button_step);
     m_button_box.append(m_naissance_box);
     //pour lier evenement bouton clické a la fonction
-    m_button_exit.signal_clicked().connect(sigc::mem_fun(*this, &MyWindow::on_button_clicked_exit));
-    m_button_open.signal_clicked().connect(sigc::mem_fun(*this, &MyWindow::on_button_clicked_open));
-	m_button_save.signal_clicked().connect(sigc::mem_fun(*this, &MyWindow::on_button_clicked_save));
-	m_button_start_stop.signal_clicked().connect(sigc::mem_fun(*this, &MyWindow::on_button_clicked_start_stop));
-	m_button_step.signal_clicked().connect(sigc::mem_fun(*this, &MyWindow::on_button_clicked_step));
+    m_button_exit.signal_clicked().connect(sigc::mem_fun(*this, 
+												&MyWindow::on_button_clicked_exit));
+    m_button_open.signal_clicked().connect(sigc::mem_fun(*this, 
+												&MyWindow::on_button_clicked_open));
+	m_button_save.signal_clicked().connect(sigc::mem_fun(*this, 
+												&MyWindow::on_button_clicked_save));
+	m_button_start_stop.signal_clicked().connect(sigc::mem_fun(*this, 
+											&MyWindow::on_button_clicked_start_stop));
+	m_button_step.signal_clicked().connect(sigc::mem_fun(*this, 
+												&MyWindow::on_button_clicked_step));
 	    // Handling Keyboard Events.
     auto controller = Gtk::EventControllerKey::create();
     controller->signal_key_pressed().connect(
@@ -156,13 +179,31 @@ MyWindow::MyWindow(Simulation& simulation):
     m_info_box.append(m_label_corails);
     m_info_box.append(m_label_charognards);
 }
+
 void MyWindow::maj_info_box(){
 	
 	m_label_maj.set_text("mises à jour: " + to_string(_simulation.getNbMaj()));
 	m_label_algues.set_text("algues: " + to_string(_simulation.getNbAlg()));
 	m_label_corails.set_text("corails: " + to_string(_simulation.getNbCor()));
 	m_label_charognards.set_text("charognards: " + to_string(_simulation.getNbSca()));
-} 
+}
+
+//Methodes protected:
+
+bool MyWindow::on_timeout(){
+
+	if(disconnect)
+	{	
+		disconnect = false; // mis a false pour si un nouveau timer est créé
+		return false; // fin du timer
+	}
+	
+	_simulation.step(m_check_button_naissance.get_active());
+	maj_info_box();
+	m_area.maj_drawing();
+
+	return true; 
+}
 
 void MyWindow::on_button_clicked_exit(){
     exit(EXIT_SUCCESS);
@@ -177,11 +218,11 @@ void MyWindow::on_button_clicked_open(){
 	dialog->signal_response().connect(sigc::bind(
 	sigc::mem_fun(*this, &MyWindow::on_file_dialog_response), dialog));
 	
-	//Add response buttons to the dialog:
+	//Ajout de boutons dans la fenêtre de dialogue
 	dialog->add_button("_Cancel", Gtk::ResponseType::CANCEL);
 	dialog->add_button("_Open", Gtk::ResponseType::OK);
 
-	//Add filters, so that only certain file types can be selected:
+	//Ajout de filtres pour savoir quels types de fichier on peut ouvrir
 	auto filter_text = Gtk::FileFilter::create();
 	filter_text->set_name("Text files");
 	filter_text->add_mime_type("text/plain");
@@ -203,6 +244,12 @@ void MyWindow::on_button_clicked_open(){
 } 
 
 void MyWindow::on_button_clicked_save(){
+	
+	string boutonEtat = m_button_start_stop.get_label();
+	if(boutonEtat == "stop"){
+		m_button_start_stop.set_label("start");
+		disconnect  = true;
+	}
 
     etat_save = true;
 	auto dialog = new Gtk::FileChooserDialog("Please choose a file",
@@ -212,11 +259,11 @@ void MyWindow::on_button_clicked_save(){
 	dialog->signal_response().connect(sigc::bind(
 	sigc::mem_fun(*this, &MyWindow::on_file_dialog_response), dialog));
 	
-	//Add response buttons to the dialog:
+	//Ajout de boutons dans la fenêtre de dialogue
 	dialog->add_button("_Cancel", Gtk::ResponseType::CANCEL);
 	dialog->add_button("_Save", Gtk::ResponseType::OK);
 	
-	//Add filters, so that only certain file types can be selected:
+	//Ajout de filtres pour savoir quels types de fichier on peut ouvrir
 	auto filter_text = Gtk::FileFilter::create();
 	filter_text->set_name("Text files");
 	filter_text->add_mime_type("text/plain");
@@ -234,8 +281,8 @@ void MyWindow::on_button_clicked_save(){
 	filter_any->add_pattern("*");
 	dialog->add_filter(filter_any);
 	dialog->show();
+}
 
-} 
 void MyWindow::on_button_clicked_start_stop(){
     std::string boutonEtat = m_button_start_stop.get_label();
 
@@ -246,8 +293,8 @@ void MyWindow::on_button_clicked_start_stop(){
 		                                        &MyWindow::on_timeout));
 		
 		// This is where we connect the slot to the Glib::signal_timeout()
-		//maj toutes les 25 ms
-		auto conn = Glib::signal_timeout().connect(my_slot,25);
+		//maj toutes les 250 ms
+		auto conn = Glib::signal_timeout().connect(my_slot,250);
 			
     }else{
         m_button_start_stop.set_label("start");
@@ -255,14 +302,16 @@ void MyWindow::on_button_clicked_start_stop(){
     }
 
 }
+
 void MyWindow::on_button_clicked_step(){ 
 	//On veut pouvoir step seulement si la simulation n'est pas en cours
-	std::string boutonEtat = m_button_start_stop.get_label();
+	string boutonEtat = m_button_start_stop.get_label();
 	if(boutonEtat == "start"){
     	on_timeout();
 	}
 
 }
+
 bool MyWindow::on_window_key_pressed(guint keyval, guint, Gdk::ModifierType state){	
 	switch(gdk_keyval_to_unicode(keyval)){
 		case 's':
@@ -278,21 +327,6 @@ bool MyWindow::on_window_key_pressed(guint keyval, guint, Gdk::ModifierType stat
     return false;
 }
 
-bool MyWindow::on_timeout(){
-
-	if(disconnect)
-	{	
-		disconnect = false; // reset for next time a Timer is created
-		return false; // End of Timer 
-	}
-	
-	_simulation.step(m_check_button_naissance.get_active());
-	maj_info_box();
-	m_area.maj_drawing();
-
-	return true; 
-}
-
 void MyWindow::on_file_dialog_response(int response_id, 
 										    Gtk::FileChooserDialog* dialog){
 	switch (response_id){
@@ -301,13 +335,14 @@ void MyWindow::on_file_dialog_response(int response_id,
 				//on veut créer le fichier à enregistrer et l'enregistrer
 		    	auto filename = dialog->get_file()->get_path();
 				ofstream fichier;
-				fichier.open(filename,ofstream::trunc);
+				fichier.open(filename, ofstream::trunc);
 				if (!fichier.fail()){
 					fichier << _simulation.data_to_string() << endl;
 					fichier.close();
 				}else{
 					cout << "Echec de l'ouverture du fichier" << endl;
 				}
+
 			}else{
 				//cette fois on veut juste lancer la simulation avec
 				//le fichier qu'on ouvre en effacant la simulation en cours
@@ -319,7 +354,6 @@ void MyWindow::on_file_dialog_response(int response_id,
 
 			}
 		    break;
-			
 		}
 		case Gtk::ResponseType::CANCEL:{
 		    cout << "Cancel clicked." << endl;

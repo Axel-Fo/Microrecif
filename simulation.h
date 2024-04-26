@@ -1,7 +1,7 @@
 /*
 * Fichier : simulation.h
 * Auteurs : Nestor Guibentif et Axel Fouet
-* Version : V1
+* Version : V2
 */
 
 #ifndef SIMULATION_H_INCLUDED
@@ -52,6 +52,7 @@ private:
     bool testId(Corail corail);
     bool testIdMange(Scavenger scav);
     bool testCollision(Corail corail);
+    
     void step_algues();
     void step_coraux();
     void step_scav();
