@@ -12,6 +12,12 @@ bool testPos(S2d pos);
 bool testAge(unsigned int age);
 string seg_to_string(Segment seg);
 
+//Prototypes des fonctions utilisées pour surcharger:
+std::istream& operator>>(std::istream& in, Statut_sca& statut);
+std::istream& operator>>(std::istream& in, Statut_dev& statut);
+std::istream& operator>>(std::istream& in, Dir_rot_cor& dir);
+std::istream& operator>>(std::istream& in, Statut_cor& statut);
+
 //Classe Lifeform.....................................................................
 //constructeur par défaut :
 Lifeform::Lifeform(){}
@@ -108,14 +114,14 @@ int Corail::getId() const {
     return id;
 }
 
-bool Corail::getVieCor() const {
+Statut_cor Corail::getVieCor() const {
     return vie_cor;
 }
 
-bool Corail::getSensRota() const {
+Dir_rot_cor Corail::getSensRota() const {
     return sens_rota;
 }
-bool Corail::getStatutDev() const {
+Statut_dev Corail::getStatutDev() const {
     return statut_dev;
 }
 
@@ -161,7 +167,6 @@ string Scavenger::sca_to_string() const {
             + to_string(statut_sca) + " " + to_string(cor_id_cible);
     }
 
-    
     return lifeform_to_string() + " " + to_string(rayon) + " " + to_string(statut_sca);
 }
 
@@ -169,7 +174,7 @@ int Scavenger::getCorIdCible() const {
     return cor_id_cible;
 }
 
-bool Scavenger::getStatutSca() const {
+Statut_sca Scavenger::getStatutSca() const {
     return statut_sca;
 }
 double Scavenger::getRayon() const {
@@ -217,4 +222,47 @@ bool testPos(S2d pos) {
 string seg_to_string(Segment seg) {
     return "        " + to_string(seg.getAngle()) + " "
                       + to_string(seg.getLongueur());
+}
+//................on surcharge l'operateur >>........................................//
+//pour pouvoir dirrectement utiliser l'opérateur >> avec les types: Statut_sca, 
+//Statut_dev, Dir_rot_cor, Statut_cor dans les different constructeur
+std::istream& operator>>(std::istream& in, Statut_sca& statut) {
+    bool mange;
+    in>>mange;
+    if(mange){
+        statut = MANGE;
+    }else{
+        statut = LIBRE;
+    }
+    return in;
+}
+std::istream& operator>>(std::istream& in, Statut_dev& statut) {
+    bool repro;
+    in>>repro;
+    if(repro){
+        statut = REPRO;
+    }else{
+        statut = EXTEND;
+    }
+    return in;
+}
+std::istream& operator>>(std::istream& in, Dir_rot_cor& dir) {
+    bool inv;
+    in>>inv;
+    if(inv){
+        dir = INVTRIGO;
+    }else{
+        dir = TRIGO;
+    }
+    return in;
+}
+std::istream& operator>>(std::istream& in, Statut_cor& statut) {
+    bool alive;
+    in>>alive;
+    if(alive){
+        statut = ALIVE;
+    }else{
+        statut = DEAD;
+    }
+    return in;
 }

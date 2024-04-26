@@ -8,7 +8,8 @@
 using namespace std;
 
 
-//les deux  classes ont besoin de pouvoir accéder à simulation
+//les deux  classes ont besoin de pouvoir accéder à simulation le plus simple est de 
+//mettre notre simulation en static
 static Simulation _simulation;
 
 static void orthographic_projection(const Cairo::RefPtr<Cairo::Context>& cr, 
@@ -58,33 +59,34 @@ void MyArea::setFrame(Frame f){
 }
 
 void MyArea::adjustFrame(int width, int height){
+	// Met à jour la largeur et la hauteur du cadre
 	frame.width  = width;
 	frame.height = height;
 
-	// Pour eviter la distorsion quand on change la taille de la fenêtre
-	// to have the same proportion as the graphical area
-	
-    // use the reference framing as a guide for preventing distortion
+    // Pour éviter la distorsion quand on change la taille de la fenêtre
+    // afin de conserver les mêmes proportions que la zone graphique
+
+    // Utilise le cadre de référence comme guide pour éviter la distorsion
     double new_aspect_ratio((double)width/height);
     if( new_aspect_ratio > default_frame.asp){ 
-		// keep yMax and yMin. Adjust xMax and xMin
+		// Garde yMax et yMin. Ajuste xMax et xMin
 	    frame.yMax = default_frame.yMax ;
 	    frame.yMin = default_frame.yMin ;	
 	  
 	    double delta(default_frame.xMax - default_frame.xMin);
 	    double mid((default_frame.xMax + default_frame.xMin)/2);
-        // the new frame is centered on the mid-point along X
+       // Le nouveau cadre est centré sur le point médian le long de X
 	    frame.xMax = mid + 0.5*(new_aspect_ratio/default_frame.asp)*delta ;
 	    frame.xMin = mid - 0.5*(new_aspect_ratio/default_frame.asp)*delta ;		  	  
     }
     else{ 
-		// keep xMax and xMin. Adjust yMax and yMin
+		// Garde xMax et xMin. Ajuste yMax et yMin
 	    frame.xMax = default_frame.xMax ;
 	    frame.xMin = default_frame.xMin ;
 	  	  
  	    double delta(default_frame.yMax - default_frame.yMin);
 	    double mid((default_frame.yMax + default_frame.yMin)/2);
-        // the new frame is centered on the mid-point along Y
+       // Le nouveau cadre est centré sur le point médian le long de y
 	    frame.yMax = mid + 0.5*(default_frame.asp/new_aspect_ratio)*delta ;
 	    frame.yMin = mid - 0.5*(default_frame.asp/new_aspect_ratio)*delta ;		  	  
     }
@@ -101,10 +103,14 @@ void MyArea::on_draw(const Cairo::RefPtr<Cairo::Context> &cr,
 
     graphic_set_context(cr);
     adjustFrame(width, height);
-    orthographic_projection(cr, frame); // set the transformation MODELE to GTKmm
+	
+	//applique la frame ajuster a la drawing area pour eviter la distorsion
+    orthographic_projection(cr, frame); 
     
-    _simulation.affiche();
+    //affiche la limite du monde de la simulation
     dessin_carre(dmax/2,dmax/2, dmax + 1,gris,1);
+
+	_simulation.affiche();
 
 }
 
@@ -130,7 +136,7 @@ MyWindow::MyWindow(Simulation& simulation):
     m_label_algues("algues: "),
     m_label_corails("corails: "),
     m_label_charognards("charognards: "),
-	disconnect(false),
+	disconnect(false),freq_timer(250),
 	etat_save(false)  {   
 
 	_simulation = simulation;
@@ -156,7 +162,7 @@ MyWindow::MyWindow(Simulation& simulation):
 	m_button_box.append(m_button_start_stop);
 	m_button_box.append(m_button_step);
     m_button_box.append(m_naissance_box);
-    //pour lier evenement bouton clické a la fonction
+    //pour lier l'evenement bouton clické a la bonne fonction
     m_button_exit.signal_clicked().connect(sigc::mem_fun(*this, 
 												&MyWindow::on_button_clicked_exit));
     m_button_open.signal_clicked().connect(sigc::mem_fun(*this, 
@@ -167,7 +173,7 @@ MyWindow::MyWindow(Simulation& simulation):
 											&MyWindow::on_button_clicked_start_stop));
 	m_button_step.signal_clicked().connect(sigc::mem_fun(*this, 
 												&MyWindow::on_button_clicked_step));
-	    // Handling Keyboard Events.
+	//pour lier l'evenement touche appuiée a la bonne fonction
     auto controller = Gtk::EventControllerKey::create();
     controller->signal_key_pressed().connect(
                   sigc::mem_fun(*this, &MyWindow::on_window_key_pressed), false);
@@ -198,6 +204,7 @@ bool MyWindow::on_timeout(){
 		return false; // fin du timer
 	}
 	
+	//si le timer est activer on fait un step a la simulation
 	_simulation.step(m_check_button_naissance.get_active());
 	maj_info_box();
 	m_area.maj_drawing();
@@ -247,10 +254,12 @@ void MyWindow::on_button_clicked_save(){
 	
 	string boutonEtat = m_button_start_stop.get_label();
 	if(boutonEtat == "stop"){
+		//si la simulation est en cours on arrête le timer pour eviter les problèmes 
+		//lors de l'écriture du fichier de sauvgarde
 		m_button_start_stop.set_label("start");
 		disconnect  = true;
 	}
-
+	
     etat_save = true;
 	auto dialog = new Gtk::FileChooserDialog("Please choose a file",
 		  Gtk::FileChooser::Action::SAVE);
@@ -288,13 +297,12 @@ void MyWindow::on_button_clicked_start_stop(){
 
     if(boutonEtat == "start"){
         m_button_start_stop.set_label("stop");
-
+		// Crée un slot pour appeler la fonction membre on_timeout() de MyWindow
 		sigc::slot<bool()> my_slot = sigc::bind(sigc::mem_fun(*this,
 		                                        &MyWindow::on_timeout));
 		
-		// This is where we connect the slot to the Glib::signal_timeout()
-		//maj toutes les 250 ms
-		auto conn = Glib::signal_timeout().connect(my_slot,250);
+		// Connecte le slot à la fonction signal_timeout() de Glib
+		auto conn = Glib::signal_timeout().connect(my_slot,freq_timer);
 			
     }else{
         m_button_start_stop.set_label("start");
@@ -307,7 +315,7 @@ void MyWindow::on_button_clicked_step(){
 	//On veut pouvoir step seulement si la simulation n'est pas en cours
 	string boutonEtat = m_button_start_stop.get_label();
 	if(boutonEtat == "start"){
-    	on_timeout();
+    	on_timeout(); //un step c'est comme un tic du timer
 	}
 
 }

@@ -83,7 +83,7 @@ protected:
     //timer
     bool disconnect; //pour avoir l'etat du timer
     bool on_timeout();
-
+    const int freq_timer; // en ms 
     //action des boutons et events clavier
     void on_button_clicked_exit();
 	void on_button_clicked_open();

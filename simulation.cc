@@ -156,6 +156,7 @@ void Simulation::step_algues(){
             //pour limiter le coût calcul
             swap(algues[i], algues[algues.size()-1]);
             algues.pop_back();
+            i -- ;//pour verifier le dernier element qu'on vient de mettre a la place i
         }
     }
 }
@@ -178,15 +179,9 @@ void Simulation::lecture(string fichier_entree) {
 
     ifstream fichier(fichier_entree);
     if (!fichier.fail()) {
-        e.seed(1); // reset la fonction random pour l'ouverture d'un nouveau fichier
-        erreur = false;
-        etat_lecture = NBA;
-        nbMaj = 0;
-        compteur = 0;
-        compteur_seg = 0;
-        nbAlg = 0;
-        nbSca = 0;
-        nbCor = 0;
+        reset();
+        erreur = false;// si on le met dans reset on aura l'erreur suivie de correct 
+        //file car quand on detecte l'erreur on appel reset
         while (getline(fichier >> ws, line)) {
             if (line[0] == '#')
                 continue;
@@ -210,8 +205,14 @@ void Simulation::reset(){
     coraux.clear();
     scavengers.clear();
     algues.clear();
-    //les nb d'entités et les etats des compteurs et lecture sont déja mis a 0 dans 
-    //la méthode lecture
+    e.seed(1); // reset la fonction random pour l'ouverture d'un nouveau fichier
+    etat_lecture = NBA;
+    nbMaj = 0;
+    compteur = 0;
+    compteur_seg = 0;
+    nbAlg = 0;
+    nbSca = 0;
+    nbCor = 0;
 }
 
 //Getteurs............................................................................
@@ -236,7 +237,6 @@ unsigned int Simulation::getNbMaj()const{
 void Simulation::affiche()const{
 
     for (const auto& corail : coraux) {
-        // Obtenez les segments du corail
         const auto& segments = corail.getSegments();
         Carre carre(segments[0].getPoint(),d_cor);
         carre.affiche(bleu,1);
@@ -282,6 +282,9 @@ void Simulation::step(bool naissance){
     step_coraux(); //pour le rendu 3
     step_scav(); //pour le rendu 3
     ++nbMaj;
+    /*important de mettre naissance avant pour ne pas decaler random. Si on avait 
+    commencer par random_algue(e) on lirait un bit de e a chaque mise a jour 
+    meme si la check box etait désactivée*/
     if(naissance and random_algue(e)){
         S2d pos;
         pos.x = random_pos(e);

@@ -36,9 +36,9 @@ public:
 class Corail : public Lifeform {
 private:
     int id;
-    bool vie_cor;
-    bool sens_rota;
-    bool statut_dev;
+    Statut_cor vie_cor;
+    Dir_rot_cor sens_rota;
+    Statut_dev statut_dev;
     unsigned int nb_seg;
     std::vector<Segment> segments;
     S2d extremite;
@@ -52,9 +52,9 @@ public:
     bool testCorail() const;
     std::string cor_to_string() const;
     int getId() const;
-    bool getVieCor() const;
-    bool getSensRota() const;
-    bool getStatutDev() const;
+    Statut_cor getVieCor() const;
+    Dir_rot_cor getSensRota() const;
+    Statut_dev getStatutDev() const;
     unsigned int getNbSeg() const;
     std::vector<Segment> getSegments() const;
     
@@ -62,8 +62,7 @@ public:
 
 class Scavenger : public Lifeform{
 private:
-    bool statut_sca;
-    bool vie_sca;
+    Statut_sca statut_sca;
     double rayon;
     int cor_id_cible;
     bool testRayon() const;
@@ -74,7 +73,7 @@ public:
     bool testScavenger() const;
     std::string sca_to_string() const;
     int getCorIdCible() const;
-    bool getStatutSca() const;
+    Statut_sca getStatutSca() const;
     double getRayon() const;
 };
 
