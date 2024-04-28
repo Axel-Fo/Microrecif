@@ -1,4 +1,3 @@
-
 /*
 * Fichier : graphic_gui.hh
 * Auteurs : Nestor Guibentif et Axel Fouet

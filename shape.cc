@@ -1,3 +1,8 @@
+/*
+* Fichier : shape.cc
+* Auteurs : Nestor Guibentif(~40) et Axel Fouet(~60)
+* Version : V2
+*/
 #include "shape.h"
 #include <iostream>
 

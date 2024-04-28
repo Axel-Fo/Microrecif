@@ -1,6 +1,6 @@
 /*
 * Fichier : lifeform.cc
-* Auteurs : Nestor Guibentif et Axel Fouet
+* Auteurs : Nestor Guibentif(~55) et Axel Fouet(~45)
 * Version : V2
 */
 #include "lifeform.h"
@@ -223,9 +223,10 @@ string seg_to_string(Segment seg) {
     return "        " + to_string(seg.getAngle()) + " "
                       + to_string(seg.getLongueur());
 }
+
 //................on surcharge l'operateur >>........................................//
 //pour pouvoir dirrectement utiliser l'opérateur >> avec les types: Statut_sca, 
-//Statut_dev, Dir_rot_cor, Statut_cor dans les different constructeur
+//Statut_dev, Dir_rot_cor, Statut_cor dans les different constructeurs
 std::istream& operator>>(std::istream& in, Statut_sca& statut) {
     bool mange;
     in>>mange;
@@ -236,6 +237,7 @@ std::istream& operator>>(std::istream& in, Statut_sca& statut) {
     }
     return in;
 }
+
 std::istream& operator>>(std::istream& in, Statut_dev& statut) {
     bool repro;
     in>>repro;
@@ -246,6 +248,7 @@ std::istream& operator>>(std::istream& in, Statut_dev& statut) {
     }
     return in;
 }
+
 std::istream& operator>>(std::istream& in, Dir_rot_cor& dir) {
     bool inv;
     in>>inv;
@@ -256,6 +259,7 @@ std::istream& operator>>(std::istream& in, Dir_rot_cor& dir) {
     }
     return in;
 }
+
 std::istream& operator>>(std::istream& in, Statut_cor& statut) {
     bool alive;
     in>>alive;

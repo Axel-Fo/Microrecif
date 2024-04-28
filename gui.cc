@@ -1,6 +1,6 @@
 /*
 * Fichier : gui.cc
-* Auteurs : Nestor Guibentif et Axel Fouet
+* Auteurs : Nestor Guibentif(~40) et Axel Fouet(~60)
 * Version : V1
 */
 #include "gui.h"
@@ -136,7 +136,8 @@ MyWindow::MyWindow(Simulation& simulation):
     m_label_algues("algues: "),
     m_label_corails("corails: "),
     m_label_charognards("charognards: "),
-	disconnect(false),freq_timer(250),
+	disconnect(false),
+	freq_timer(50),
 	etat_save(false)  {   
 
 	_simulation = simulation;
@@ -150,7 +151,7 @@ MyWindow::MyWindow(Simulation& simulation):
 	m_main_box.append(m_area);
 	m_control_box.append(m_button_box);
 	m_control_box.append(m_info_box);
-    //box a part pour le check button pour acitver les naissances
+    //box a part pour le check button pour activer les naissances
     m_naissance_box.append(m_check_button_naissance);
     m_naissance_box.append(m_label_naissance);
 
@@ -162,7 +163,7 @@ MyWindow::MyWindow(Simulation& simulation):
 	m_button_box.append(m_button_start_stop);
 	m_button_box.append(m_button_step);
     m_button_box.append(m_naissance_box);
-    //pour lier l'evenement bouton clické a la bonne fonction
+    //pour lier l'evenement bouton clické à la bonne fonction
     m_button_exit.signal_clicked().connect(sigc::mem_fun(*this, 
 												&MyWindow::on_button_clicked_exit));
     m_button_open.signal_clicked().connect(sigc::mem_fun(*this, 
@@ -173,7 +174,7 @@ MyWindow::MyWindow(Simulation& simulation):
 											&MyWindow::on_button_clicked_start_stop));
 	m_button_step.signal_clicked().connect(sigc::mem_fun(*this, 
 												&MyWindow::on_button_clicked_step));
-	//pour lier l'evenement touche appuiée a la bonne fonction
+	//pour lier l'evenement touche appuyée à la bonne fonction
     auto controller = Gtk::EventControllerKey::create();
     controller->signal_key_pressed().connect(
                   sigc::mem_fun(*this, &MyWindow::on_window_key_pressed), false);
@@ -200,11 +201,11 @@ bool MyWindow::on_timeout(){
 
 	if(disconnect)
 	{	
-		disconnect = false; // mis a false pour si un nouveau timer est créé
+		disconnect = false; // mis à false pour si un nouveau timer est créé
 		return false; // fin du timer
 	}
 	
-	//si le timer est activer on fait un step a la simulation
+	//si le timer est activé on fait un step à la simulation
 	_simulation.step(m_check_button_naissance.get_active());
 	maj_info_box();
 	m_area.maj_drawing();
@@ -255,7 +256,7 @@ void MyWindow::on_button_clicked_save(){
 	string boutonEtat = m_button_start_stop.get_label();
 	if(boutonEtat == "stop"){
 		//si la simulation est en cours on arrête le timer pour eviter les problèmes 
-		//lors de l'écriture du fichier de sauvgarde
+		//lors de l'écriture du fichier de sauvegarde
 		m_button_start_stop.set_label("start");
 		disconnect  = true;
 	}

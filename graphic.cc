@@ -1,4 +1,8 @@
-
+/*
+* Fichier : graphic.cc
+* Auteurs : Nestor Guibentif (~20) et Axel Fouet (~80)
+* Version : V1
+*/
 #include "graphic_gui.h"
 #include <vector>
 #include <iostream>
@@ -6,7 +10,7 @@
 
 static const Cairo::RefPtr<Cairo::Context>* ptcr(nullptr);
 
-// pas dans graphic.h pour eviter trop de dependance dans le modelon ne veut pas que 
+// pas dans graphic.h pour eviter trop de dependance dans le modele on ne veut pas que 
 //notre model puisse avoir accès au Rgb il doit utiliser l'enum Couleur
 struct Rgb{
     double r;

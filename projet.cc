@@ -1,6 +1,6 @@
 /*
 * Fichier : projet.cc
-* Auteurs : Nestor Guibentif et Axel Fouet
+* Auteurs : Nestor Guibentif(~50) et Axel Fouet(~50)
 * Version : V2
 */
 

@@ -1,6 +1,6 @@
 /*
 * Fichier : simulation.cc
-* Auteurs : Nestor Guibentif et Axel Fouet
+* Auteurs : Nestor Guibentif(~60) et Axel Fouet(~40)
 * Version : V2
 */
 #include "simulation.h"
