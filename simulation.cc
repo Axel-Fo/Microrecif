@@ -176,7 +176,7 @@ void Simulation::step_scav(){
         if(scavengers[i].getAge() == max_life_sca){
             swap(scavengers[i], scavengers[scavengers.size()-1]);
             scavengers.pop_back();
-            i -- ;//pour verifier le dernier element qu'on vient de mettre a la place i
+            i -- ;//pour verifier le dernier element qu'on vient de mettre à la place i
         }
     }
 }
