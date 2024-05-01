@@ -88,6 +88,10 @@ void Corail::ajout_seg(istringstream& data) {
     extremite = new_segment.autre_pt();
 }
 
+void Corail::mortCorail(){
+    vie_cor = DEAD;
+}
+
 bool Corail::testCorail() const {
     if(testAge(age) or testPos(pos) or testSeg()){
         return true;

@@ -147,13 +147,11 @@ void Simulation::switch_lecture(istringstream& data) {
     }
 }
 
-void Simulation::step_algues(){
+void Simulation::step_algues(){ 
     
     for(unsigned int i(0); i < algues.size(); i++){
         algues[i].step();
-        unsigned int age = algues[i].getAge();
-        if(age == max_life_alg){
-            //pour limiter le coût calcul
+        if(algues[i].getAge() == max_life_alg){
             swap(algues[i], algues[algues.size()-1]);
             algues.pop_back();
             i -- ;//pour verifier le dernier element qu'on vient de mettre a la place i
@@ -162,11 +160,26 @@ void Simulation::step_algues(){
 }
 
 void Simulation::step_coraux(){
-    
+    for(unsigned int i(0); i < coraux.size(); i++){
+        coraux[i].step();
+        if(coraux[i].getAge() == max_life_alg){
+           coraux[i].mortCorail();
+        }
+    }
 }
+
 void Simulation::step_scav(){
     
+    for(unsigned int i(0); i < scavengers.size(); i++){
+        scavengers[i].step();
+        if(scavengers[i].getAge() == max_life_sca){
+            swap(scavengers[i], scavengers[scavengers.size()-1]);
+            scavengers.pop_back();
+            i -- ;//pour verifier le dernier element qu'on vient de mettre a la place i
+        }
+    }
 }
+
 //...................................................................................
 //Methodes publiques :
 
@@ -190,15 +203,14 @@ void Simulation::lecture(string fichier_entree) {
             switch_lecture(data);
             
             if(erreur){
-                reset();//om met tout à 0 et on sort de la lecture
+                reset();//on met tout à 0 et on sort de la lecture
                 break;
             }
         }
         if(!erreur){
             cout << message::success();
         }
-    } else
-        cout << "erreur lecture simulation" << endl;
+    }
 }
 
 void Simulation::reset(){
@@ -233,15 +245,19 @@ unsigned int Simulation::getNbMaj()const{
 }
 
 
-//..........................................................................
-void Simulation::affiche()const{
+//....................................................................................
+void Simulation::affiche() const{
 
-    for (const auto& corail : coraux) {
+    for (const auto& corail : coraux) { // à voir si c'est mieux d'avoir variable Couleur ou plutot 2 fois le mm code avec des if
         const auto& segments = corail.getSegments();
         Carre carre(segments[0].getPoint(),d_cor);
-        carre.affiche(bleu,1);
+        Couleur couleur_corail(bleu);// bleu ( = vivant) par défault
+        if(!corail.getVieCor()){
+            couleur_corail = noir; // noir (= mort) 
+        }
+        carre.affiche(couleur_corail, 1);
         for (const auto& seg : segments) {           
-            seg.affiche(bleu, 1);
+            seg.affiche(couleur_corail, 1);
         }
     }
 
@@ -249,6 +265,7 @@ void Simulation::affiche()const{
         Cercle cercle(scav.getPos(),scav.getRayon());
         cercle.affiche(rouge, 1);
     }
+
     for(const auto& algue : algues){
         Cercle cercle(algue.getPos(),r_alg);
         cercle.affiche(vert, 1);

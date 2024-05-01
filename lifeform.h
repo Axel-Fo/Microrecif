@@ -49,6 +49,7 @@ public:
     Corail(std::istringstream& data);
 
     void ajout_seg(std::istringstream& data);
+    void mortCorail();
     bool testCorail() const;
     std::string cor_to_string() const;
     int getId() const;
