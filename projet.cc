@@ -14,11 +14,14 @@ using namespace std;
 int main(int argc, char* argv[]) {
     
     Simulation simulation;
-    if (argc != 2) {
-        cout << "Error : il faut mettre un nom de fichier." << endl;
+    if (argc == 2) {
+        simulation.lecture(argv[1]);
+    } else if (argc == 1) {
+        simulation.lecture("0 0 0"); //on donne un string avec 0 entite de chaque
+    }else{
+        cout<< "Erreur dans le nombre d'arguments donnés dans le main" << endl;
     }
 
-    simulation.lecture(argv[1]);
 
     auto myApp = Gtk::Application::create();
     //Shows the window and returns when it is closed.
