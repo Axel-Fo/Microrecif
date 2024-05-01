@@ -162,7 +162,8 @@ void Simulation::step_algues(){
 void Simulation::step_coraux(){
     for(unsigned int i(0); i < coraux.size(); i++){
         coraux[i].step();
-        if(coraux[i].getAge() == max_life_alg){
+
+        if(coraux[i].getAge() == max_life_cor){
            coraux[i].mortCorail();
         }
     }
