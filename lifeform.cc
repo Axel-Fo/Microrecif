@@ -92,6 +92,14 @@ void Corail::mortCorail(){
     vie_cor = DEAD;
 }
 
+void Corail::rotaCorail(){
+    if(sens_rota == TRIGO ){
+        segments[segments.size()-1].ajout_angle(delta_rot);
+    }else{//sens inverse trigo
+        segments[segments.size()-1].ajout_angle(-delta_rot);
+    }
+}
+
 bool Corail::testCorail() const {
     if(testAge(age) or testPos(pos) or testSeg()){
         return true;

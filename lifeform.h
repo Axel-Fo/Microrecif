@@ -50,8 +50,10 @@ public:
 
     void ajout_seg(std::istringstream& data);
     void mortCorail();
+    void rotaCorail();
     bool testCorail() const;
     std::string cor_to_string() const;
+
     int getId() const;
     Statut_cor getVieCor() const;
     Dir_rot_cor getSensRota() const;

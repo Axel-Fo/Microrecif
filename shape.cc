@@ -112,13 +112,16 @@ S2d Segment::autre_pt() const {
     autre.y = point.y + longueur * sin(angle);
     return autre;
 }
+
 void Segment::affiche(Couleur couleur, double largeur)const{
     S2d point2 = autre_pt();
     dessin_ligne(point.x,point.y, point2.x, point2.y, couleur, largeur);
 }
+
 void Segment::ajout_angle(double delta_angle){
     angle = angle + delta_angle;
 }
+
 //Getteurs et setteurs pour Segment ...................................................
 
 double Segment::getAngle() const {
