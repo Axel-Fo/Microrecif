@@ -150,10 +150,9 @@ void Simulation::switch_lecture(istringstream& data) {
 void Simulation::step_algues(){ 
     
     for(unsigned int i(0); i < algues.size(); i++){
-        algues[i].step();
+        algues[i].step_age();
         if(algues[i].getAge() == max_life_alg){
-            swap(algues[i], algues[algues.size()-1]);
-            algues.pop_back();
+            mort_alg(i);
             i -- ;//pour verifier le dernier element qu'on vient de mettre a la place i
         }
     }
@@ -161,24 +160,59 @@ void Simulation::step_algues(){
 
 void Simulation::step_coraux(){
     for(unsigned int i(0); i < coraux.size(); i++){
-        coraux[i].step();
+        coraux[i].step_age();
 
         if(coraux[i].getAge() == max_life_cor){
            coraux[i].mortCorail();
         }
+        
+        int indexAlgCandidat(0);
+        double ecart_ang_precedent(3.15);// au dessus du max possible
+        bool doit_manger(false);//sinon on mange algues[0] même si elle ne doit pas 
+        
+        for(unsigned int j(0); j < algues.size(); j++){
+            
+            Segment extremite_cor(coraux[i].getDernierSeg());
+            Segment corailAlgue(extremite_cor.getPoint(), algues[j].getPos());
+            
+            if ((corailAlgue.getLongueur() <= extremite_cor.getLongueur()) and 
+                (extremite_cor.ecart_ang(corailAlgue) < ecart_ang_precedent)and 
+                (abs(extremite_cor.ecart_ang(corailAlgue)) <= delta_rot )){
+               
+                indexAlgCandidat = j;
+                ecart_ang_precedent = extremite_cor.ecart_ang(corailAlgue);
+                doit_manger = true;
+            }
+        }
+        if(doit_manger){
+            cout<<"mangé"<<endl;
+            cout<<ecart_ang_precedent<<endl;
+            mort_alg(indexAlgCandidat);
+            coraux[i].rotaCorail(ecart_ang_precedent);
+        }else{
+            coraux[i].rotaCorail(delta_rot);
+        }
+
     }
+
+    
 }
 
 void Simulation::step_scav(){
     
     for(unsigned int i(0); i < scavengers.size(); i++){
-        scavengers[i].step();
+        scavengers[i].step_age();
         if(scavengers[i].getAge() == max_life_sca){
             swap(scavengers[i], scavengers[scavengers.size()-1]);
             scavengers.pop_back();
             i -- ;//pour verifier le dernier element qu'on vient de mettre à la place i
         }
     }
+}
+
+void Simulation::mort_alg(int index){
+    swap(algues[index], algues[algues.size()-1]);
+    algues.pop_back();
 }
 
 //...................................................................................
@@ -301,7 +335,7 @@ void Simulation::step(bool naissance){
     step_scav(); //pour le rendu 3
     ++nbMaj;
     /*important de mettre naissance avant pour ne pas decaler random. Si on avait 
-    commencer par random_algue(e) on lirait un bit de e a chaque mise a jour 
+    commencé par random_algue(e) on lirait un bit de e a chaque mise a jour 
     meme si la check box etait désactivée*/
     if(naissance and random_algue(e)){
         S2d pos;

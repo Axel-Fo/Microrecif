@@ -52,6 +52,11 @@ bool Segment::onSegment(S2d p, S2d q, S2d r, Etat_epsil_zero etat) const {
 Segment::Segment(S2d point, double a, double l) 
                 : point(point), angle(a), longueur(l) {}
 
+Segment::Segment(S2d point1, S2d point2 ): point(point1){
+                    longueur = norme(point1, point2);
+                    angle = atan2((point2.y - point1.y ), (point2.x - point1.x ));
+                }
+
 bool Segment ::intersect(Segment autre, Etat_epsil_zero etat) const {
     S2d p1 = point;
     S2d p2 = autre.autre_pt();

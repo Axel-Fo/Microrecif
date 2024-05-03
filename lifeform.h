@@ -29,7 +29,7 @@ public:
     unsigned int getAge()const;
     S2d getPos() const;
     std::string lifeform_to_string() const;
-    void step(); 
+    void step_age(); 
 };
 
 
@@ -50,7 +50,7 @@ public:
 
     void ajout_seg(std::istringstream& data);
     void mortCorail();
-    void rotaCorail();
+    void rotaCorail(double distance);
     bool testCorail() const;
     std::string cor_to_string() const;
 
@@ -60,6 +60,7 @@ public:
     Statut_dev getStatutDev() const;
     unsigned int getNbSeg() const;
     std::vector<Segment> getSegments() const;
+    Segment getDernierSeg() const;
     
 };
 

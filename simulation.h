@@ -56,6 +56,7 @@ private:
     void step_algues();
     void step_coraux();
     void step_scav();
+    void mort_alg(int index);
 
 public:
     Simulation();

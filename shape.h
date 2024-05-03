@@ -30,6 +30,7 @@ private:
 
 public:
     Segment(S2d point, double a, double l);
+    Segment(S2d point1, S2d point2);
 
     bool intersect(Segment autre, Etat_epsil_zero etat) const;
     double ecart_ang(Segment autre) const;
@@ -44,6 +45,7 @@ public:
     double getLongueur() const;
     S2d getPoint() const;
 };
+
 class Cercle{
 private:
     S2d centre;

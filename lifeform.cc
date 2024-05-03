@@ -37,7 +37,7 @@ string Lifeform::lifeform_to_string() const {
     return "    " + to_string(pos.x) + " " + to_string(pos.y) + " " + to_string(age);
 }
 
-void Lifeform::step(){
+void Lifeform::step_age(){
     age++;
 }
 
@@ -92,11 +92,11 @@ void Corail::mortCorail(){
     vie_cor = DEAD;
 }
 
-void Corail::rotaCorail(){
+void Corail::rotaCorail(double distance){
     if(sens_rota == TRIGO ){
-        segments[segments.size()-1].ajout_angle(delta_rot);
+        segments[segments.size()-1].ajout_angle(distance);
     }else{//sens inverse trigo
-        segments[segments.size()-1].ajout_angle(-delta_rot);
+        segments[segments.size()-1].ajout_angle(-distance);
     }
 }
 
@@ -145,6 +145,9 @@ vector<Segment> Corail::getSegments() const {
     return segments;
 }
 
+Segment Corail::getDernierSeg() const{
+    return segments[segments.size()-1];
+}
 //Classe Scavenger....................................................................
 
 bool Scavenger::testRayon() const {
