@@ -92,12 +92,15 @@ void Corail::mortCorail(){
     vie_cor = DEAD;
 }
 
-void Corail::rotaCorail(double distance){
+void Corail::rotaCorail(double angle){
     if(sens_rota == TRIGO ){
-        segments[segments.size()-1].ajout_angle(distance);
+        segments[segments.size()-1].ajout_angle(angle);
     }else{//sens inverse trigo
-        segments[segments.size()-1].ajout_angle(-distance);
+        segments[segments.size()-1].ajout_angle(-angle);
     }
+}
+void Corail::tailleCorAugmente(double delta_longueur){
+    segments[segments.size()-1].ajout_longueur(delta_longueur);
 }
 
 bool Corail::testCorail() const {

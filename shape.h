@@ -40,6 +40,7 @@ public:
     void affiche(Couleur couleur, double largeur)const;
 
     void ajout_angle(double delta_angle);
+    void ajout_longueur(double delta_longueur);
 
     double getAngle() const;
     double getLongueur() const;

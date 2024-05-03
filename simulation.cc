@@ -187,8 +187,9 @@ void Simulation::step_coraux(){
         if(doit_manger){
             cout<<"mangé"<<endl;
             cout<<ecart_ang_precedent<<endl;
-            mort_alg(indexAlgCandidat);
+            //mort_alg(indexAlgCandidat);
             coraux[i].rotaCorail(ecart_ang_precedent);
+            coraux[i].tailleCorAugmente(20);//valeur abusée pour qu'on voie bien
         }else{
             coraux[i].rotaCorail(delta_rot);
         }

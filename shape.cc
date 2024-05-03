@@ -126,7 +126,9 @@ void Segment::affiche(Couleur couleur, double largeur)const{
 void Segment::ajout_angle(double delta_angle){
     angle = angle + delta_angle;
 }
-
+void Segment::ajout_longueur(double delta_longueur){
+    longueur += delta_longueur;
+}
 //Getteurs et setteurs pour Segment ...................................................
 
 double Segment::getAngle() const {
