@@ -38,6 +38,8 @@ public:
 
     void affiche(Couleur couleur, double largeur)const;
 
+    void ajout_angle(double delta_angle);
+
     double getAngle() const;
     double getLongueur() const;
     S2d getPoint() const;
