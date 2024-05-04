@@ -153,6 +153,8 @@ void Simulation::step_algues(){
         algues[i].step_age();
         if(algues[i].getAge() == max_life_alg){
             mort_alg(i);
+            cout<<"mort "<<i<<endl<<"nouveau x "<<algues[i].getPos().x<<" y "<<algues[i].getPos().y<<endl;
+            
             i -- ;//pour verifier le dernier element qu'on vient de mettre a la place i
         }
     }

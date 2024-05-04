@@ -6,6 +6,8 @@
 #include "shape.h"
 #include <iostream>
 
+//pour toujours avoir un un angle entre pi et -pi
+double corrige_angle(double ang);
 
 //Classe Segment......................................................................
 
@@ -49,6 +51,8 @@ bool Segment::onSegment(S2d p, S2d q, S2d r, Etat_epsil_zero etat) const {
 //Methodes publiques Segment..........................................................
 
 //Constructeur
+// on n'appele pas corrige_angle() dans les constructeurs si non l'erreur lors 
+//de l'entrée ne sera plus detectée car corrigée
 Segment::Segment(S2d point, double a, double l) 
                 : point(point), angle(a), longueur(l) {}
 
@@ -93,26 +97,11 @@ double Segment::ecart_ang(Segment autre) const {
     double ang2 = autre.angle;
     double ang_ecart = M_PI + (ang1 - ang2);
 
-    // pour s'assurer que l'angle d'ecart est bien entre pi et -pi
-    if (ang_ecart > M_PI) {
-        ang_ecart = ang_ecart - 2 * M_PI;
-    }
-    if (ang_ecart <= -M_PI) {
-        ang_ecart = ang_ecart + 2 * M_PI;
-    }
-
-    return ang_ecart;
+    return corrige_angle(ang_ecart);
 }
 
 double Segment::ecart_ang_mm_pt(Segment autre) const{
-    double angle_ecart(autre.angle - angle);
-    //pour que l'angle soit entre -pi et pi:
-    if (angle_ecart <= -M_PI ){
-        angle_ecart += 2 * M_PI;
-    }else if(angle_ecart > M_PI){
-        angle_ecart -= 2*M_PI;
-    }
-    return angle_ecart;
+    return corrige_angle(autre.angle - angle);
 } 
 
 bool Segment::intersect_mm(Segment autre) const {
@@ -168,4 +157,19 @@ Carre::Carre(S2d centre, double arete):centre(centre), arete(arete){}
 void Carre::affiche(Couleur couleur, double largeur) const{
                               
     dessin_carre(centre.x, centre.y, arete, couleur, largeur);
+}
+
+double corrige_angle(double ang){
+    
+    while(ang > M_PI or ang <= -M_PI){
+        if (ang > M_PI) {
+            ang = ang - 2 * M_PI;
+        }
+        if (ang <= -M_PI) {
+            ang = ang + 2 * M_PI;
+        }
+    }
+
+
+    return ang;
 }
