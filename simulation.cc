@@ -177,7 +177,7 @@ void Simulation::step_coraux(){
             
             if ((corailAlgue.getLongueur() <= extremite_cor.getLongueur()) and 
                 (extremite_cor.ecart_ang(corailAlgue) < ecart_ang_precedent)and 
-                (abs(extremite_cor.ecart_ang(corailAlgue)) <= delta_rot )){
+                (abs(extremite_cor.ecart_ang(corailAlgue)) <= delta_rot )) and {
                
                 indexAlgCandidat = j;
                 ecart_ang_precedent = extremite_cor.ecart_ang(corailAlgue);
@@ -193,10 +193,7 @@ void Simulation::step_coraux(){
         }else{
             coraux[i].rotaCorail(delta_rot);
         }
-
     }
-
-    
 }
 
 void Simulation::step_scav(){

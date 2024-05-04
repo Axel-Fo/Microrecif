@@ -151,6 +151,11 @@ vector<Segment> Corail::getSegments() const {
 Segment Corail::getDernierSeg() const{
     return segments[segments.size()-1];
 }
+
+S2d Corail::getExtremite() const{
+    return extremite
+}
+
 //Classe Scavenger....................................................................
 
 bool Scavenger::testRayon() const {

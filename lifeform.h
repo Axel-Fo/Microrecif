@@ -62,7 +62,7 @@ public:
     unsigned int getNbSeg() const;
     std::vector<Segment> getSegments() const;
     Segment getDernierSeg() const;
-    
+    S2d getExtremite() const;
 };
 
 class Scavenger : public Lifeform{
