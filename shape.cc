@@ -104,6 +104,17 @@ double Segment::ecart_ang(Segment autre) const {
     return ang_ecart;
 }
 
+double Segment::ecart_ang_mm_pt(Segment autre) const{
+    double angle_ecart(autre.angle - angle);
+    //pour que l'angle soit entre -pi et pi:
+    if (angle_ecart <= -M_PI ){
+        angle_ecart += 2 * M_PI;
+    }else if(angle_ecart > M_PI){
+        angle_ecart -= 2*M_PI;
+    }
+    return angle_ecart;
+} 
+
 bool Segment::intersect_mm(Segment autre) const {
     if (this->ecart_ang(autre) == 0) {
         return true;

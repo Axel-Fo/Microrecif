@@ -153,7 +153,7 @@ Segment Corail::getDernierSeg() const{
 }
 
 S2d Corail::getExtremite() const{
-    return extremite
+    return extremite;
 }
 
 //Classe Scavenger....................................................................

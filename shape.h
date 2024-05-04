@@ -33,7 +33,10 @@ public:
     Segment(S2d point1, S2d point2);
 
     bool intersect(Segment autre, Etat_epsil_zero etat) const;
+    //angle du segment avec l'horizontale - angle du seg "autre" avec l'horiz. + pi :
     double ecart_ang(Segment autre) const;
+    //angle entre les 2 segments de même base :
+    double ecart_ang_mm_pt(Segment autre) const; 
     bool intersect_mm(Segment autre) const;
     S2d autre_pt() const;
 

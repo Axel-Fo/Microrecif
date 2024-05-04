@@ -162,36 +162,37 @@ void Simulation::step_coraux(){
     for(unsigned int i(0); i < coraux.size(); i++){
         coraux[i].step_age();
 
-        if(coraux[i].getAge() == max_life_cor){
+        if(coraux[i].getAge() == max_life_cor) {
            coraux[i].mortCorail();
-        }
-        
-        int indexAlgCandidat(0);
-        double ecart_ang_precedent(3.15);// au dessus du max possible
-        bool doit_manger(false);//sinon on mange algues[0] même si elle ne doit pas 
-        
-        for(unsigned int j(0); j < algues.size(); j++){
+        }else if (coraux[i].getAge() < max_life_cor){//je ferais une fonction plus tard pour quand ca mange pour diminuer la taille du truc
+            int indexAlgCandidat(0);
+            double ecart_ang_precedent(3.15);// au dessus du max possible
+            bool doit_manger(false);//sinon on mange algues[0] même si elle ne doit pas 
             
-            Segment extremite_cor(coraux[i].getDernierSeg());
-            Segment corailAlgue(extremite_cor.getPoint(), algues[j].getPos());
-            
-            if ((corailAlgue.getLongueur() <= extremite_cor.getLongueur()) and 
-                (extremite_cor.ecart_ang(corailAlgue) < ecart_ang_precedent)and 
-                (abs(extremite_cor.ecart_ang(corailAlgue)) <= delta_rot )) and {
-               
-                indexAlgCandidat = j;
-                ecart_ang_precedent = extremite_cor.ecart_ang(corailAlgue);
-                doit_manger = true;
+            for(unsigned int j(0); j < algues.size(); j++){
+                
+                Segment dernierSegCor(coraux[i].getDernierSeg());
+                Segment corailAlgue(dernierSegCor.getPoint(), algues[j].getPos());
+                
+                if ((corailAlgue.getLongueur() <= dernierSegCor.getLongueur()) and 
+                    (dernierSegCor.ecart_ang_mm_pt(corailAlgue) < ecart_ang_precedent)and 
+                    (abs(dernierSegCor.ecart_ang_mm_pt(corailAlgue)) <= delta_rot )){
+                
+                    indexAlgCandidat = j;
+                    ecart_ang_precedent = dernierSegCor.ecart_ang_mm_pt(corailAlgue);
+                    doit_manger = true;
+                    cout<<"intersecte"<<endl;
+                }
             }
-        }
-        if(doit_manger){
-            cout<<"mangé"<<endl;
-            cout<<ecart_ang_precedent<<endl;
-            //mort_alg(indexAlgCandidat);
-            coraux[i].rotaCorail(ecart_ang_precedent);
-            coraux[i].tailleCorAugmente(20);//valeur abusée pour qu'on voie bien
-        }else{
-            coraux[i].rotaCorail(delta_rot);
+            if(doit_manger){
+                cout<<"mangé"<<endl;
+                cout<<ecart_ang_precedent<<endl;
+                mort_alg(indexAlgCandidat);
+                coraux[i].rotaCorail(ecart_ang_precedent);//pour que le corail "s'arrête"
+                coraux[i].tailleCorAugmente(delta_l);
+            }else{
+                coraux[i].rotaCorail(delta_rot);
+            }
         }
     }
 }
