@@ -48,13 +48,16 @@ private:
     std::uniform_int_distribution<unsigned> random_pos;
     
     void switch_lecture(std::istringstream& data);
-    bool idExist(int id);
-    bool testId(Corail corail);
-    bool testIdMange(Scavenger scav);
-    bool testCollision(Corail corail);
+    bool id_exist(int id);
+    bool test_id(Corail corail);
+    bool test_id_mange(Scavenger scav);
+    bool test_coll_seg(Segment seg, bool lecture ,unsigned int index, int id);
+    bool test_collision(Corail corail);
     
     void step_algues();
     void step_coraux();
+    bool candidat_mange(Corail& cor, double& delta_ang,int& indexAlgCandidat);
+    bool test_collision_simu(Corail& cor, double del_ang, bool mange);
     void step_scav();
     void mort_alg(int index);
 

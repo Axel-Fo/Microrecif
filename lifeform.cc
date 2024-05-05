@@ -93,10 +93,13 @@ void Corail::mortCorail(){
 }
 
 void Corail::rotaCorail(double angle){
-    if(sens_rota == TRIGO ){
-        segments[segments.size()-1].ajout_angle(angle);
-    }else{//sens inverse trigo
-        segments[segments.size()-1].ajout_angle(-angle);
+    segments[segments.size()-1].ajout_angle(angle);
+}
+void Corail::change_sens(){
+    if(sens_rota == TRIGO){
+        sens_rota = INVTRIGO;
+    }else{
+        sens_rota = TRIGO;
     }
 }
 void Corail::tailleCorAugmente(double delta_longueur){

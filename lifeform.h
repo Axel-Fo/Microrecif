@@ -51,6 +51,7 @@ public:
     void ajout_seg(std::istringstream& data);
     void mortCorail();
     void rotaCorail(double angle);
+    void change_sens();
     void tailleCorAugmente(double delta_longueur);
     bool testCorail() const;
     std::string cor_to_string() const;

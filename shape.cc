@@ -93,15 +93,11 @@ bool Segment ::intersect(Segment autre, Etat_epsil_zero etat) const {
 }
 
 double Segment::ecart_ang(Segment autre) const {
-    double ang1 = angle;
-    double ang2 = autre.angle;
-    double ang_ecart = M_PI + (ang1 - ang2);
-
-    return corrige_angle(ang_ecart);
+    return corrige_angle(M_PI + (angle - autre.angle));
 }
 
 double Segment::ecart_ang_mm_pt(Segment autre) const{
-    return corrige_angle(autre.angle - angle);
+    return corrige_angle(angle - autre.angle);
 } 
 
 bool Segment::intersect_mm(Segment autre) const {

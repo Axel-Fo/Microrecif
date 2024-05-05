@@ -11,7 +11,7 @@ using namespace std;
 
 //Méthodes private :
 
-bool Simulation::idExist(int id) {
+bool Simulation::id_exist(int id) {
     for (long unsigned int i(0); i < coraux.size(); i++) {
         if (coraux[i].getId() == id) {
             return true;
@@ -20,51 +20,64 @@ bool Simulation::idExist(int id) {
     return false;
 }
 
-bool Simulation::testId(Corail corail) {
-    if (idExist(corail.getId())) {
+bool Simulation::test_id(Corail corail) {
+    if (id_exist(corail.getId())) {
         cout << message::lifeform_duplicated_id(corail.getId());
         return true;
     }
     return false;
 }
 
-bool Simulation::testIdMange(Scavenger scav) {
+bool Simulation::test_id_mange(Scavenger scav) {
     if (scav.getStatutSca()) {
-        if (!idExist(scav.getCorIdCible())) {
+        if (!id_exist(scav.getCorIdCible())) {
             cout << message::lifeform_invalid_id(scav.getCorIdCible());
             return true;
+        }
+    } 
+    return false;
+}
+bool Simulation::test_coll_seg(Segment seg,bool lecture,unsigned int index, int id){
+    //le booleen lecture est la pour ne plus cout les erreurs de collision si on est 
+    //en mode simulation on veut juste recuperer le booleen test collision
+    
+    Etat_epsil_zero etat = NOT_EPSIL;
+    //if(!lecture) etat = IS_EPSIL;
+    
+    for (unsigned int i(0); i < coraux.size(); i++) {
+        for (unsigned int j(0); j < coraux[i].getSegments().size(); j++) {  
+            
+            /*on ne veut pas tester la collision entre deux segments qui se précèdent 
+            sur le mm corail mais on teste avec le else si ils ne sont pas repliés 
+            l'un sur l'autre*/
+            if (coraux[i].getId() != id or !(index == j+1 or index == j-1 or 
+                                                             index == j)){
+                if (seg.intersect((coraux[i].getSegments())[j], etat)) {
+                    
+                    //if(lecture){
+                        cout << message::segment_collision(coraux[i].getId(), 
+                                                           j, id, index);
+                    //}
+                    return true;                    
+                }
+            }
         }
     }
     return false;
 }
-
-bool Simulation::testCollision(Corail corail){
+bool Simulation::test_collision(Corail corail){
+    
     vector<Segment> segs = corail.getSegments();
-    // test de collision avec les autres coraux
-    for (unsigned int i(0); i < coraux.size(); i++) {
-        for (unsigned int j(0); j < (coraux[i].getSegments()).size(); j++) {
-            for (unsigned int k(0); k < segs.size(); k++) {
-                if (!(coraux[i].getId() == corail.getId() and (k == j+1 or 
-                                                               k == j-1 or k == j)))
-                /*on ne veut pas tester la collision entre
-                deux segments qui se précèdent sur le mm corail mais 
-                on teste avec le else si ils ne sont pas repliés l'un sur l'autre*/
-                {
-                    if (segs[k].intersect((coraux[i].getSegments())[j], NOT_EPSIL)) {
-                        cout << message::segment_collision(coraux[i].getId(), 
-                                                            j, corail.getId(), k);
-                        return true;
-                    }
-                }else{
-                    if(k != j){
-                        if (segs[k].intersect_mm((coraux[i].getSegments())[j])) {
-                        unsigned int id = coraux[i].getId();
-                        cout << message::segment_superposition(id, k - 1, k);
-                        return true;
-                        }
-                    }
-                    
-                }
+    
+    for (unsigned int i(0); i < segs.size(); i++) {
+        
+        if(test_coll_seg(segs[i],true,i, corail.getId())) return true;
+        
+        //on test la superposition avec le segement suivant si il existe
+        if(i + 1 < segs.size()){
+            if (segs[i].intersect_mm(segs[i+1])) {
+                cout << message::segment_superposition(corail.getId(),i,i+1);
+                return true;
             }
         }
     }
@@ -102,7 +115,7 @@ void Simulation::switch_lecture(istringstream& data) {
         }
         case COR: {
             Corail new_corail(data);
-            erreur = testId(new_corail);
+            erreur = test_id(new_corail);
             coraux.push_back(new_corail);
             ++compteur;
             nbSeg = new_corail.getNbSeg();
@@ -114,7 +127,7 @@ void Simulation::switch_lecture(istringstream& data) {
             coraux.back().ajout_seg(data);
             compteur_seg++;
             if (compteur_seg == nbSeg) {
-                if(coraux.back().testCorail() or testCollision(coraux.back()))
+                if(coraux.back().testCorail() or test_collision(coraux.back()))
                     erreur = true;
                 if (compteur == nbCor) {
                     etat_lecture = NBS;
@@ -135,7 +148,7 @@ void Simulation::switch_lecture(istringstream& data) {
         }
         case SCA: {
             Scavenger new_sca(data);
-            if(new_sca.testScavenger() or testIdMange(new_sca))
+            if(new_sca.testScavenger() or test_id_mange(new_sca))
                 erreur = true;
 
             scavengers.push_back(new_sca);
@@ -152,9 +165,7 @@ void Simulation::step_algues(){
     for(unsigned int i(0); i < algues.size(); i++){
         algues[i].step_age();
         if(algues[i].getAge() == max_life_alg){
-            mort_alg(i);
-            cout<<"mort "<<i<<endl<<"nouveau x "<<algues[i].getPos().x<<" y "<<algues[i].getPos().y<<endl;
-            
+            mort_alg(i);            
             i -- ;//pour verifier le dernier element qu'on vient de mettre a la place i
         }
     }
@@ -166,39 +177,83 @@ void Simulation::step_coraux(){
 
         if(coraux[i].getAge() == max_life_cor) {
            coraux[i].mortCorail();
-        }else if (coraux[i].getAge() < max_life_cor){//je ferais une fonction plus tard pour quand ca mange pour diminuer la taille du truc
-            int indexAlgCandidat(0);
-            double ecart_ang_precedent(3.15);// au dessus du max possible
-            bool doit_manger(false);//sinon on mange algues[0] même si elle ne doit pas 
+        }
+        if (coraux[i].getVieCor() == ALIVE){// il mange que si il est vivant
             
-            for(unsigned int j(0); j < algues.size(); j++){
-                
-                Segment dernierSegCor(coraux[i].getDernierSeg());
-                Segment corailAlgue(dernierSegCor.getPoint(), algues[j].getPos());
-                
-                if ((corailAlgue.getLongueur() <= dernierSegCor.getLongueur()) and 
-                    (dernierSegCor.ecart_ang_mm_pt(corailAlgue) < ecart_ang_precedent)and 
-                    (abs(dernierSegCor.ecart_ang_mm_pt(corailAlgue)) <= delta_rot )){
-                
-                    indexAlgCandidat = j;
-                    ecart_ang_precedent = dernierSegCor.ecart_ang_mm_pt(corailAlgue);
-                    doit_manger = true;
-                    cout<<"intersecte"<<endl;
-                }
-            }
-            if(doit_manger){
-                cout<<"mangé"<<endl;
-                cout<<ecart_ang_precedent<<endl;
-                mort_alg(indexAlgCandidat);
-                coraux[i].rotaCorail(ecart_ang_precedent);//pour que le corail "s'arrête"
-                coraux[i].tailleCorAugmente(delta_l);
+            double delta_ang = 0;
+            if(coraux[i].getSensRota() == TRIGO){
+                delta_ang  = delta_rot;
             }else{
-                coraux[i].rotaCorail(delta_rot);
+                delta_ang  = -delta_rot;
             }
+            int indexAlgCandidat(-1); // initialiser a un index qui n'existe pas
+            
+            // met aussi a jour l'angle et indexAlgCandidat
+            bool aManger = candidat_mange(coraux[i],delta_ang,indexAlgCandidat);
+            
+            
+            if(test_collision_simu(coraux[i],delta_ang,aManger)){
+                coraux[i].change_sens();
+            }else{
+                coraux[i].rotaCorail(delta_ang);
+                if(aManger){
+                    mort_alg(indexAlgCandidat);
+                    coraux[i].tailleCorAugmente(4);
+                }
+                //devcor()
+            }
+
         }
     }
 }
+bool Simulation::candidat_mange(Corail& cor, double& delta_ang,int& indexAlgCandidat){
 
+    
+    for(unsigned int j(0); j < algues.size(); j++){
+                
+        Segment dernierSegCor(cor.getDernierSeg());
+        Segment corailAlgue(dernierSegCor.getPoint(), algues[j].getPos());
+                
+        if ((corailAlgue.getLongueur() <= dernierSegCor.getLongueur()) and 
+            (abs(dernierSegCor.ecart_ang_mm_pt(corailAlgue)) < abs(delta_ang))
+            and (dernierSegCor.ecart_ang_mm_pt(corailAlgue)*delta_ang > 0)){
+            // pour que l'ange soit bon il doit être plus petit que delta rot en val 
+            //absolue et de même signe
+            indexAlgCandidat = j;
+            delta_ang = dernierSegCor.ecart_ang_mm_pt(corailAlgue);
+        }
+    }
+    // si l'index n'est plus a -1 il y a une algue a manger
+    if(indexAlgCandidat != -1){
+        return true;
+    }else{
+        return false;
+    }
+}
+
+bool Simulation::test_collision_simu(Corail& cor, double del_ang, bool mange){
+    
+    bool collision = false;
+    if(mange){
+        cor.tailleCorAugmente(delta_l);
+    }
+    
+    double ecart_av = cor.getDernierSeg().ecart_ang(cor.getSegments()[cor.getNbSeg()-2]);
+    cor.rotaCorail(del_ang);
+    double ecart_ap = cor.getDernierSeg().ecart_ang(cor.getSegments()[cor.getNbSeg()-2]);
+    
+    if(ecart_av*ecart_ap < 0 and abs(ecart_av) < M_PI/2) collision = true;
+    if(test_coll_seg(cor.getDernierSeg(),false,cor.getNbSeg()-1,cor.getId())) {
+        collision = true;
+    }
+        
+    
+    cor.rotaCorail(-del_ang);
+    if(mange){
+        cor.tailleCorAugmente(-4.);// demander j'ai pas tt compris
+    }
+    return collision;
+}
 void Simulation::step_scav(){
     
     for(unsigned int i(0); i < scavengers.size(); i++){
