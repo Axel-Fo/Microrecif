@@ -265,10 +265,10 @@ void Simulation::step_scav(){
             i -- ;//pour verifier le dernier element qu'on vient de mettre à la place i
         }
     }
-    /*if(!coraux[1].getVieCor()){
-    scavengers[0].scaMouvement(coraux[0].getExtremite(),delta_l);
-    cout<<coraux[0].getExtremite().x<<coraux[0].getExtremite().y<<endl;
+    /*if(!coraux[3].getVieCor()){//juste pour tester si le truc se déplace
+    scavengers[0].scaMouvement(coraux[3].getExtremite(),delta_l);
     }*/
+
 }
 
 void Simulation::mort_alg(int index){
