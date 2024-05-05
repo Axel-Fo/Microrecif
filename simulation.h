@@ -55,9 +55,11 @@ private:
     bool test_collision(Corail corail);
     
     void step_algues();
+    
     void step_coraux();
     bool candidat_mange(Corail& cor, double& delta_ang,int& indexAlgCandidat);
     bool test_collision_simu(Corail& cor, double del_ang, bool mange);
+    
     void step_scav();
     void mort_alg(int index);
 

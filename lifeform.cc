@@ -196,6 +196,15 @@ string Scavenger::sca_to_string() const {
     return lifeform_to_string() + " " + to_string(rayon) + " " + to_string(statut_sca);
 }
 
+void Scavenger::scaMouvement(S2d direction, double distance){
+    /*double angle(atan2((direction.y - pos.y), (direction.x - pos.x)));
+    pos.x += cos(angle) * distance;
+    pos.y += sin(angle) * distance;*/
+    /*double norme = pow((direction.x-pos.x),2) + pow((direction.y-pos.y),2);
+    pos.x += distance * (direction.x - pos.x)/norme;
+    pos.y += distance * (direction.y - pos.y)/norme;*/
+}
+
 int Scavenger::getCorIdCible() const {
     return cor_id_cible;
 }

@@ -180,7 +180,7 @@ void Simulation::step_coraux(){
         }
         if (coraux[i].getVieCor() == ALIVE){// il mange que si il est vivant
             
-            double delta_ang = 0;
+            double delta_ang(0);
             if(coraux[i].getSensRota() == TRIGO){
                 delta_ang  = delta_rot;
             }else{
@@ -191,16 +191,14 @@ void Simulation::step_coraux(){
             // met aussi a jour l'angle et indexAlgCandidat
             bool aManger = candidat_mange(coraux[i],delta_ang,indexAlgCandidat);
             
-            
             if(test_collision_simu(coraux[i],delta_ang,aManger)){
                 coraux[i].change_sens();
             }else{
                 coraux[i].rotaCorail(delta_ang);
                 if(aManger){
                     mort_alg(indexAlgCandidat);
-                    coraux[i].tailleCorAugmente(4);
+                    coraux[i].tailleCorAugmente(delta_l);
                 }
-                //devcor()
             }
 
         }
@@ -215,9 +213,9 @@ bool Simulation::candidat_mange(Corail& cor, double& delta_ang,int& indexAlgCand
         Segment corailAlgue(dernierSegCor.getPoint(), algues[j].getPos());
                 
         if ((corailAlgue.getLongueur() <= dernierSegCor.getLongueur()) and 
-            (abs(dernierSegCor.ecart_ang_mm_pt(corailAlgue)) < abs(delta_ang))
-            and (dernierSegCor.ecart_ang_mm_pt(corailAlgue)*delta_ang > 0)){
-            // pour que l'ange soit bon il doit être plus petit que delta rot en val 
+            (abs(dernierSegCor.ecart_ang_mm_pt(corailAlgue)) < abs(delta_ang)) and
+            (dernierSegCor.ecart_ang_mm_pt(corailAlgue)*delta_ang > 0)){
+            // pour que l'angle soit bon il doit être plus petit que delta rot en val 
             //absolue et de même signe
             indexAlgCandidat = j;
             delta_ang = dernierSegCor.ecart_ang_mm_pt(corailAlgue);
@@ -238,9 +236,12 @@ bool Simulation::test_collision_simu(Corail& cor, double del_ang, bool mange){
         cor.tailleCorAugmente(delta_l);
     }
     
-    double ecart_av = cor.getDernierSeg().ecart_ang(cor.getSegments()[cor.getNbSeg()-2]);
+    double ecart_av = 
+                    cor.getDernierSeg().ecart_ang(cor.getSegments()[cor.getNbSeg()-2]);
+    
     cor.rotaCorail(del_ang);
-    double ecart_ap = cor.getDernierSeg().ecart_ang(cor.getSegments()[cor.getNbSeg()-2]);
+    double ecart_ap = 
+                    cor.getDernierSeg().ecart_ang(cor.getSegments()[cor.getNbSeg()-2]);
     
     if(ecart_av*ecart_ap < 0 and abs(ecart_av) < M_PI/2) collision = true;
     if(test_coll_seg(cor.getDernierSeg(),false,cor.getNbSeg()-1,cor.getId())) {
@@ -248,7 +249,7 @@ bool Simulation::test_collision_simu(Corail& cor, double del_ang, bool mange){
     }
         
     
-    cor.rotaCorail(-del_ang);
+    cor.rotaCorail(-del_ang);//tu dois pas plutot t'arreter à l'endroit de la collision ?
     if(mange){
         cor.tailleCorAugmente(-4.);// demander j'ai pas tt compris
     }
@@ -264,6 +265,10 @@ void Simulation::step_scav(){
             i -- ;//pour verifier le dernier element qu'on vient de mettre à la place i
         }
     }
+    /*if(!coraux[1].getVieCor()){
+    scavengers[0].scaMouvement(coraux[0].getExtremite(),delta_l);
+    cout<<coraux[0].getExtremite().x<<coraux[0].getExtremite().y<<endl;
+    }*/
 }
 
 void Simulation::mort_alg(int index){

@@ -78,6 +78,8 @@ public:
     
     bool testScavenger() const;
     std::string sca_to_string() const;
+    void scaMouvement(S2d direction, double distance);
+    
     int getCorIdCible() const;
     Statut_sca getStatutSca() const;
     double getRayon() const;
