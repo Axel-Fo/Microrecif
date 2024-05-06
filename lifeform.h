@@ -52,9 +52,10 @@ public:
     void mortCorail();
     void rotaCorail(double angle);
     void change_sens();
-    void tailleCorAugmente(double delta_longueur);
+    void tailleCorChange(double delta_longueur);
     bool testCorail() const;
     std::string cor_to_string() const;
+    void majExtremite();//pour ne pas avoir à le faire à chaque mise à jour
 
     int getId() const;
     Statut_cor getVieCor() const;
@@ -79,6 +80,8 @@ public:
     bool testScavenger() const;
     std::string sca_to_string() const;
     void scaMouvement(S2d direction, double distance);
+    void scaGrandit(int delta_r);
+    void sca_statut_change();
     
     int getCorIdCible() const;
     Statut_sca getStatutSca() const;

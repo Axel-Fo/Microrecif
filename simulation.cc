@@ -171,13 +171,20 @@ void Simulation::step_algues(){
     }
 }
 
-void Simulation::step_coraux(){
+void Simulation::step_coraux(){//a rétrécir pcq trop longue + voir si il faut tester
+                               //le cas ou on a pas de scavenger dans la simulation quand mort corail
+    
+    //pour gérer le cas ou plusieurs coraux meurent en même temps :
+    /*vector<int> index_dead_cor;*/
+    
     for(unsigned int i(0); i < coraux.size(); i++){
-        coraux[i].step_age();
-
+        coraux[i].step_age();//le corail mort sera quand même incrémenté en age :/
+        
         if(coraux[i].getAge() == max_life_cor) {
            coraux[i].mortCorail();
+           coraux[i].majExtremite();
         }
+
         if (coraux[i].getVieCor() == ALIVE){// il mange que si il est vivant
             
             double delta_ang(0);
@@ -189,7 +196,7 @@ void Simulation::step_coraux(){
             int indexAlgCandidat(-1); // initialiser a un index qui n'existe pas
             
             // met aussi a jour l'angle et indexAlgCandidat
-            bool aManger = candidat_mange(coraux[i],delta_ang,indexAlgCandidat);
+            bool aManger = candidat_mange(coraux[i], delta_ang, indexAlgCandidat);
             
             if(test_collision_simu(coraux[i],delta_ang,aManger)){
                 coraux[i].change_sens();
@@ -197,13 +204,15 @@ void Simulation::step_coraux(){
                 coraux[i].rotaCorail(delta_ang);
                 if(aManger){
                     mort_alg(indexAlgCandidat);
-                    coraux[i].tailleCorAugmente(delta_l);
+                    coraux[i].tailleCorChange(delta_l);
                 }
             }
 
         }
     }
 }
+
+
 bool Simulation::candidat_mange(Corail& cor, double& delta_ang,int& indexAlgCandidat){
 
     
@@ -233,7 +242,7 @@ bool Simulation::test_collision_simu(Corail& cor, double del_ang, bool mange){
     
     bool collision = false;
     if(mange){
-        cor.tailleCorAugmente(delta_l);
+        cor.tailleCorChange(delta_l);
     }
     
     double ecart_av = 
@@ -251,10 +260,11 @@ bool Simulation::test_collision_simu(Corail& cor, double del_ang, bool mange){
     
     cor.rotaCorail(-del_ang);//tu dois pas plutot t'arreter à l'endroit de la collision ?
     if(mange){
-        cor.tailleCorAugmente(-4.);// demander j'ai pas tt compris
+        cor.tailleCorChange(-4.);// demander j'ai pas tt compris
     }
     return collision;
 }
+
 void Simulation::step_scav(){
     
     for(unsigned int i(0); i < scavengers.size(); i++){
@@ -263,12 +273,29 @@ void Simulation::step_scav(){
             swap(scavengers[i], scavengers[scavengers.size()-1]);
             scavengers.pop_back();
             i -- ;//pour verifier le dernier element qu'on vient de mettre à la place i
+        }else if(scavengers[i].getStatutSca() == MANGE){
+                scaMange(scavengers[i], scavengers[i].getCorIdCible());
         }
     }
-    /*if(!coraux[3].getVieCor()){//juste pour tester si le truc se déplace
-    scavengers[0].scaMouvement(coraux[3].getExtremite(),delta_l);
-    }*/
 
+}
+
+void Simulation::scaMange(Scavenger sca, int id){
+    int index;
+    for(unsigned int i(0); i < coraux.size(); i++){
+        if(coraux[i].getId() == id){
+            index = i;
+            break;
+        }
+    }
+    if ((sca.getRayon() + delta_r_sca) < r_sca_repro ){
+        sca.scaGrandit(delta_r_sca);
+        sca.scaMouvement(coraux[index].getDernierSeg().getPoint(), delta_l);
+        coraux[index].tailleCorChange(-delta_l);
+    }
+    if (coraux[index].getDernierSeg().getLongueur() == 0 ){
+        sca.sca_statut_change();//Marche uniquement si tout les coraux morts sont attribués
+    }
 }
 
 void Simulation::mort_alg(int index){
@@ -392,7 +419,7 @@ string Simulation::data_to_string(){
 
 void Simulation::step(bool naissance){
     step_algues();
-    step_coraux(); //pour le rendu 3
+    step_coraux(); //pour le rendu 3 // ordre à décider !!
     step_scav(); //pour le rendu 3
     ++nbMaj;
     /*important de mettre naissance avant pour ne pas decaler random. Si on avait 

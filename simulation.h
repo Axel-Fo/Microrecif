@@ -62,6 +62,8 @@ private:
     
     void step_scav();
     void mort_alg(int index);
+    void scaMange(Scavenger sca, int id);
+
 
 public:
     Simulation();
