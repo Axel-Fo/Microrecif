@@ -292,9 +292,18 @@ void Simulation::scaMange(Scavenger sca, int id){
         sca.scaGrandit(delta_r_sca);
         sca.scaMouvement(coraux[index].getDernierSeg().getPoint(), delta_l);
         coraux[index].tailleCorChange(-delta_l);
+    }else{//le scavenger se reproduit alors
+        //on créé un scavenger a la pos actuelle puis on se déplace:
+        Scavenger new_sca(sca.getPos());
+        scavengers.push_back(new_sca);
+        sca.resetTaille();
+        sca.scaMouvement(coraux[index].getDernierSeg().getPoint(), delta_l);
     }
-    if (coraux[index].getDernierSeg().getLongueur() == 0 ){
-        sca.sca_statut_change();//Marche uniquement si tout les coraux morts sont attribués
+    //si le corail est mangé il disparait pour le prochain step :
+    if (coraux[index].getSegments()[0].getLongueur() == 0 ){
+        sca.sca_statut_change();
+        swap(coraux[index], coraux[coraux.size()-1]);
+        coraux.pop_back();
     }
 }
 
@@ -419,8 +428,8 @@ string Simulation::data_to_string(){
 
 void Simulation::step(bool naissance){
     step_algues();
-    step_coraux(); //pour le rendu 3 // ordre à décider !!
-    step_scav(); //pour le rendu 3
+    step_coraux(); 
+    step_scav(); 
     ++nbMaj;
     /*important de mettre naissance avant pour ne pas decaler random. Si on avait 
     commencé par random_algue(e) on lirait un bit de e a chaque mise a jour 

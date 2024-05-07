@@ -76,12 +76,15 @@ private:
 
 public:
     Scavenger(std::istringstream& data);
-    
+    Scavenger(S2d pos); //rayon par défaut sur r_sca pour eviter qu'un donne un rayon 
+                        //non autorisé ( > r_sca_repro)
+
     bool testScavenger() const;
     std::string sca_to_string() const;
     void scaMouvement(S2d direction, double distance);
     void scaGrandit(int delta_r);
     void sca_statut_change();
+    void resetTaille();
     
     int getCorIdCible() const;
     Statut_sca getStatutSca() const;

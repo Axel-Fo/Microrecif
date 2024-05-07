@@ -188,6 +188,9 @@ Scavenger::Scavenger(istringstream& data) {
     }
 }
 
+Scavenger::Scavenger(S2d pos): Lifeform(pos), 
+                     statut_sca(LIBRE), rayon(r_sca){}
+
 bool Scavenger::testScavenger() const {
     if(testAge(age) or testPos(pos) or testRayon()){
         return true;
@@ -227,6 +230,10 @@ void Scavenger::sca_statut_change(){
     }else{
         statut_sca = LIBRE;
     }
+}
+
+void Scavenger::resetTaille(){
+    rayon = r_sca;
 }
 
 int Scavenger::getCorIdCible() const {
