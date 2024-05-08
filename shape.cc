@@ -120,7 +120,7 @@ void Segment::affiche(Couleur couleur, double largeur)const{
 }
 
 void Segment::ajout_angle(double delta_angle){
-    angle = angle + delta_angle;
+    angle = angle + delta_angle; 
 }
 void Segment::ajout_longueur(double delta_longueur){
     longueur += delta_longueur;
@@ -156,7 +156,7 @@ void Carre::affiche(Couleur couleur, double largeur) const{
 }
 
 double corrige_angle(double ang){
-    
+
     while(ang > M_PI or ang <= -M_PI){
         if (ang > M_PI) {
             ang = ang - 2 * M_PI;

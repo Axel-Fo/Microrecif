@@ -43,6 +43,7 @@ private:
     std::vector<Segment> segments;
     S2d extremite;
     bool testSeg() const;
+    bool miam;
 
 public:
     // constructeur

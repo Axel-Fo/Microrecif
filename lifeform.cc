@@ -75,6 +75,7 @@ Corail::Corail(istringstream& data) {
 
     // tant qu'un corail ne possède pas de segments son extremite est sa base :
     extremite = pos;
+    miam = false;
 }
 
 //Méthodes publiques corail:
