@@ -1,0 +1,25 @@
+{
+    "version": "0.2",
+    "configurations": [
+        {
+            "name": "Debug projet",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/projet", // Change this path to match your program's location
+            "args": ["t/t27.txt"], // Add any command line arguments here
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "miDebuggerPath": "/usr/bin/gdb" // Change this path to match your gdb installation location
+        }
+    ]
+}
