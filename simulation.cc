@@ -11,8 +11,8 @@ using namespace std;
 
 //Méthodes private :
 
-bool Simulation::id_exist(int id) {
-    for (long unsigned int i(0); i < coraux.size(); i++) {
+bool Simulation::id_exist(int id) const{
+    for (unsigned int i(0); i < coraux.size(); i++) {
         if (coraux[i].getId() == id) {
             return true;
         }
@@ -20,7 +20,7 @@ bool Simulation::id_exist(int id) {
     return false;
 }
 
-bool Simulation::test_id(Corail corail) {
+bool Simulation::test_id(Corail corail) const{
     if (id_exist(corail.getId())) {
         cout << message::lifeform_duplicated_id(corail.getId());
         return true;
@@ -28,7 +28,7 @@ bool Simulation::test_id(Corail corail) {
     return false;
 }
 
-bool Simulation::test_id_mange(Scavenger scav) {
+bool Simulation::test_id_mange(Scavenger scav) const{
     if (scav.getStatutSca()) {
         if (!id_exist(scav.getCorIdCible())) {
             cout << message::lifeform_invalid_id(scav.getCorIdCible());
@@ -37,8 +37,9 @@ bool Simulation::test_id_mange(Scavenger scav) {
     } 
     return false;
 }
-bool Simulation::test_coll_seg(Segment seg,bool lecture,unsigned int index, int id){
-    //le booleen lecture est la pour ne plus cout les erreurs de collision si on est 
+bool Simulation::test_coll_seg(Segment seg,bool lecture,unsigned int index, int id)
+                                                                                const{
+    //le booleen lecture est la pour ne plus cout les erreurs de collision 
     //en mode simulation on veut juste recuperer le booleen test collision
     
     Etat_epsil_zero etat = NOT_EPSIL;
@@ -48,7 +49,7 @@ bool Simulation::test_coll_seg(Segment seg,bool lecture,unsigned int index, int 
         for (unsigned int j(0); j < coraux[i].getSegments().size(); j++) {  
             
             /*on ne veut pas tester la collision entre deux segments qui se précèdent 
-            sur le mm corail mais on teste avec le else si ils ne sont pas repliés 
+            sur le mm corail mais on teste (avec le else) si ils ne sont pas repliés 
             l'un sur l'autre*/
             if (coraux[i].getId() != id or !(index == j+1 or index == j-1 or 
                                                              index == j)){
@@ -65,7 +66,7 @@ bool Simulation::test_coll_seg(Segment seg,bool lecture,unsigned int index, int 
     }
     return false;
 }
-bool Simulation::test_collision(Corail corail){
+bool Simulation::test_collision(Corail corail) const{
     
     vector<Segment> segs = corail.getSegments();
     
@@ -150,7 +151,6 @@ void Simulation::switch_lecture(istringstream& data) {
             Scavenger new_sca(data);
             if(new_sca.testScavenger() or test_id_mange(new_sca))
                 erreur = true;
-
             scavengers.push_back(new_sca);
             // plus besoin du compteur car forcement des donnees de scavenger.
             break;
@@ -171,23 +171,24 @@ void Simulation::step_algues(){
     }
 }
 
-void Simulation::step_coraux(){//a rétrécir pcq trop longue 
-    
-    for(unsigned int i(0); i < coraux.size(); i++){
-        coraux[i].step_age();//le corail mort sera quand même incrémenté en age :/
-        
-        if(coraux[i].getAge() == max_life_cor) {
-           coraux[i].mortCorail();
-           coraux[i].majExtremite();
-        }
+void Simulation::mort_alg(int index){
+    swap(algues[index], algues[algues.size()-1]);
+    algues.pop_back();
+}
 
-        if (coraux[i].getVieCor() == ALIVE){// il mange que si il est vivant
+void Simulation::step_coraux(){
+    for(unsigned int i(0); i < coraux.size(); i++){
+        if (coraux[i].getVieCor() == ALIVE){
+            coraux[i].step_age();
+        
+            if(coraux[i].getAge() == max_life_cor) {
+            coraux[i].mortCorail();
+            }
             
            if(coraux[i].getDernierSeg().getLongueur() >= l_repro){
-
                 dev_corail(coraux[i]);
             
-            }else{
+            }else{// voir si le corail doit bouger dans la meme simulation que sa reproduction
                 double delta_ang(0);
                 if(coraux[i].getSensRota() == TRIGO){
                     delta_ang  = delta_rot;
@@ -197,14 +198,14 @@ void Simulation::step_coraux(){//a rétrécir pcq trop longue
                 int indexAlgCandidat(-1); // initialiser a un index qui n'existe pas
                 
                 // met aussi a jour l'angle et indexAlgCandidat
-                bool aManger = candidat_mange(coraux[i], delta_ang, indexAlgCandidat);
-                
+                bool aManger = candidat_mange_alg(coraux[i], delta_ang, 
+                                                                    indexAlgCandidat);
                 if(test_collision_simu(coraux[i],delta_ang,aManger)){
                     coraux[i].change_sens();
                 }else{
                     coraux[i].rotaCorail(delta_ang);
                     if(aManger){
-                        mort_alg(indexAlgCandidat);
+                        mort_alg(indexAlgCandidat);//maintenant on peut manger l'algue
                         coraux[i].tailleCorChange(delta_l);
                     }
                 }
@@ -223,13 +224,23 @@ void Simulation::dev_corail(Corail& cor){
         cor.ajout_seg(new_seg);
     }else{//REPRO
         cor.change_statut_dev();
-        cor.tailleCorChange(-(double)(l_repro/2));
-        Corail new_cor(cor, 1);// change id a refaire
+        cor.tailleCorChange(-(double)(l_repro/2));// car l_repro est unsigned
+        Corail new_cor(cor, new_id());
         coraux.push_back(new_cor);
 
     }
 }
-bool Simulation::candidat_mange(Corail& cor, double& delta_ang,int& indexAlgCandidat){
+
+unsigned int Simulation::new_id() const{
+    
+    unsigned int new_id = coraux.size();// pour chercher un id moins longtemps
+    while(id_exist(new_id)){
+        new_id++;
+    }
+    return new_id;
+}
+
+bool Simulation::candidat_mange_alg(Corail& cor, double& delta_ang,int& indexAlg){
 
     
     for(unsigned int j(0); j < algues.size(); j++){
@@ -243,14 +254,14 @@ bool Simulation::candidat_mange(Corail& cor, double& delta_ang,int& indexAlgCand
             (dernierSegCor.ecart_ang_mm_pt(corailAlgue)*delta_ang > 0)){
             // pour que l'angle soit bon il doit être plus petit que delta rot en val 
             //absolue et de même signe
-            indexAlgCandidat = j;
+            indexAlg = j;
             delta_ang = dernierSegCor.ecart_ang_mm_pt(corailAlgue);
         }
     }
-    /*on est obligé de sortir aussi l'index de l'algue et le delta ang par ref car on 
-    ne sait pas encore si le corail peut la manger, on a pas encore testé les 
+    /*on est obligé de sortir aussi l'index de l'algue et le delta ang (sortis par ref) 
+    car on ne sait pas encore si le corail peut la manger, on a pas encore testé les 
     collisions*/
-    if(indexAlgCandidat != -1){// si l'index n'est plus a -1 il y a une algue a manger
+    if(indexAlg != -1){// si l'index n'est plus a -1 il y a une algue a manger
         return true;
     }else{
         return false;
@@ -258,35 +269,54 @@ bool Simulation::candidat_mange(Corail& cor, double& delta_ang,int& indexAlgCand
 }
 
 bool Simulation::test_collision_simu(Corail& cor, double del_ang, bool mange){
-    
+
     bool collision = false;
+    if(cor.getNbSeg() >= 2 and test_autocollision_simu(cor,del_ang))
+        return true;
+
+    // on fait evoluer le corail pour voir les eventuelles collisions
     if(mange){
         cor.tailleCorChange(delta_l);
     }
-    double ecart_av = 0;
-    if(cor.getNbSeg() >=2 )
-        ecart_av = cor.getDernierSeg().ecart_ang(cor.getSegments()[cor.getNbSeg()-2]);
-    
     cor.rotaCorail(del_ang);
-    if(cor.getNbSeg() >=2 ){
-        double ecart_ap = 
-                cor.getDernierSeg().ecart_ang(cor.getSegments()[cor.getNbSeg()-2]);
-    //si l'ecart angulaire change de signe et est autour de 0 il est repiler sur lui mm
-        if(ecart_av*ecart_ap < 0 and abs(ecart_av) < M_PI/2) collision = true;
 
-    }
-    
-    if(test_coll_seg(cor.getDernierSeg(),false,cor.getNbSeg()-1,cor.getId())) {
+    if(test_coll_seg(cor.getDernierSeg(),false,cor.getNbSeg()-1,cor.getId())
+        or test_collision_bord(cor)) {
         collision = true;
     }
         
-            // on annule des deplacements après avoir fais les tests
+    // on annule l'evolution après avoir fais les tests
     cor.rotaCorail(-del_ang);
-    if(mange){
-        cor.tailleCorChange(-(double)delta_l);
-        //on doit mettre en double pour qu'il puisse être negatif
-    }
+    if(mange)
+        cor.tailleCorChange(-(double)delta_l);// car delta_lest unsigned 
+    
     return collision;
+}
+
+bool Simulation::test_autocollision_simu(Corail& cor, double del_ang){
+    // Calcul de l'écart angulaire avant la rotation
+    double ecart_av 
+                = cor.getDernierSeg().ecart_ang(cor.getSegments()[cor.getNbSeg()-2]);
+    
+    cor.rotaCorail(del_ang);
+    
+    // Calcul de l'écart angulaire après la rotation et détection de collision
+    double ecart_ap
+                = cor.getDernierSeg().ecart_ang(cor.getSegments()[cor.getNbSeg()-2]);
+    cor.rotaCorail(-del_ang);
+    
+    //si l'ecart angulaire change de signe et est proche de 0 (< M_PI/2) 
+    //il est repiler sur lui mm
+    if(ecart_av*ecart_ap < 0 and abs(ecart_av) < M_PI/2) return true;
+    return false;
+}
+
+bool Simulation::test_collision_bord(Corail& cor){
+    for(int i(0); i < 4; i++){
+        if(cor.getDernierSeg().intersect(bords[i], IS_EPSIL))
+            return true;   
+    }
+    return false;
 }
 
 void Simulation::step_scav(){
@@ -362,16 +392,24 @@ void Simulation::scaMange(Scavenger& sca, int id){/*
     }*/
 }
 
-void Simulation::mort_alg(int index){
-    swap(algues[index], algues[algues.size()-1]);
-    algues.pop_back();
-}
-
 //...................................................................................
 //Methodes publiques :
 
 Simulation::Simulation():erreur(false),random_algue(alg_birth_rate), 
-                                                                random_pos(1,dmax-1){}
+                                                                random_pos(1,dmax-1){
+    S2d pt1 = {0.,0.};
+    S2d pt2 = {0.,dmax};
+    S2d pt3 = {dmax,0.};
+    S2d pt4 = {dmax,dmax};
+    Segment bord1(pt1,pt2);
+    bords.push_back(bord1);
+    Segment bord2(pt2,pt4);
+    bords.push_back(bord2);
+    Segment bord3(pt3,pt4);
+    bords.push_back(bord3);
+    Segment bord4(pt3,pt1);
+    bords.push_back(bord4);
+}
 
 void Simulation::lecture(string fichier_entree) {
     

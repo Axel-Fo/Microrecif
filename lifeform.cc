@@ -112,6 +112,7 @@ void Corail::ajout_seg(Segment seg){
 
 void Corail::mortCorail(){
     vie_cor = DEAD;
+    majExtremite();
 }
 
 void Corail::rotaCorail(double angle){

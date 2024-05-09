@@ -32,6 +32,7 @@ private:
     std::vector<Corail> coraux;
     std::vector<Scavenger> scavengers;
     std::vector<Algue> algues;
+    std::vector<Segment> bords;
     unsigned int etat_lecture;
     unsigned int compteur;
     unsigned int nbSeg;
@@ -48,21 +49,24 @@ private:
     std::uniform_int_distribution<unsigned> random_pos;
     
     void switch_lecture(std::istringstream& data);
-    bool id_exist(int id);
-    bool test_id(Corail corail);
-    bool test_id_mange(Scavenger scav);
-    bool test_coll_seg(Segment seg, bool lecture ,unsigned int index, int id);
-    bool test_collision(Corail corail);
+    bool id_exist(int id) const;
+    bool test_id(Corail corail) const;
+    bool test_id_mange(Scavenger scav) const;
+    bool test_coll_seg(Segment seg, bool lecture ,unsigned int index, int id) const;
+    bool test_collision(Corail corail) const;
     
     void step_algues();
-    
+    void mort_alg(int index);
+
     void step_coraux();
     void dev_corail(Corail& cor);
-    bool candidat_mange(Corail& cor, double& delta_ang,int& indexAlgCandidat);
+    unsigned int new_id() const;
+    bool candidat_mange_alg(Corail& cor, double& delta_ang,int& indexAlg);
     bool test_collision_simu(Corail& cor, double del_ang, bool mange);
+    bool test_autocollision_simu(Corail& cor, double del_ang);
+    bool test_collision_bord(Corail& cor);
     
     void step_scav();
-    void mort_alg(int index);
     void scaMange(Scavenger& sca, int id);
     void rechercheCorail();
 
