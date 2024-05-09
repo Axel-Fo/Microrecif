@@ -128,10 +128,11 @@ void Corail::change_sens(){
 }
 
 void Corail::tailleCorChange(double delta_longueur){//delta peut être négatif
-    if (segments[segments.size()-1].getLongueur() + delta_longueur > 0){ 
+    if (segments[segments.size()-1].getLongueur() + delta_longueur > 0){
         segments[segments.size()-1].ajout_longueur(delta_longueur);
     }else{
         segments.pop_back();
+        nb_seg -= 1;
     }
     majExtremite();
 }
@@ -220,7 +221,7 @@ Scavenger::Scavenger(istringstream& data) {
 }
 
 Scavenger::Scavenger(S2d pos): Lifeform(pos), 
-                     statut_sca(LIBRE), rayon(r_sca){}
+                     statut_sca(LIBRE), rayon(r_sca), cor_id_cible(-1){}
 
 bool Scavenger::testScavenger() const {
     if(testAge(age) or testPos(pos) or testRayon()){
@@ -241,11 +242,20 @@ string Scavenger::sca_to_string() const {
 }
 
 void Scavenger::scaMouvement(S2d direction, double distance){
-    double norme = sqrt(pow((direction.x-pos.x),2) + pow((direction.y-pos.y),2));
+    /*double norme = sqrt(pow((direction.x-pos.x),2) + pow((direction.y-pos.y),2));
     if(norme > distance ){ //sinon on va plus loin que le point qu'on cible
         pos.x += distance * (direction.x - pos.x)/norme;
         pos.y += distance * (direction.y - pos.y)/norme;
     }else{
+        pos.x = direction.x;
+        pos.y = direction.y;
+    }*/
+    Segment vect_dir(pos, direction);
+    if(vect_dir.getLongueur() > delta_l){
+        pos.x += cos(vect_dir.getAngle()) * delta_l;
+        pos.y += sin(vect_dir.getAngle()) * delta_l;
+    }else{
+        cout<<"egalité faite"<<endl;
         pos.x = direction.x;
         pos.y = direction.y;
     }
@@ -265,6 +275,10 @@ void Scavenger::sca_statut_change(){
 
 void Scavenger::resetTaille(){
     rayon = r_sca;
+}
+
+void Scavenger::new_id_cible(int id){
+    cor_id_cible = id;
 }
 
 int Scavenger::getCorIdCible() const {

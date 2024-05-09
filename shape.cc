@@ -127,7 +127,11 @@ void Segment::ajout_angle(double delta_angle){
     angle = angle + delta_angle; 
 }
 void Segment::ajout_longueur(double delta_longueur){
-    longueur += delta_longueur;
+    if ((longueur + delta_longueur) >= 0){
+        longueur += delta_longueur;
+    }else{
+        longueur = 0;
+    }
 }
 //Getteurs et setteurs pour Segment ...................................................
 

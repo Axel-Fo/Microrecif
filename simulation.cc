@@ -171,11 +171,7 @@ void Simulation::step_algues(){
     }
 }
 
-void Simulation::step_coraux(){//a rétrécir pcq trop longue + voir si il faut tester
-                               //le cas ou on a pas de scavenger dans la simulation quand mort corail
-    
-    //pour gérer le cas ou plusieurs coraux meurent en même temps :
-    /*vector<int> index_dead_cor;*/
+void Simulation::step_coraux(){//a rétrécir pcq trop longue 
     
     for(unsigned int i(0); i < coraux.size(); i++){
         coraux[i].step_age();//le corail mort sera quand même incrémenté en age :/
@@ -251,8 +247,8 @@ bool Simulation::candidat_mange(Corail& cor, double& delta_ang,int& indexAlgCand
             delta_ang = dernierSegCor.ecart_ang_mm_pt(corailAlgue);
         }
     }
-    /*on est obligé de sortire aussi l'index de l'algue et le delta ang par ref car on 
-    ne sait pas encore si le corail peut la manger, on n'a pas encore tester les 
+    /*on est obligé de sortir aussi l'index de l'algue et le delta ang par ref car on 
+    ne sait pas encore si le corail peut la manger, on a pas encore testé les 
     collisions*/
     if(indexAlgCandidat != -1){// si l'index n'est plus a -1 il y a une algue a manger
         return true;
@@ -279,11 +275,6 @@ bool Simulation::test_collision_simu(Corail& cor, double del_ang, bool mange){
         if(ecart_av*ecart_ap < 0 and abs(ecart_av) < M_PI/2) collision = true;
 
     }
-
-
-
-
-
     
     if(test_coll_seg(cor.getDernierSeg(),false,cor.getNbSeg()-1,cor.getId())) {
         collision = true;
@@ -307,13 +298,36 @@ void Simulation::step_scav(){
             scavengers.pop_back();
             i -- ;//pour verifier le dernier element qu'on vient de mettre à la place i
         }else if(scavengers[i].getStatutSca() == MANGE){
-                scaMange(scavengers[i], scavengers[i].getCorIdCible());
+            scaMange(scavengers[i], scavengers[i].getCorIdCible());
         }
     }
-
+    rechercheCorail();
 }
 
-void Simulation::scaMange(Scavenger sca, int id){
+void Simulation::rechercheCorail(){/*
+    double distance = 500;
+    int indice_sca;
+    int cor_id;
+    for(unsigned int i(0); i < scavengers.size(); i++){
+        for(unsigned int j(0); j < coraux.size(); j++){
+            if(coraux[j].getVieCor() == DEAD){
+                //creation d'un segment pour avoir la distance :
+                Segment cor_sca(coraux[j].getExtremite(), scavengers[i].getPos());
+                if(cor_sca.getLongueur() < distance ){
+                    distance = cor_sca.getLongueur();
+                    indice_sca = i;
+                    cor_id = coraux[j].getId();
+                }
+            }
+        }
+    }
+    if(distance != 500){
+        scavengers[indice_sca].sca_statut_change();
+        scavengers[indice_sca].new_id_cible(cor_id);
+    }*/
+}
+
+void Simulation::scaMange(Scavenger& sca, int id){/*
     int index;
     for(unsigned int i(0); i < coraux.size(); i++){
         if(coraux[i].getId() == id){
@@ -321,23 +335,31 @@ void Simulation::scaMange(Scavenger sca, int id){
             break;
         }
     }
-    if ((sca.getRayon() + delta_r_sca) < r_sca_repro ){
-        sca.scaGrandit(delta_r_sca);
-        sca.scaMouvement(coraux[index].getDernierSeg().getPoint(), delta_l);
-        coraux[index].tailleCorChange(-delta_l);
-    }else{//le scavenger se reproduit alors
-        //on créé un scavenger a la pos actuelle puis on se déplace:
-        Scavenger new_sca(sca.getPos());
-        scavengers.push_back(new_sca);
-        sca.resetTaille();
-        sca.scaMouvement(coraux[index].getDernierSeg().getPoint(), delta_l);
-    }
-    //si le corail est mangé il disparait pour le prochain step :
-    if (coraux[index].getSegments()[0].getLongueur() == 0 ){
-        sca.sca_statut_change();
-        swap(coraux[index], coraux[coraux.size()-1]);
-        coraux.pop_back();
-    }
+    Segment distance(coraux[index].getExtremite(), sca.getPos());
+    double epsil_double = 0.001;
+    if(abs(distance.getLongueur())<= epsil_double ){
+        if ((sca.getRayon() + delta_r_sca) < r_sca_repro ){
+            sca.scaGrandit(delta_r_sca);
+            sca.scaMouvement(coraux[index].getDernierSeg().getPoint(), delta_l);
+            coraux[index].tailleCorChange(-(double)(delta_l));
+        }else{//le scavenger se reproduit alors
+            //on créé un scavenger à la pos actuelle puis on se déplace:
+            Scavenger new_sca(sca.getPos());
+            scavengers.push_back(new_sca);
+            sca.resetTaille();
+            sca.scaMouvement(coraux[index].getDernierSeg().getPoint(), delta_l);
+            coraux[index].tailleCorChange(-(double)(delta_l));
+        }
+        //si le corail est mangé il disparait pour le prochain step :
+        if (coraux[index].getNbSeg() == 0){
+            sca.sca_statut_change();
+            swap(coraux[index], coraux[coraux.size()-1]);
+            coraux.pop_back();
+        }
+    }else{
+        sca.scaMouvement(coraux[index].getExtremite(), delta_l);//coraux[index].getExtremite()
+        cout<<sca.getPos().x<<endl;
+    }*/
 }
 
 void Simulation::mort_alg(int index){

@@ -56,6 +56,7 @@ public:
     void rotaCorail(double angle);
     void change_sens();
     void tailleCorChange(double delta_longueur);
+    void cor_est_mange(double delta_longueur);
     bool testCorail() const;
     std::string cor_to_string() const;
     void majExtremite();
@@ -89,6 +90,7 @@ public:
     void scaGrandit(int delta_r);
     void sca_statut_change();
     void resetTaille();
+    void new_id_cible(int id);
     
     int getCorIdCible() const;
     Statut_sca getStatutSca() const;
