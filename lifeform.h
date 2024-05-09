@@ -48,15 +48,18 @@ private:
 public:
     // constructeur
     Corail(std::istringstream& data);
+    Corail(Corail parent, int _id);
 
     void ajout_seg(std::istringstream& data);
+    void ajout_seg(Segment seg);
     void mortCorail();
     void rotaCorail(double angle);
     void change_sens();
     void tailleCorChange(double delta_longueur);
     bool testCorail() const;
     std::string cor_to_string() const;
-    void majExtremite();//pour ne pas avoir à le faire à chaque mise à jour
+    void majExtremite();
+    void change_statut_dev();
 
     int getId() const;
     Statut_cor getVieCor() const;

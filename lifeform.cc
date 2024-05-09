@@ -78,6 +78,20 @@ Corail::Corail(istringstream& data) {
     miam = false;
 }
 
+Corail::Corail(Corail parent, int _id) {
+
+    pos = parent.extremite;
+    age = 1;
+    id = _id;
+    vie_cor = ALIVE;
+    sens_rota = parent.sens_rota;
+    statut_dev = EXTEND;
+    nb_seg = 0;
+    extremite = pos;
+    miam = false;
+    Segment seg(pos,parent.getDernierSeg().getAngle() ,l_repro - l_seg_interne);
+    ajout_seg(seg);
+}
 //Méthodes publiques corail:
 void Corail::ajout_seg(istringstream& data) {
     double angle;
@@ -88,6 +102,13 @@ void Corail::ajout_seg(istringstream& data) {
     // nouvelle extremite
     extremite = new_segment.autre_pt();
 }
+void Corail::ajout_seg(Segment seg){
+    segments.push_back(seg);
+    // nouvelle extremite
+    extremite = seg.autre_pt();
+    nb_seg++;
+
+}
 
 void Corail::mortCorail(){
     vie_cor = DEAD;
@@ -95,6 +116,7 @@ void Corail::mortCorail(){
 
 void Corail::rotaCorail(double angle){
     segments[segments.size()-1].ajout_angle(angle);
+    majExtremite();
 }
 
 void Corail::change_sens(){
@@ -111,6 +133,7 @@ void Corail::tailleCorChange(double delta_longueur){//delta peut être négatif
     }else{
         segments.pop_back();
     }
+    majExtremite();
 }
 
 bool Corail::testCorail() const {
@@ -136,7 +159,14 @@ string Corail::cor_to_string() const{
 void Corail::majExtremite(){
     extremite = segments[segments.size()-1].autre_pt();
 }
+void Corail::change_statut_dev(){
+    if(statut_dev == EXTEND){
+        statut_dev = REPRO;
+    }else{
+        statut_dev = EXTEND;
+    }
 
+}
 // Définition des geteurs pour le corail :
 
 int Corail::getId() const {

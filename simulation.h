@@ -57,6 +57,7 @@ private:
     void step_algues();
     
     void step_coraux();
+    void dev_corail(Corail& cor);
     bool candidat_mange(Corail& cor, double& delta_ang,int& indexAlgCandidat);
     bool test_collision_simu(Corail& cor, double del_ang, bool mange);
     

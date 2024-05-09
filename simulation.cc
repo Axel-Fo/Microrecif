@@ -42,7 +42,7 @@ bool Simulation::test_coll_seg(Segment seg,bool lecture,unsigned int index, int 
     //en mode simulation on veut juste recuperer le booleen test collision
     
     Etat_epsil_zero etat = NOT_EPSIL;
-    //if(!lecture) etat = IS_EPSIL;
+    if(!lecture) etat = IS_EPSIL;
     
     for (unsigned int i(0); i < coraux.size(); i++) {
         for (unsigned int j(0); j < coraux[i].getSegments().size(); j++) {  
@@ -54,10 +54,10 @@ bool Simulation::test_coll_seg(Segment seg,bool lecture,unsigned int index, int 
                                                              index == j)){
                 if (seg.intersect((coraux[i].getSegments())[j], etat)) {
                     
-                    //if(lecture){
+                    if(lecture){
                         cout << message::segment_collision(coraux[i].getId(), 
                                                            j, id, index);
-                    //}
+                    }
                     return true;                    
                 }
             }
@@ -187,37 +187,58 @@ void Simulation::step_coraux(){//a rétrécir pcq trop longue + voir si il faut 
 
         if (coraux[i].getVieCor() == ALIVE){// il mange que si il est vivant
             
-            double delta_ang(0);
-            if(coraux[i].getSensRota() == TRIGO){
-                delta_ang  = delta_rot;
-            }else{
-                delta_ang  = -delta_rot;
-            }
-            int indexAlgCandidat(-1); // initialiser a un index qui n'existe pas
-            
-            // met aussi a jour l'angle et indexAlgCandidat
-            bool aManger = candidat_mange(coraux[i], delta_ang, indexAlgCandidat);
-            
-            if(test_collision_simu(coraux[i],delta_ang,aManger)){
-                coraux[i].change_sens();
-            }else{
-                coraux[i].rotaCorail(delta_ang);
-                if(aManger){
-                    mort_alg(indexAlgCandidat);
-                    coraux[i].tailleCorChange(delta_l);
-                }
-            }
+           if(coraux[i].getDernierSeg().getLongueur() >= l_repro){
 
+                dev_corail(coraux[i]);
+            
+            }else{
+                double delta_ang(0);
+                if(coraux[i].getSensRota() == TRIGO){
+                    delta_ang  = delta_rot;
+                }else{//INVTRIGO
+                    delta_ang  = -delta_rot;
+                }
+                int indexAlgCandidat(-1); // initialiser a un index qui n'existe pas
+                
+                // met aussi a jour l'angle et indexAlgCandidat
+                bool aManger = candidat_mange(coraux[i], delta_ang, indexAlgCandidat);
+                
+                if(test_collision_simu(coraux[i],delta_ang,aManger)){
+                    coraux[i].change_sens();
+                }else{
+                    coraux[i].rotaCorail(delta_ang);
+                    if(aManger){
+                        mort_alg(indexAlgCandidat);
+                        coraux[i].tailleCorChange(delta_l);
+                    }
+                }
+
+            }
         }
     }
 }
 
+void Simulation::dev_corail(Corail& cor){
+    if(cor.getStatutDev() == EXTEND){
+        cor.change_statut_dev();
+        cor.tailleCorChange(-(double)(l_repro-l_seg_interne));
+        Segment new_seg(cor.getExtremite(),cor.getDernierSeg().getAngle()
+                                        ,(double)(l_repro-l_seg_interne));
+        cor.ajout_seg(new_seg);
+    }else{//REPRO
+        cor.change_statut_dev();
+        cor.tailleCorChange(-(double)(l_repro/2));
+        Corail new_cor(cor, 1);// change id a refaire
+        coraux.push_back(new_cor);
 
+    }
+}
 bool Simulation::candidat_mange(Corail& cor, double& delta_ang,int& indexAlgCandidat){
 
     
     for(unsigned int j(0); j < algues.size(); j++){
-                
+
+        // on utilise des segments pour pouvoir réutiliser les fct d'angles de shape     
         Segment dernierSegCor(cor.getDernierSeg());
         Segment corailAlgue(dernierSegCor.getPoint(), algues[j].getPos());
                 
@@ -230,8 +251,10 @@ bool Simulation::candidat_mange(Corail& cor, double& delta_ang,int& indexAlgCand
             delta_ang = dernierSegCor.ecart_ang_mm_pt(corailAlgue);
         }
     }
-    // si l'index n'est plus a -1 il y a une algue a manger
-    if(indexAlgCandidat != -1){
+    /*on est obligé de sortire aussi l'index de l'algue et le delta ang par ref car on 
+    ne sait pas encore si le corail peut la manger, on n'a pas encore tester les 
+    collisions*/
+    if(indexAlgCandidat != -1){// si l'index n'est plus a -1 il y a une algue a manger
         return true;
     }else{
         return false;
@@ -244,23 +267,33 @@ bool Simulation::test_collision_simu(Corail& cor, double del_ang, bool mange){
     if(mange){
         cor.tailleCorChange(delta_l);
     }
-    
-    double ecart_av = 
-                    cor.getDernierSeg().ecart_ang(cor.getSegments()[cor.getNbSeg()-2]);
+    double ecart_av = 0;
+    if(cor.getNbSeg() >=2 )
+        ecart_av = cor.getDernierSeg().ecart_ang(cor.getSegments()[cor.getNbSeg()-2]);
     
     cor.rotaCorail(del_ang);
-    double ecart_ap = 
-                    cor.getDernierSeg().ecart_ang(cor.getSegments()[cor.getNbSeg()-2]);
+    if(cor.getNbSeg() >=2 ){
+        double ecart_ap = 
+                cor.getDernierSeg().ecart_ang(cor.getSegments()[cor.getNbSeg()-2]);
+    //si l'ecart angulaire change de signe et est autour de 0 il est repiler sur lui mm
+        if(ecart_av*ecart_ap < 0 and abs(ecart_av) < M_PI/2) collision = true;
+
+    }
+
+
+
+
+
     
-    if(ecart_av*ecart_ap < 0 and abs(ecart_av) < M_PI/2) collision = true;
     if(test_coll_seg(cor.getDernierSeg(),false,cor.getNbSeg()-1,cor.getId())) {
         collision = true;
     }
         
-    
-    cor.rotaCorail(-del_ang);//tu dois pas plutot t'arreter à l'endroit de la collision ?
+            // on annule des deplacements après avoir fais les tests
+    cor.rotaCorail(-del_ang);
     if(mange){
-        cor.tailleCorChange(-4.);// demander j'ai pas tt compris
+        cor.tailleCorChange(-(double)delta_l);
+        //on doit mettre en double pour qu'il puisse être negatif
     }
     return collision;
 }

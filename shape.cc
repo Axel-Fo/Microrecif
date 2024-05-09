@@ -18,19 +18,23 @@ double Segment::norme(S2d pt1, S2d pt2) const {
 
 int Segment::orientation(S2d p, S2d q, S2d r, Etat_epsil_zero etat) const {
     //pour savoir si les point p,q,r sont alignés
-    double comparaison(0.);
     
-    if (etat) {// si on est mode detection d'erreur on ne veut pas comparer avec epsil
-        comparaison = epsil_zero;
-    }
 
-    double normepq = norme(p, q);
     double val = (q.y - p.y) * (r.x - q.x) - (q.x - p.x) * (r.y - q.y);
-    val = val / normepq;
-    if (abs(val) <= comparaison)
-        return 0; // alignés
 
-    return (val > 0) ? 1 : 2; //retourne 1 ou 2 pour avoir le signe de l'orientation
+    // si on est mode detection d'erreur on ne veut pas comparer avec epsil
+    if (etat == IS_EPSIL) {
+        if (abs(val) / norme(p, q) < epsil_zero)
+            return 0; // alignés
+
+        return (val > 0.) ? 1 : 2; //1 ou 2 pour avoir le sense de l'orientation
+    }else{
+        if (val == 0.)
+            return 0; // alignés
+
+        return (val > 0.) ? 1 : 2;//1 ou 2 pour avoir le sense de l'orientation
+
+    }
 }
 
 bool Segment::onSegment(S2d p, S2d q, S2d r, Etat_epsil_zero etat) const {
