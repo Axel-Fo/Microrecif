@@ -256,7 +256,6 @@ void Scavenger::scaMouvement(S2d direction, double distance){
         pos.x += cos(vect_dir.getAngle()) * delta_l;
         pos.y += sin(vect_dir.getAngle()) * delta_l;
     }else{
-        cout<<"egalité faite"<<endl;
         pos.x = direction.x;
         pos.y = direction.y;
     }

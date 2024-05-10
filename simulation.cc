@@ -334,7 +334,7 @@ void Simulation::step_scav(){
     rechercheCorail();
 }
 
-void Simulation::rechercheCorail(){/*
+void Simulation::rechercheCorail(){
     double distance = 500;
     int indice_sca;
     int cor_id;
@@ -354,10 +354,10 @@ void Simulation::rechercheCorail(){/*
     if(distance != 500){
         scavengers[indice_sca].sca_statut_change();
         scavengers[indice_sca].new_id_cible(cor_id);
-    }*/
+    }
 }
 
-void Simulation::scaMange(Scavenger& sca, int id){/*
+void Simulation::scaMange(Scavenger& sca, int id){
     int index;
     for(unsigned int i(0); i < coraux.size(); i++){
         if(coraux[i].getId() == id){
@@ -375,10 +375,10 @@ void Simulation::scaMange(Scavenger& sca, int id){/*
         }else{//le scavenger se reproduit alors
             //on créé un scavenger à la pos actuelle puis on se déplace:
             Scavenger new_sca(sca.getPos());
-            scavengers.push_back(new_sca);
             sca.resetTaille();
             sca.scaMouvement(coraux[index].getDernierSeg().getPoint(), delta_l);
             coraux[index].tailleCorChange(-(double)(delta_l));
+            scavengers.push_back(new_sca);
         }
         //si le corail est mangé il disparait pour le prochain step :
         if (coraux[index].getNbSeg() == 0){
@@ -387,9 +387,8 @@ void Simulation::scaMange(Scavenger& sca, int id){/*
             coraux.pop_back();
         }
     }else{
-        sca.scaMouvement(coraux[index].getExtremite(), delta_l);//coraux[index].getExtremite()
-        cout<<sca.getPos().x<<endl;
-    }*/
+        sca.scaMouvement(coraux[index].getExtremite(), delta_l);
+    }
 }
 
 //...................................................................................
