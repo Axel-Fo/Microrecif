@@ -182,7 +182,7 @@ void Simulation::step_coraux(){
             coraux[i].step_age();
         
             if(coraux[i].getAge() == max_life_cor) {
-            coraux[i].mortCorail();
+                coraux[i].mortCorail();
             }
             
            if(coraux[i].getDernierSeg().getLongueur() >= l_repro){
@@ -204,13 +204,7 @@ void Simulation::step_coraux(){
                     coraux[i].change_sens();
                 }else{
                     coraux[i].rotaCorail(delta_ang);
-                    cout<<aManger<<endl;
-                    cout<<algues[0].getPos().x<<","<<algues[0].getPos().y<<endl;
-                    cout<<"base ( " <<coraux[0].getPos().x<<","<<coraux[0].getPos().y<<") extremite"<<coraux[0].getExtremite().x<<","<<coraux[0].getExtremite().y<<endl;
                     if(aManger){
-                        cout<<aManger<<endl;
-                        cout<<algues[0].getPos().x<<","<<algues[0].getPos().y<<endl;
-                        cout<<"base ( " <<coraux[0].getPos().x<<","<<coraux[0].getPos().y<<") extremite"<<coraux[0].getExtremite().x<<","<<coraux[0].getExtremite().y<<endl;
                         mort_alg(indexAlgCandidat);//maintenant on peut manger l'algue
                         coraux[i].tailleCorChange(delta_l);
                     }
@@ -253,12 +247,9 @@ bool Simulation::candidat_mange_alg(Corail& cor, double& delta_ang,int& indexAlg
 
         // on utilise des segments pour pouvoir réutiliser les fct d'angles de shape     
         Segment dernierSegCorMaj(cor.getDernierSeg());
+        //on ajoute delta_ang sinon on mange l'algue avec 1 step de retard
         dernierSegCorMaj.ajout_angle(delta_ang);
         Segment corailAlgue(dernierSegCorMaj.getPoint(), algues[j].getPos());
-        cout<<"ecart angulaire ="<< dernierSegCorMaj.ecart_ang_mm_pt(corailAlgue)<<endl;
-        //cout<<"même signe"<<dernierSegCorMaj.ecart_ang_mm_pt(corailAlgue)*delta_ang<<endl;
-        cout<<"angle dernier seg cor"<<dernierSegCorMaj.getAngle()<<endl;
-        cout<<"angle corail algue"<<corailAlgue.getAngle()<<endl;
                 
         if ((corailAlgue.getLongueur() <= dernierSegCorMaj.getLongueur()) and 
             (abs(dernierSegCorMaj.ecart_ang_mm_pt(corailAlgue)) < abs(delta_ang)) and
@@ -272,7 +263,7 @@ bool Simulation::candidat_mange_alg(Corail& cor, double& delta_ang,int& indexAlg
     /*on est obligé de sortir aussi l'index de l'algue et le delta ang (sortis par ref) 
     car on ne sait pas encore si le corail peut la manger, on a pas encore testé les 
     collisions*/
-    if(indexAlg != -1){// si l'index n'est plus a -1 il y a une algue a manger
+    if(indexAlg != -1){// si l'index n'est plus a -1 il y a une algue à manger
         return true;
     }else{
         return false;
@@ -330,8 +321,7 @@ bool Simulation::test_collision_bord(Corail& cor){
     return false;
 }
 
-void Simulation::step_scav(){
-    
+void Simulation::step_scav(){ 
     for(unsigned int i(0); i < scavengers.size(); i++){
         scavengers[i].step_age();
         if(scavengers[i].getAge() == max_life_sca){
@@ -349,20 +339,23 @@ void Simulation::rechercheCorail(){
     double distance = 500;
     int indice_sca;
     int cor_id;
-    for(unsigned int i(0); i < scavengers.size(); i++){
-        for(unsigned int j(0); j < coraux.size(); j++){
-            if(coraux[j].getVieCor() == DEAD){
+    for(unsigned int j(0); j < coraux.size(); j++){
+        if((coraux[j].getVieCor() == DEAD)/* and 
+               (coraux[j].getCorEstMange() == false)*/){
+            for(unsigned int i(0); i < scavengers.size(); i++){
                 //creation d'un segment pour avoir la distance :
                 Segment cor_sca(coraux[j].getExtremite(), scavengers[i].getPos());
                 if(cor_sca.getLongueur() < distance ){
                     distance = cor_sca.getLongueur();
                     indice_sca = i;
                     cor_id = coraux[j].getId();
+                    //coraux[j].estMange();
                 }
             }
         }
     }
-    if(distance != 500){
+
+    if((distance != 500) and (scavengers[indice_sca].getStatutSca() == LIBRE)){
         scavengers[indice_sca].sca_statut_change();
         scavengers[indice_sca].new_id_cible(cor_id);
     }
@@ -377,7 +370,7 @@ void Simulation::scaMange(Scavenger& sca, int id){
         }
     }
     Segment distance(coraux[index].getExtremite(), sca.getPos());
-    double epsil_double = 0.001;
+    double epsil_double = 0.0001;
     if(abs(distance.getLongueur())<= epsil_double ){
         if ((sca.getRayon() + delta_r_sca) < r_sca_repro ){
             sca.scaGrandit(delta_r_sca);

@@ -43,7 +43,7 @@ private:
     std::vector<Segment> segments;
     S2d extremite;
     bool testSeg() const;
-    bool miam;
+    bool est_mange;
 
 public:
     // constructeur
@@ -61,6 +61,7 @@ public:
     std::string cor_to_string() const;
     void majExtremite();
     void change_statut_dev();
+    void estMange();
 
     int getId() const;
     Statut_cor getVieCor() const;
@@ -70,6 +71,7 @@ public:
     std::vector<Segment> getSegments() const;
     Segment getDernierSeg() const;
     S2d getExtremite() const;
+    bool getCorEstMange() const;
 };
 
 class Scavenger : public Lifeform{

@@ -75,7 +75,7 @@ Corail::Corail(istringstream& data) {
 
     // tant qu'un corail ne possède pas de segments son extremite est sa base :
     extremite = pos;
-    miam = false;
+    est_mange = false;
 }
 
 Corail::Corail(Corail parent, int _id) {
@@ -88,7 +88,7 @@ Corail::Corail(Corail parent, int _id) {
     statut_dev = EXTEND;
     nb_seg = 0;
     extremite = pos;
-    miam = false;
+    est_mange = false;
     Segment seg(pos,parent.getDernierSeg().getAngle() ,l_repro - l_seg_interne);
     ajout_seg(seg);
 }
@@ -112,7 +112,6 @@ void Corail::ajout_seg(Segment seg){
 
 void Corail::mortCorail(){
     vie_cor = DEAD;
-    majExtremite();
 }
 
 void Corail::rotaCorail(double angle){
@@ -161,6 +160,7 @@ string Corail::cor_to_string() const{
 void Corail::majExtremite(){
     extremite = segments[segments.size()-1].autre_pt();
 }
+
 void Corail::change_statut_dev(){
     if(statut_dev == EXTEND){
         statut_dev = REPRO;
@@ -168,6 +168,10 @@ void Corail::change_statut_dev(){
         statut_dev = EXTEND;
     }
 
+}
+
+void Corail::estMange(){
+    est_mange = !est_mange;
 }
 // Définition des geteurs pour le corail :
 
@@ -202,6 +206,9 @@ S2d Corail::getExtremite() const{
     return extremite;
 }
 
+bool Corail::getCorEstMange() const{
+    return est_mange;
+}
 //Classe Scavenger....................................................................
 
 bool Scavenger::testRayon() const {
