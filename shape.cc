@@ -35,21 +35,18 @@ int Segment::orientation(S2d p, S2d q, S2d r, Etat_epsil_zero etat) const {
         return (val > 0.) ? 1 : 2;//1 ou 2 pour avoir le sense de l'orientation
 
     }
+
 }
 
 bool Segment::onSegment(S2d p, S2d q, S2d r, Etat_epsil_zero etat) const {
-    //pour verifier si le point r est sur le segement pq
-    double comparaison(0.);
-    if (etat) {
-        comparaison = epsil_zero;
-    }
+    //pour verifier si le point q est sur le segement pr
+    double epsil = (etat == IS_EPSIL) ? epsil_zero : 0.;
+    if(etat == IS_EPSIL) std::cout<<"IS_EPSIL"<<std::endl;
+    double prod_scl = (r.x-p.x) * (q.x-p.x) + (r.y-p.y) * (q.y-p.y);
+    double proj = prod_scl / norme(p, r);
+    std::cout<<proj<<"norme "<<  epsil + norme(p, r) <<std::endl;
+    return (proj >= -epsil && proj <= (epsil + norme(p, r))) ? true : false;
 
-    double prod_scl = p.x * q.x + p.y * q.y;
-    double pr = norme(p, r);
-    double proj = prod_scl / pr;
-    if (proj >= -comparaison && proj <= (comparaison + pr))
-        return true;
-    return false;
 }
 
 //Methodes publiques Segment..........................................................
@@ -76,23 +73,29 @@ bool Segment ::intersect(Segment autre, Etat_epsil_zero etat) const {
     int o3 = orientation(p2, q2, p1, etat);
     int o4 = orientation(p2, q2, q1, etat);
 
-    // Cas général
-    if (o1 != o2 && o3 != o4)
-        return true;
-
+   //on veut tester le cas général que si tt les orientations sont différentes de 0
+   // a cause de epilon on peut se retrouve par exemple comme dans le test 45 avec 
+   //o1 == o3 == 1 et o2 == 04 == 0 ce qui sort fausse collision. Dans ce cas on ne 
+   //test que les cas speciaux
+    if(o1*o2*o3*o4>0){
+         // Cas général
+        if (o1 != o2 && o3 != o4)
+            return true;
+    }else{ 
+    
     // cas speciaux
-    if (o1 == 0 && onSegment(p1, p2, q1, etat))
-        return true;
+        if (o1 == 0 && onSegment(p1, p2, q1, etat))
+            return true;
 
-    if (o2 == 0 && onSegment(p1, q2, q1, etat))
-        return true;
+        if (o2 == 0 && onSegment(p1, q2, q1, etat))
+            return true;
 
-    if (o3 == 0 && onSegment(p2, p1, q2, etat))
-        return true;
+        if (o3 == 0 && onSegment(p2, p1, q2, etat))
+            return true;
 
-    if (o4 == 0 && onSegment(p2, q1, q2, etat))
-        return true;
-
+        if (o4 == 0 && onSegment(p2, q1, q2, etat))
+            return true;
+     }
     return false;  // si l'on est dans aucun des cas
 }
 
