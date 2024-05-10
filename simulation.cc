@@ -37,7 +37,7 @@ bool Simulation::test_id_mange(Scavenger scav) const{
     } 
     return false;
 }
-bool Simulation::test_coll_seg(Segment seg,bool lecture,unsigned int index, int id)
+bool Simulation::test_coll_seg(Segment seg, bool lecture, unsigned int index, int id)
                                                                                 const{
     //le booleen lecture est la pour ne plus cout les erreurs de collision 
     //en mode simulation on veut juste recuperer le booleen test collision
@@ -196,15 +196,21 @@ void Simulation::step_coraux(){
                     delta_ang  = -delta_rot;
                 }
                 int indexAlgCandidat(-1); // initialiser a un index qui n'existe pas
-                
                 // met aussi a jour l'angle et indexAlgCandidat
                 bool aManger = candidat_mange_alg(coraux[i], delta_ang, 
                                                                     indexAlgCandidat);
-                if(test_collision_simu(coraux[i],delta_ang,aManger)){
+                
+                if(test_collision_simu(coraux[i], delta_ang, aManger)){
                     coraux[i].change_sens();
                 }else{
                     coraux[i].rotaCorail(delta_ang);
+                    cout<<aManger<<endl;
+                    cout<<algues[0].getPos().x<<","<<algues[0].getPos().y<<endl;
+                    cout<<"base ( " <<coraux[0].getPos().x<<","<<coraux[0].getPos().y<<") extremite"<<coraux[0].getExtremite().x<<","<<coraux[0].getExtremite().y<<endl;
                     if(aManger){
+                        cout<<aManger<<endl;
+                        cout<<algues[0].getPos().x<<","<<algues[0].getPos().y<<endl;
+                        cout<<"base ( " <<coraux[0].getPos().x<<","<<coraux[0].getPos().y<<") extremite"<<coraux[0].getExtremite().x<<","<<coraux[0].getExtremite().y<<endl;
                         mort_alg(indexAlgCandidat);//maintenant on peut manger l'algue
                         coraux[i].tailleCorChange(delta_l);
                     }
@@ -246,16 +252,21 @@ bool Simulation::candidat_mange_alg(Corail& cor, double& delta_ang,int& indexAlg
     for(unsigned int j(0); j < algues.size(); j++){
 
         // on utilise des segments pour pouvoir réutiliser les fct d'angles de shape     
-        Segment dernierSegCor(cor.getDernierSeg());
-        Segment corailAlgue(dernierSegCor.getPoint(), algues[j].getPos());
+        Segment dernierSegCorMaj(cor.getDernierSeg());
+        dernierSegCorMaj.ajout_angle(delta_ang);
+        Segment corailAlgue(dernierSegCorMaj.getPoint(), algues[j].getPos());
+        cout<<"ecart angulaire ="<< dernierSegCorMaj.ecart_ang_mm_pt(corailAlgue)<<endl;
+        //cout<<"même signe"<<dernierSegCorMaj.ecart_ang_mm_pt(corailAlgue)*delta_ang<<endl;
+        cout<<"angle dernier seg cor"<<dernierSegCorMaj.getAngle()<<endl;
+        cout<<"angle corail algue"<<corailAlgue.getAngle()<<endl;
                 
-        if ((corailAlgue.getLongueur() <= dernierSegCor.getLongueur()) and 
-            (abs(dernierSegCor.ecart_ang_mm_pt(corailAlgue)) < abs(delta_ang)) and
-            (dernierSegCor.ecart_ang_mm_pt(corailAlgue)*delta_ang > 0)){
+        if ((corailAlgue.getLongueur() <= dernierSegCorMaj.getLongueur()) and 
+            (abs(dernierSegCorMaj.ecart_ang_mm_pt(corailAlgue)) < abs(delta_ang)) and
+            (dernierSegCorMaj.ecart_ang_mm_pt(corailAlgue)*delta_ang > 0)){
             // pour que l'angle soit bon il doit être plus petit que delta rot en val 
             //absolue et de même signe
             indexAlg = j;
-            delta_ang = dernierSegCor.ecart_ang_mm_pt(corailAlgue);
+            delta_ang = dernierSegCorMaj.ecart_ang_mm_pt(corailAlgue);
         }
     }
     /*on est obligé de sortir aussi l'index de l'algue et le delta ang (sortis par ref) 

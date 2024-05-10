@@ -137,7 +137,7 @@ MyWindow::MyWindow(Simulation& simulation):
     m_label_corails("corails: "),
     m_label_charognards("charognards: "),
 	disconnect(false),
-	freq_timer(25),
+	freq_timer(50),
 	etat_save(false)  {   
 
 	_simulation = simulation;
