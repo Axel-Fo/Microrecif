@@ -247,17 +247,15 @@ bool Simulation::candidat_mange_alg(Corail& cor, double& delta_ang,int& indexAlg
 
         // on utilise des segments pour pouvoir réutiliser les fct d'angles de shape     
         Segment dernierSegCorMaj(cor.getDernierSeg());
-        //on ajoute delta_ang sinon on mange l'algue avec 1 step de retard
-        dernierSegCorMaj.ajout_angle(delta_ang);
         Segment corailAlgue(dernierSegCorMaj.getPoint(), algues[j].getPos());
                 
         if ((corailAlgue.getLongueur() <= dernierSegCorMaj.getLongueur()) and 
-            (abs(dernierSegCorMaj.ecart_ang_mm_pt(corailAlgue)) < abs(delta_ang)) and
-            (dernierSegCorMaj.ecart_ang_mm_pt(corailAlgue)*delta_ang > 0)){
+            (abs(corailAlgue.ecart_ang_mm_pt(dernierSegCorMaj)) < abs(delta_ang)) and
+            (corailAlgue.ecart_ang_mm_pt(dernierSegCorMaj)*delta_ang > 0)){
             // pour que l'angle soit bon il doit être plus petit que delta rot en val 
             //absolue et de même signe
             indexAlg = j;
-            delta_ang = dernierSegCorMaj.ecart_ang_mm_pt(corailAlgue);
+            delta_ang = corailAlgue.ecart_ang_mm_pt(dernierSegCorMaj);
         }
     }
     /*on est obligé de sortir aussi l'index de l'algue et le delta ang (sortis par ref) 
@@ -284,7 +282,7 @@ bool Simulation::test_collision_simu(Corail& cor, double del_ang, bool mange){
 
     if(test_coll_seg(cor.getDernierSeg(),false,cor.getNbSeg()-1,cor.getId())
         or test_collision_bord(cor)) {
-        collision = true;
+         collision = true;
     }
         
     // on annule l'evolution après avoir fais les tests
