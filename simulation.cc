@@ -223,11 +223,13 @@ void Simulation::dev_corail(Corail& cor){
                                         ,(double)(l_repro-l_seg_interne));
         cor.ajout_seg(new_seg);
     }else{//REPRO
-        cor.change_statut_dev();//////////////////////////////////////////////////////////pos du nouveau?
-        cor.tailleCorChange(-(double)(l_repro/2));// car l_repro est unsigned
+        cor.change_statut_dev();
+        //on se met a bonne dis pour la base du nouveau seg
+        cor.tailleCorChange(-(double)(l_repro-l_seg_interne)); // car unsigned
         Corail new_cor(cor, new_id());
+        //on se met a bonne taille pour un corail qui c'est reproduit
+        cor.tailleCorChange(-(double)(l_seg_interne-l_repro/2));// car unsigned
         coraux.push_back(new_cor);
-
     }
 }
 
