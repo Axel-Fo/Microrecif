@@ -326,36 +326,43 @@ void Simulation::step_scav(){
             swap(scavengers[i], scavengers[scavengers.size()-1]);
             scavengers.pop_back();
             i -- ;//pour verifier le dernier element qu'on vient de mettre à la place i
-        }else if(scavengers[i].getStatutSca() == MANGE){
-            scaMange(scavengers[i], scavengers[i].getCorIdCible());
+        }else {
+            if(scavengers[i].getStatutSca() == MANGE){
+                scaMange(scavengers[i], scavengers[i].getCorIdCible());
+            }
+            rechercheCorail();
         }
+
     }
-    rechercheCorail();
+    
 }
 
 void Simulation::rechercheCorail(){
     double distance = 500;
     int indice_sca;
+    int indice_cor;
     int cor_id;
     for(unsigned int j(0); j < coraux.size(); j++){
-        if((coraux[j].getVieCor() == DEAD)/* and 
-               (coraux[j].getCorEstMange() == false)*/){
+        if((coraux[j].getVieCor() == DEAD) and (coraux[j].getCorEstMange() == false)){
+
             for(unsigned int i(0); i < scavengers.size(); i++){
                 //creation d'un segment pour avoir la distance :
                 Segment cor_sca(coraux[j].getExtremite(), scavengers[i].getPos());
-                if(cor_sca.getLongueur() < distance ){
+                if(cor_sca.getLongueur() < distance and 
+                                                scavengers[i].getStatutSca() == LIBRE){
                     distance = cor_sca.getLongueur();
                     indice_sca = i;
                     cor_id = coraux[j].getId();
-                    //coraux[j].estMange();
+                    indice_cor = j;  
                 }
-            }
+            } 
         }
     }
 
-    if((distance != 500) and (scavengers[indice_sca].getStatutSca() == LIBRE)){
+    if(distance != 500){
         scavengers[indice_sca].sca_statut_change();
         scavengers[indice_sca].new_id_cible(cor_id);
+        coraux[indice_cor].estMange();
     }
 }
 
