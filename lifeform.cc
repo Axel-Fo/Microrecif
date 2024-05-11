@@ -19,7 +19,7 @@ std::istream& operator>>(std::istream& in, Dir_rot_cor& dir);
 std::istream& operator>>(std::istream& in, Statut_cor& statut);
 
 //Classe Lifeform.....................................................................
-//constructeur par défaut :
+//Constructeurs:
 Lifeform::Lifeform(){}
 Lifeform::Lifeform(S2d pos, unsigned int age):pos(pos), age(age){}
 
@@ -104,10 +104,8 @@ void Corail::ajout_seg(istringstream& data) {
 }
 void Corail::ajout_seg(Segment seg){
     segments.push_back(seg);
-    // nouvelle extremite
     extremite = seg.autre_pt();
     nb_seg++;
-
 }
 
 void Corail::mortCorail(){
@@ -228,7 +226,7 @@ Scavenger::Scavenger(istringstream& data) {
     }
 }
 
-Scavenger::Scavenger(S2d pos): Lifeform(pos), 
+Scavenger::Scavenger(S2d pos): Lifeform(pos),   // on utilise -1 comme pas d'id
                      statut_sca(LIBRE), rayon(r_sca), cor_id_cible(-1){}
 
 bool Scavenger::testScavenger() const {
@@ -241,7 +239,7 @@ bool Scavenger::testScavenger() const {
 
 string Scavenger::sca_to_string() const {
     
-    if (statut_sca){ //l'id du corail cible est là uniquement si le scavenger MANGE
+    if (statut_sca == MANGE){ //l'id du corail cible uniquement si le scavenger MANGE
         return lifeform_to_string() + " " + to_string(rayon) + " " 
             + to_string(statut_sca) + " " + to_string(cor_id_cible);
     }
@@ -250,14 +248,6 @@ string Scavenger::sca_to_string() const {
 }
 
 void Scavenger::scaMouvement(S2d direction, double distance){
-    /*double norme = sqrt(pow((direction.x-pos.x),2) + pow((direction.y-pos.y),2));
-    if(norme > distance ){ //sinon on va plus loin que le point qu'on cible
-        pos.x += distance * (direction.x - pos.x)/norme;
-        pos.y += distance * (direction.y - pos.y)/norme;
-    }else{
-        pos.x = direction.x;
-        pos.y = direction.y;
-    }*/
     Segment vect_dir(pos, direction);
     if(vect_dir.getLongueur() > delta_l){
         pos.x += cos(vect_dir.getAngle()) * delta_l;
@@ -288,6 +278,8 @@ void Scavenger::new_id_cible(int id){
     cor_id_cible = id;
 }
 
+// Définition des geteurs pour le Scavenger :
+
 int Scavenger::getCorIdCible() const {
     return cor_id_cible;
 }
@@ -316,7 +308,7 @@ bool Algue::testAlgue() const {
 }
 
 //....................................................................................
-//Definition des fonctions utilisées par plusieurs classes :
+//Definition des fonctions utilisées par plusieurs classes (externe aux classes):
 
 bool testAge(unsigned int age) {
     // pas de test avec des valeurs negatives pour l'age

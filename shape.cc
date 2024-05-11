@@ -17,34 +17,28 @@ double Segment::norme(S2d pt1, S2d pt2) const {
 }
 
 int Segment::orientation(S2d p, S2d q, S2d r, Etat_epsil_zero etat) const {
-    //pour savoir si les point p,q,r sont alignés
-    
-
+    //return
+    //0 aligné, 1 orientation invtrigo, 2 orientation trigo
     double val = (q.y - p.y) * (r.x - q.x) - (q.x - p.x) * (r.y - q.y);
-
     // si on est mode detection d'erreur on ne veut pas comparer avec epsil
     if (etat == IS_EPSIL) {
         if (abs(val) / norme(p, q) < epsil_zero)
-            return 0; // alignés
+            return 0;
 
-        return (val > 0.) ? 1 : 2; //1 ou 2 pour avoir le sense de l'orientation
+        return (val > 0.) ? 1 : 2;
     }else{
         if (val == 0.)
-            return 0; // alignés
+            return 0;
 
-        return (val > 0.) ? 1 : 2;//1 ou 2 pour avoir le sense de l'orientation
-
+        return (val > 0.) ? 1 : 2;
     }
-
 }
 
 bool Segment::onSegment(S2d p, S2d q, S2d r, Etat_epsil_zero etat) const {
     //pour verifier si le point q est sur le segement pr
     double epsil = (etat == IS_EPSIL) ? epsil_zero : 0.;
-    if(etat == IS_EPSIL) std::cout<<"IS_EPSIL"<<std::endl;
     double prod_scl = (r.x-p.x) * (q.x-p.x) + (r.y-p.y) * (q.y-p.y);
     double proj = prod_scl / norme(p, r);
-    std::cout<<proj<<"norme "<<  epsil + norme(p, r) <<std::endl;
     return (proj >= -epsil && proj <= (epsil + norme(p, r))) ? true : false;
 
 }
@@ -53,7 +47,7 @@ bool Segment::onSegment(S2d p, S2d q, S2d r, Etat_epsil_zero etat) const {
 
 //Constructeur
 // on n'appele pas corrige_angle() dans les constructeurs si non l'erreur lors 
-//de l'entrée ne sera plus detectée car corrigée
+//de la lecture ne sera plus detectée car corrigée
 Segment::Segment(S2d point, double a, double l) 
                 : point(point), angle(a), longueur(l) {}
 
@@ -130,7 +124,7 @@ void Segment::ajout_angle(double delta_angle){
     angle = angle + delta_angle; 
 }
 void Segment::ajout_longueur(double delta_longueur){
-    if ((longueur + delta_longueur) >= 0){
+    if ((longueur + delta_longueur) >= 0){// pour ne jamais avoir une longeur negative
         longueur += delta_longueur;
     }else{
         longueur = 0;

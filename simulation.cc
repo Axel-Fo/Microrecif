@@ -42,8 +42,8 @@ bool Simulation::test_coll_seg(Segment seg, bool lecture, unsigned int index, in
     //le booleen lecture est la pour ne plus cout les erreurs de collision 
     //en mode simulation on veut juste recuperer le booleen test collision
     
-    Etat_epsil_zero etat = NOT_EPSIL;
-    if(!lecture) etat = IS_EPSIL;
+    Etat_epsil_zero etat = NOT_EPSIL;// pour les testes de collisions dans shapes
+    if(!lecture) etat = IS_EPSIL; 
     
     for (unsigned int i(0); i < coraux.size(); i++) {
         for (unsigned int j(0); j < coraux[i].getSegments().size(); j++) {  
@@ -66,7 +66,7 @@ bool Simulation::test_coll_seg(Segment seg, bool lecture, unsigned int index, in
     }
     return false;
 }
-bool Simulation::test_collision(Corail corail) const{
+bool Simulation::test_collision_lecture(Corail corail) const{
     
     vector<Segment> segs = corail.getSegments();
     
@@ -128,7 +128,7 @@ void Simulation::switch_lecture(istringstream& data) {
             coraux.back().ajout_seg(data);
             compteur_seg++;
             if (compteur_seg == nbSeg) {
-                if(coraux.back().testCorail() or test_collision(coraux.back()))
+                if(coraux.back().testCorail() or test_collision_lecture(coraux.back()))
                     erreur = true;
                 if (compteur == nbCor) {
                     etat_lecture = NBS;
@@ -188,7 +188,7 @@ void Simulation::step_coraux(){
            if(coraux[i].getDernierSeg().getLongueur() >= l_repro){
                 dev_corail(coraux[i]);
             
-            }else{// voir si le corail doit bouger dans la meme simulation que sa reproduction
+            }else{// voir si le corail doit bouger dans la meme simulation que sa reproduction demander nestor
                 double delta_ang(0);
                 if(coraux[i].getSensRota() == TRIGO){
                     delta_ang  = delta_rot;
@@ -223,7 +223,7 @@ void Simulation::dev_corail(Corail& cor){
                                         ,(double)(l_repro-l_seg_interne));
         cor.ajout_seg(new_seg);
     }else{//REPRO
-        cor.change_statut_dev();
+        cor.change_statut_dev();//////////////////////////////////////////////////////////pos du nouveau?
         cor.tailleCorChange(-(double)(l_repro/2));// car l_repro est unsigned
         Corail new_cor(cor, new_id());
         coraux.push_back(new_cor);
@@ -288,7 +288,7 @@ bool Simulation::test_collision_simu(Corail& cor, double del_ang, bool mange){
     // on annule l'evolution après avoir fais les tests
     cor.rotaCorail(-del_ang);
     if(mange)
-        cor.tailleCorChange(-(double)delta_l);// car delta_lest unsigned 
+        cor.tailleCorChange(-(double)delta_l);// car delta_l est unsigned 
     
     return collision;
 }
@@ -338,7 +338,7 @@ void Simulation::step_scav(){
 }
 
 void Simulation::rechercheCorail(){
-    double distance = 500;
+    double distance = 500;// plus grand que n'importe quelle dist dans la simulation
     int indice_sca;
     int indice_cor;
     int cor_id;
@@ -359,7 +359,7 @@ void Simulation::rechercheCorail(){
         }
     }
 
-    if(distance != 500){
+    if(distance != 500){ //si il y a un corail a manger la dist n'est plus a 500
         scavengers[indice_sca].sca_statut_change();
         scavengers[indice_sca].new_id_cible(cor_id);
         coraux[indice_cor].estMange();
@@ -395,7 +395,7 @@ void Simulation::scaMange(Scavenger& sca, int id){
             swap(coraux[index], coraux[coraux.size()-1]);
             coraux.pop_back();
         }
-    }else{
+    }else{// si on pas sur le corail on s'y dirige
         sca.scaMouvement(coraux[index].getExtremite(), delta_l);
     }
 }
@@ -405,7 +405,9 @@ void Simulation::scaMange(Scavenger& sca, int id){
 
 Simulation::Simulation():erreur(false),random_algue(alg_birth_rate), 
                                                                 random_pos(1,dmax-1){
-    S2d pt1 = {0.,0.};
+    // on definit des segments pour le bord de la simulation utile 
+    //pour être sur que le corail ne sort pas de l'espace de la simulation
+    S2d pt1 = {0.,0.}; 
     S2d pt2 = {0.,dmax};
     S2d pt3 = {dmax,0.};
     S2d pt4 = {dmax,dmax};
@@ -427,7 +429,7 @@ void Simulation::lecture(string fichier_entree) {
     if (!fichier.fail()) {
         reset();
         erreur = false;// si on le met dans reset on aura l'erreur suivie de correct 
-        //file car quand on detecte l'erreur on appel reset
+                       //file car quand on detecte l'erreur on appel reset
         while (getline(fichier >> ws, line)) {
             if (line[0] == '#')
                 continue;
@@ -481,14 +483,13 @@ unsigned int Simulation::getNbMaj()const{
 //....................................................................................
 void Simulation::affiche() const{
 
-    for (const auto& corail : coraux) { // à voir si c'est mieux d'avoir variable Couleur ou plutot 2 fois le mm code avec des if
-        const auto& segments = corail.getSegments();
+    for (const auto& corail : coraux) { 
+        Couleur couleur_corail = (corail.getVieCor() == ALIVE)? bleu: noir ;
+        std::vector<Segment> segments = corail.getSegments();
+        //la base du corail
         Carre carre(segments[0].getPoint(),d_cor);
-        Couleur couleur_corail(bleu);// bleu ( = vivant) par défault
-        if(!corail.getVieCor()){
-            couleur_corail = noir; // noir (= mort) 
-        }
         carre.affiche(couleur_corail, 1);
+        //ses segments
         for (const auto& seg : segments) {           
             seg.affiche(couleur_corail, 1);
         }

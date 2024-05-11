@@ -53,7 +53,7 @@ private:
     bool test_id(Corail corail) const;
     bool test_id_mange(Scavenger scav) const;
     bool test_coll_seg(Segment seg, bool lecture ,unsigned int index, int id) const;
-    bool test_collision(Corail corail) const;
+    bool test_collision_lecture(Corail corail) const;
     
     void step_algues();
     void mort_alg(int index);

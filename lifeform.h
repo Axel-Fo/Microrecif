@@ -24,7 +24,8 @@ protected:
 public:
     Lifeform();
     Lifeform(S2d pos, unsigned int age = 1);
-    virtual ~Lifeform();
+    
+    virtual ~Lifeform();//definit pour pouvoir le mettre en virtual
     
     unsigned int getAge()const;
     S2d getPos() const;
