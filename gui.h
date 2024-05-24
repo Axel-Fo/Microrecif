@@ -1,7 +1,7 @@
 /*
 * Fichier : gui.h
 * Auteurs : Nestor Guibentif et Axel Fouet
-* Version : V1
+* Version : V3
 */
 #ifndef GUI_H_INCLUDED
 #define GUI_H_INCLUDED

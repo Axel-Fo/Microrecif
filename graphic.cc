@@ -1,7 +1,7 @@
 /*
 * Fichier : graphic.cc
 * Auteurs : Nestor Guibentif (~20) et Axel Fouet (~80)
-* Version : V1
+* Version : V3
 */
 #include "graphic_gui.h"
 #include <vector>
@@ -27,10 +27,11 @@ void graphic_set_context( const Cairo::RefPtr<Cairo::Context>& cr){
 }
 
 void dessin_ligne(double x1, double y1,double x2, double y2,
-                                                Couleur couleur, double largeur){
+                  Couleur couleur, double largeur){
+    
     (*ptcr)->set_line_width(largeur);
     (*ptcr)->set_source_rgb(couleur_rgb[couleur].r,couleur_rgb[couleur].g,
-                                                          couleur_rgb[couleur].b);
+                            couleur_rgb[couleur].b);
     (*ptcr)->move_to(x1,y1);
     (*ptcr)->line_to(x2,y2);
 
@@ -40,18 +41,18 @@ void dessin_ligne(double x1, double y1,double x2, double y2,
 void dessin_carre(double xc, double yc, double arete, Couleur couleur, double largeur){
     (*ptcr)->set_line_width(largeur);
     (*ptcr)->set_source_rgb(couleur_rgb[couleur].r, couleur_rgb[couleur].g,
-                                                    couleur_rgb[couleur].b);
-    (*ptcr)->rectangle(xc-arete/2,yc-arete/2,arete,arete);
+                            couleur_rgb[couleur].b);
+    (*ptcr)->rectangle(xc-arete/2, yc-arete/2, arete, arete);
 
     (*ptcr)->stroke();
 }
 
 void dessin_cercle(double xc, double yc, double rayon, 
-                                        Couleur couleur, double largeur){
+                   Couleur couleur, double largeur){
+    
     (*ptcr)->set_line_width(largeur);
-    (*ptcr)->set_source_rgb(couleur_rgb[couleur].r,couleur_rgb[couleur].g,
-                                            couleur_rgb[couleur].b);
+    (*ptcr)->set_source_rgb(couleur_rgb[couleur].r, couleur_rgb[couleur].g,
+                            couleur_rgb[couleur].b);
     (*ptcr)->arc(xc, yc, rayon, 0.0, 2.0 * M_PI);
     (*ptcr)->stroke();
-
 }

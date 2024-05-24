@@ -1,7 +1,7 @@
 /*
 * Fichier : lifeform.h
 * Auteurs : Nestor Guibentif et Axel Fouet
-* Version : V2
+* Version : V3
 */
 
 #ifndef LIFEFORM_H_INCLUDED

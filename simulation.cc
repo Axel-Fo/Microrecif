@@ -1,11 +1,15 @@
 /*
 * Fichier : simulation.cc
 * Auteurs : Nestor Guibentif(~60) et Axel Fouet(~40)
-* Version : V2
+* Version : V3
 */
 #include "simulation.h"
 
 using namespace std;
+
+//pour la comparaison des positions S2d des scavengers plus tard :
+//0.0001 est une valeur suffisante dans le cadre de ce projet.
+constexpr double epsil_double(0.0001);
 
 //Classe Simulation...................................................................
 
@@ -188,7 +192,7 @@ void Simulation::step_coraux(){
            if(coraux[i].getDernierSeg().getLongueur() >= l_repro){
                 dev_corail(coraux[i]);
             
-            }else{// voir si le corail doit bouger dans la meme simulation que sa reproduction demander nestor
+            }else{
                 double delta_ang(0);
                 if(coraux[i].getSensRota() == TRIGO){
                     delta_ang  = delta_rot;
@@ -196,10 +200,10 @@ void Simulation::step_coraux(){
                     delta_ang  = -delta_rot;
                 }
                 int indexAlgCandidat(-1); // initialiser a un index qui n'existe pas
-                // met aussi a jour l'angle et indexAlgCandidat
+                // met aussi à jour l'angle et indexAlgCandidat
                 bool aManger = candidat_mange_alg(coraux[i], delta_ang, 
-                                                                    indexAlgCandidat);
-                
+                                                  indexAlgCandidat);
+
                 if(test_collision_simu(coraux[i], delta_ang, aManger)){
                     coraux[i].change_sens();
                 }else{
@@ -209,7 +213,6 @@ void Simulation::step_coraux(){
                         coraux[i].tailleCorChange(delta_l);
                     }
                 }
-
             }
         }
     }
@@ -224,17 +227,16 @@ void Simulation::dev_corail(Corail& cor){
         cor.ajout_seg(new_seg);
     }else{//REPRO
         cor.change_statut_dev();
-        //on se met a bonne dis pour la base du nouveau seg
+        //on se met à la bonne distance pour la base du nouveau seg
         cor.tailleCorChange(-(double)(l_repro-l_seg_interne)); // car unsigned
         Corail new_cor(cor, new_id());
-        //on se met a bonne taille pour un corail qui c'est reproduit
+        //on se met à la bonne taille pour un corail qui c'est reproduit
         cor.tailleCorChange(-(double)(l_seg_interne-l_repro/2));// car unsigned
         coraux.push_back(new_cor);
     }
 }
 
 unsigned int Simulation::new_id() const{
-    
     unsigned int new_id = coraux.size();// pour chercher un id moins longtemps
     while(id_exist(new_id)){
         new_id++;
@@ -244,7 +246,6 @@ unsigned int Simulation::new_id() const{
 
 bool Simulation::candidat_mange_alg(Corail& cor, double& delta_ang,int& indexAlg){
 
-    
     for(unsigned int j(0); j < algues.size(); j++){
 
         // on utilise des segments pour pouvoir réutiliser les fct d'angles de shape     
@@ -271,7 +272,6 @@ bool Simulation::candidat_mange_alg(Corail& cor, double& delta_ang,int& indexAlg
 }
 
 bool Simulation::test_collision_simu(Corail& cor, double del_ang, bool mange){
-
     bool collision = false;
     if(cor.getNbSeg() >= 2 and test_autocollision_simu(cor,del_ang))
         return true;
@@ -282,33 +282,32 @@ bool Simulation::test_collision_simu(Corail& cor, double del_ang, bool mange){
     }
     cor.rotaCorail(del_ang);
 
-    if(test_coll_seg(cor.getDernierSeg(),false,cor.getNbSeg()-1,cor.getId())
-        or test_collision_bord(cor)) {
+    if(test_coll_seg(cor.getDernierSeg(), false, cor.getNbSeg()-1, cor.getId()) or 
+       test_collision_bord(cor)){
          collision = true;
     }
         
-    // on annule l'evolution après avoir fais les tests
+    // on annule l'évolution après avoir fait les tests
     cor.rotaCorail(-del_ang);
     if(mange)
         cor.tailleCorChange(-(double)delta_l);// car delta_l est unsigned 
-    
     return collision;
 }
 
 bool Simulation::test_autocollision_simu(Corail& cor, double del_ang){
     // Calcul de l'écart angulaire avant la rotation
-    double ecart_av 
-                = cor.getDernierSeg().ecart_ang(cor.getSegments()[cor.getNbSeg()-2]);
+    double ecart_av = 
+                  cor.getDernierSeg().ecart_ang(cor.getSegments()[cor.getNbSeg()-2]);
     
     cor.rotaCorail(del_ang);
     
     // Calcul de l'écart angulaire après la rotation et détection de collision
-    double ecart_ap
-                = cor.getDernierSeg().ecart_ang(cor.getSegments()[cor.getNbSeg()-2]);
+    double ecart_ap = 
+                  cor.getDernierSeg().ecart_ang(cor.getSegments()[cor.getNbSeg()-2]);
     cor.rotaCorail(-del_ang);
     
-    //si l'ecart angulaire change de signe et est proche de 0 (< M_PI/2) 
-    //il est repiler sur lui mm
+    //si l'ecart angulaire change de signe et est proche de 0 (càd < M_PI/2) 
+    //il est replié sur lui même
     if(ecart_av*ecart_ap < 0 and abs(ecart_av) < M_PI/2) return true;
     return false;
 }
@@ -334,9 +333,7 @@ void Simulation::step_scav(){
             }
             rechercheCorail();
         }
-
     }
-    
 }
 
 void Simulation::rechercheCorail(){
@@ -351,7 +348,8 @@ void Simulation::rechercheCorail(){
                 //creation d'un segment pour avoir la distance :
                 Segment cor_sca(coraux[j].getExtremite(), scavengers[i].getPos());
                 if(cor_sca.getLongueur() < distance and 
-                                                scavengers[i].getStatutSca() == LIBRE){
+                   scavengers[i].getStatutSca() == LIBRE){
+
                     distance = cor_sca.getLongueur();
                     indice_sca = i;
                     cor_id = coraux[j].getId();
@@ -370,6 +368,7 @@ void Simulation::rechercheCorail(){
 
 void Simulation::scaMange(Scavenger& sca, int id){
     int index;
+    //pour avoir l'index du corail à manger.
     for(unsigned int i(0); i < coraux.size(); i++){
         if(coraux[i].getId() == id){
             index = i;
@@ -377,8 +376,8 @@ void Simulation::scaMange(Scavenger& sca, int id){
         }
     }
     Segment distance(coraux[index].getExtremite(), sca.getPos());
-    double epsil_double = 0.0001;
     if(abs(distance.getLongueur())<= epsil_double ){
+        //le scavenger a  alors atteint le corail cible et se met a le manger : 
         if ((sca.getRayon() + delta_r_sca) < r_sca_repro ){
             sca.scaGrandit(delta_r_sca);
             sca.scaMouvement(coraux[index].getDernierSeg().getPoint(), delta_l);
@@ -397,7 +396,7 @@ void Simulation::scaMange(Scavenger& sca, int id){
             swap(coraux[index], coraux[coraux.size()-1]);
             coraux.pop_back();
         }
-    }else{// si on pas sur le corail on s'y dirige
+    }else{// si on est pas sur le corail on s'y dirige
         sca.scaMouvement(coraux[index].getExtremite(), delta_l);
     }
 }

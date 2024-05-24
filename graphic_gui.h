@@ -1,7 +1,7 @@
 /*
 * Fichier : graphic_gui.hh
 * Auteurs : Nestor Guibentif et Axel Fouet
-* Version : V2
+* Version : V3
 */
 
 #ifndef GRAPHIC_GUI_H

@@ -1,7 +1,7 @@
 /*
 * Fichier : gui.cc
 * Auteurs : Nestor Guibentif(~40) et Axel Fouet(~60)
-* Version : V1
+* Version : V3
 */
 #include "gui.h"
 
@@ -16,8 +16,8 @@ static void orthographic_projection(const Cairo::RefPtr<Cairo::Context>& cr,
 									Frame frame); 
 
 // Frame par defaut et paramètres de la fenêtre
-static Frame default_frame = {-1 ,dmax +2, -1, dmax +2, 1, taille_dessin, 
-																	taille_dessin}; 
+static Frame default_frame = {-1 ,dmax +2, -1, dmax +2, 1, 
+	                          taille_dessin, taille_dessin}; 
 
 
 //Classe MyArea.......................................................................
@@ -165,15 +165,15 @@ MyWindow::MyWindow(Simulation& simulation):
     m_button_box.append(m_naissance_box);
     //pour lier l'evenement bouton clické à la bonne fonction
     m_button_exit.signal_clicked().connect(sigc::mem_fun(*this, 
-												&MyWindow::on_button_clicked_exit));
+										   &MyWindow::on_button_clicked_exit));
     m_button_open.signal_clicked().connect(sigc::mem_fun(*this, 
-												&MyWindow::on_button_clicked_open));
+									       &MyWindow::on_button_clicked_open));
 	m_button_save.signal_clicked().connect(sigc::mem_fun(*this, 
-												&MyWindow::on_button_clicked_save));
+										   &MyWindow::on_button_clicked_save));
 	m_button_start_stop.signal_clicked().connect(sigc::mem_fun(*this, 
-											&MyWindow::on_button_clicked_start_stop));
+										   &MyWindow::on_button_clicked_start_stop));
 	m_button_step.signal_clicked().connect(sigc::mem_fun(*this, 
-												&MyWindow::on_button_clicked_step));
+										   &MyWindow::on_button_clicked_step));
 	//pour lier l'evenement touche appuyée à la bonne fonction
     auto controller = Gtk::EventControllerKey::create();
     controller->signal_key_pressed().connect(
@@ -263,7 +263,7 @@ void MyWindow::on_button_clicked_save(){
 	
     etat_save = true;
 	auto dialog = new Gtk::FileChooserDialog("Please choose a file",
-		  Gtk::FileChooser::Action::SAVE);
+		                                     Gtk::FileChooser::Action::SAVE);
 	dialog->set_transient_for(*this);
 	dialog->set_modal(true);
 	dialog->signal_response().connect(sigc::bind(
@@ -301,7 +301,7 @@ void MyWindow::on_button_clicked_start_stop(){
 		// Crée un slot pour appeler la fonction membre on_timeout() de MyWindow
 		sigc::slot<bool()> my_slot = sigc::bind(sigc::mem_fun(*this,
 		                                        &MyWindow::on_timeout));
-		
+												
 		// Connecte le slot à la fonction signal_timeout() de Glib
 		auto conn = Glib::signal_timeout().connect(my_slot,freq_timer);
 			

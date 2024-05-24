@@ -1,7 +1,7 @@
 /*
 * Fichier : lifeform.cc
 * Auteurs : Nestor Guibentif(~55) et Axel Fouet(~45)
-* Version : V2
+* Version : V3
 */
 #include "lifeform.h"
 
@@ -113,6 +113,7 @@ void Corail::mortCorail(){
 }
 
 void Corail::rotaCorail(double angle){
+    //rotation en utilisant la méthode de shape
     segments[segments.size()-1].ajout_angle(angle);
     majExtremite();
 }
@@ -125,7 +126,7 @@ void Corail::change_sens(){
     }
 }
 
-void Corail::tailleCorChange(double delta_longueur){//delta peut être négatif
+void Corail::tailleCorChange(double delta_longueur){ //delta peut être négatif
     if (segments[segments.size()-1].getLongueur() + delta_longueur > 0){
         segments[segments.size()-1].ajout_longueur(delta_longueur);
     }else{
@@ -151,8 +152,8 @@ string Corail::cor_to_string() const{
     }
 
     return lifeform_to_string() + " " + to_string(id) + " " + to_string(vie_cor) + " " 
-            + to_string(sens_rota) + " " + to_string(statut_dev) + " " 
-            + to_string(nb_seg) + " " + stringSeg ;
+           + to_string(sens_rota) + " " + to_string(statut_dev) + " " 
+           + to_string(nb_seg) + " " + stringSeg ;
 }
 
 void Corail::majExtremite(){
@@ -165,13 +166,13 @@ void Corail::change_statut_dev(){
     }else{
         statut_dev = EXTEND;
     }
-
 }
 
 void Corail::estMange(){
     est_mange = !est_mange;
 }
-// Définition des geteurs pour le corail :
+
+// Définition des geteurs pour le corail :............................................
 
 int Corail::getId() const {
     return id;
@@ -184,6 +185,7 @@ Statut_cor Corail::getVieCor() const {
 Dir_rot_cor Corail::getSensRota() const {
     return sens_rota;
 }
+
 Statut_dev Corail::getStatutDev() const {
     return statut_dev;
 }
@@ -207,6 +209,7 @@ S2d Corail::getExtremite() const{
 bool Corail::getCorEstMange() const{
     return est_mange;
 }
+
 //Classe Scavenger....................................................................
 
 bool Scavenger::testRayon() const {
@@ -241,9 +244,8 @@ string Scavenger::sca_to_string() const {
     
     if (statut_sca == MANGE){ //l'id du corail cible uniquement si le scavenger MANGE
         return lifeform_to_string() + " " + to_string(rayon) + " " 
-            + to_string(statut_sca) + " " + to_string(cor_id_cible);
+               + to_string(statut_sca) + " " + to_string(cor_id_cible);
     }
-
     return lifeform_to_string() + " " + to_string(rayon) + " " + to_string(statut_sca);
 }
 
@@ -287,6 +289,7 @@ int Scavenger::getCorIdCible() const {
 Statut_sca Scavenger::getStatutSca() const {
     return statut_sca;
 }
+
 double Scavenger::getRayon() const {
     return rayon;
 }

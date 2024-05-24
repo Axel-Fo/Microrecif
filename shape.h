@@ -1,7 +1,7 @@
 /*
 * Fichier : shape.h
 * Auteurs : Nestor Guibentif et Axel Fouet
-* Version : V2
+* Version : V3
 */
 #ifndef SHAPE_H_INCLUDED
 #define SHAPE_H_INCLUDED
