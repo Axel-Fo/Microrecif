@@ -32,4 +32,4 @@ Tests are written in `test.cc` and allow testing each module independently.
 
 ## Development notes
 
-Work was split by module across the three deliverables and coordinated via GitLab and VS Code. The hardest bug was a collision issue in `intersect()` caused by an incorrect condition when using an epsilon threshold — found using a debugger and fixed with a one-line condition change.
+Work was split by module across the three deliverables and coordinated via GitLab and VS Code. The hardest bug was a collision issue in `intersect()` caused by an incorrect condition when using an epsilon threshold — found using a debugger and fixed.
