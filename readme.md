@@ -2,7 +2,7 @@
 
 C++ simulation project built around shapes, lifeforms, and a graphical interface.
 
-**Authors:** Axel Fouet (375085) & Nestor Guibentif (344767)
+**Authors:** Axel Fouet & Nestor Guibentif
 
 ---
 
